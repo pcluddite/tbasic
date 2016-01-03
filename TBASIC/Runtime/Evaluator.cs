@@ -660,8 +660,9 @@ namespace Tbasic.Runtime
                     case ">=":
                         return str1.CompareTo(str2) > 0 || str1 == str2;
                     case "==":
-                    case "=":
                         return str1 == str2;
+                    case "=":
+                        return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase); // = is case insensitive 1/2/16
                     case "<>":
                     case "!=":
                         return str1 != str2;
