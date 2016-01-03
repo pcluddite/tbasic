@@ -1,19 +1,19 @@
 
-while 1
+While 1
 
-	input("Type \"Hello\" or \"Hi\".", "OR Test")
+	Input("Type \"Hello\" or \"Hi\".", "OR Test")
 
-	if @status = 204 then
-		exit
-	end if
+	If @status = -1 Then
+		Exit
+	End If
 
 	StringUpper(@return)
 
-	if @return = "HELLO" OR @return = "HI" then
-		msgbox(64, "Hello!", "OR Test")
-		exit
-	else
-		msgbox(16, "You didn't say \"Hello\" or \"Hi\".\nWhy don't you try again?", "OR Test")
-	end if
+	If @return = "HELLO" Or @return = "HI" Then
+		MsgBox(64, "Hello!", "OR Test")
+		Exit
+	Else
+		MsgBox(16, "You didn't say \"Hello\" or \"Hi\".\nWhy don't you try again?", "OR Test")
+	End if
 
-wend
+WEnd

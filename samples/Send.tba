@@ -1,15 +1,15 @@
 MsgBox(68, "This will open a notepad program and send it some text.\nContinue?", "Send Test")
-IF @return = "No" THEN
-	exit
-END IF
+If @return = "No" Then
+    Exit
+End If
 
-run("notepad.exe")
+Shell("notepad.exe")
 
 hwnd$ = 0
 
-do until hwnd$ <> 0
+Do Until hwnd$ <> 0
 	hwnd$ = WinGetHandle("Untitled - Notepad")
-loop
+Loop
 
 WinActivate(hwnd$)
-send("Hello{!} I am a notepad application{!}")
+Send("Hello{!} I am a notepad application{!}")

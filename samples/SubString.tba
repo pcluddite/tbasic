@@ -1,45 +1,45 @@
-amnt$ = getNumChars()
-getMiddle(getString(amnt$), amnt$)
+amnt$ = GetNumChars()
+GetMiddle(GetString(amnt$), amnt$)
 
-function getNumChars()
+Function GetNumChars()
     amnt$ = 0
-	while 1
-		amnt$ = input("How many characters do you want to take?", "SubString")
-		if @status == -1 then
-			exit
-		end if
-        amnt$ = int(amnt$)
-		if @status then
-			msgbox(16, "What you entered is not a valid integer!", "SubString")
-        else
-            break
-		end if
-	wend
-	return amnt$
-end function
+    While 1
+        amnt$ = Input("How many characters do you want to take?", "SubString")
+        If @error = -1 Then
+            Exit
+        End If
+        amnt$ = Int(amnt$)
+        If @error Then
+            MsgBox(16, "What you entered is not a valid integer!", "SubString")
+        Else
+            Break
+        End If
+    WEnd
+    Return amnt$
+End Function
 
-function getString(amnt$)
+Function GetString(amnt$)
     str$ = ""
-	while 1
-		str$ = input("Enter some text that is at least " + amnt$ + " character(s) long:", "SubString")
+    While 1
+        str$ = Input("Enter some text that is at least " + amnt$ + " character(s) long:", "SubString")
 
-		if @status = -1 then
-			exit
-		end if
+        If @error = -1 Then
+            Exit
+        End If
 
-		if size(str$) < amnt$ then
-			msgbox(16, "You need to enter a string that is at least " + amnt$ + " character(s) long!", "SubString")
-		else
-			break
-		end if
-	wend
-	return str$
-end function
+        If Size(str$) < amnt$ Then
+            MsgBox(16, "You need to enter a string that is at least " + amnt$ + " character(s) long!", "SubString")
+        Else
+            Break
+        End If
+    WEnd
+    Return str$
+End Function
 
-function getMiddle(str$, amnt$)
-	middle$ = ipart((size(str$) - int(amnt$)) / 2)
+Function GetMiddle(str$, amnt$)
+    middle$ = IPart((size(str$) - Int(amnt$)) / 2)
     MsgBox(64, "The middle character was determined to be at position " + (middle$ + 1) + ".\n" + _
-               "The resulting string is \"" + SubString(str$, middle$, amnt$) + "\"." _
-               , "SubString")
-end function
+               "The resulting string is \"" + SubString(str$, middle$, amnt$) + "\".", _
+               "SubString")
+End Function
 	

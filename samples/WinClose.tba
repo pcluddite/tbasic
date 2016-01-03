@@ -1,10 +1,10 @@
 hwnd$ = WinGetHandle("Calculator")
 
-if hwnd$ = 0 then
+If hwnd$ = 0 Then
 	MsgBox(16, "The Calculator is not open!", "Error!")
-else
+Else
 	MsgBox(36, "Would you like to close the calculator?", "Question")
-	if @return = "Yes" THEN
+	If @return = "Yes" Then
 		WinClose(hwnd$)
-	end if
-end if
+	End If
+End If

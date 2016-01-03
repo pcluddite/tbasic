@@ -1,1 +1,1 @@
-msgbox(64,'You said "' + input("Say something:", "Fubar") + '"', "Fubar")
+MsgBox(64, 'You said "' + Input("Say something:", "Fubar") + '"', "Fubar")
