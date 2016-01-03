@@ -11,6 +11,7 @@ namespace Tbasic.Libraries {
             Add("StrIndexOf", StringIndexOf);
             Add("StrLastIndexOf", StringLastIndexOf);
             Add("StrUpper", StringUpper);
+            Add("StrUpper", StringCompare);
             Add("StrLower", StringLower);
             Add("StrLeft", StringLeft);
             Add("StrRight", StringRight);
@@ -60,6 +61,12 @@ namespace Tbasic.Libraries {
         private void StringContains(ref StackFrame stackFrame) {
             stackFrame.Assert(3);
             stackFrame.Data = stackFrame.Get<string>(1).Contains(stackFrame.Get<string>(2));
+        }
+
+        private void StringCompare(ref StackFrame stackFrame)
+        {
+            stackFrame.Assert(3);
+            stackFrame.Data = stackFrame.Get<string>(1).CompareTo(stackFrame.Get<string>(2));
         }
 
         private void StringIndexOf(ref StackFrame stackFrame) {

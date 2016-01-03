@@ -647,18 +647,6 @@ namespace Tbasic.Runtime
                 switch (op.OperatorString) {
                     case "+":
                         return str1 + str2;
-                    case "-":
-                        break;
-                    case "<":
-                        return str1.CompareTo(str2) < 0;
-                    case "=<":
-                    case "<=":
-                        return str1.CompareTo(str2) < 0 || str1 == str2;
-                    case ">":
-                        return str1.CompareTo(str2) > 0;
-                    case "=>":
-                    case ">=":
-                        return str1.CompareTo(str2) > 0 || str1 == str2;
                     case "==":
                         return str1 == str2;
                     case "=":
