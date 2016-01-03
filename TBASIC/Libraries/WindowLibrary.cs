@@ -23,7 +23,6 @@ namespace Tbasic.Libraries {
             Add("winsettrans", WinSetTrans);
             Add("winsetstate", WinSetState);
             Add("winlist", WinList);
-            Add("windisableclose", WinRemoveClose);
             Add("ScreenCapture", GetScreen);
             Add("winpicture", WinPicture);
             Add("winexists", WinExists);
@@ -37,7 +36,7 @@ namespace Tbasic.Libraries {
 
         private void WinRemoveClose(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = WinRemoveClose(parameters.Get<IntPtr>(1));
+            parameters.Data = WinRemoveClose(new IntPtr(parameters.Get<long>(1)));
         }
 
         public static IntPtr WinGetHandle(string title, string sz_class = null) {
@@ -46,12 +45,12 @@ namespace Tbasic.Libraries {
 
         private void WinGetHandle(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = WinGetHandle(parameters.Get<string>(1)).ToInt32();
+            parameters.Data = WinGetHandle(parameters.Get<string>(1)).ToInt64();
         }
 
         private void WinGetTitle(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = WinGetTitle(new IntPtr(parameters.Get<int>(1)));
+            parameters.Data = WinGetTitle(new IntPtr(parameters.Get<long>(1)));
         }
 
         public static string WinGetTitle(IntPtr hwnd) {
@@ -63,7 +62,7 @@ namespace Tbasic.Libraries {
 
         private void WinSetTitle(ref StackFrame parameters) {
             parameters.Assert(3);
-            IntPtr hwnd = new IntPtr(parameters.Get<int>(1));
+            IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!User32.SetWindowText(hwnd, parameters.Get<string>(2))) {
                 parameters.Status = 1;
             }
@@ -75,10 +74,10 @@ namespace Tbasic.Libraries {
 
         private void WinGetState(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = WinGetState(parameters.Get<int>(1));
+            parameters.Data = WinGetState(parameters.Get<long>(1));
         }
 
-        public static int WinGetState(int hwnd) {
+        public static int WinGetState(long hwnd) {
             return WinGetState(new IntPtr(hwnd));
         }
 
@@ -89,7 +88,7 @@ namespace Tbasic.Libraries {
         private void WinSetState(ref StackFrame parameters) {
             parameters.Assert(3);
             uint flag = parameters.Get<uint>(2);
-            if (!WinSetState(new IntPtr(parameters.Get<int>(1)), flag)) {
+            if (!WinSetState(new IntPtr(parameters.Get<long>(1)), flag)) {
                 parameters.Status = 1;
             }
         }
@@ -100,7 +99,7 @@ namespace Tbasic.Libraries {
 
         private void WinActivate(ref StackFrame parameters) {
             parameters.Assert(2);
-            if (!WinActivate(new IntPtr(parameters.Get<int>(1)))) {
+            if (!WinActivate(new IntPtr(parameters.Get<long>(1)))) {
                 parameters.Status = 1;
             }
         }
@@ -122,7 +121,7 @@ namespace Tbasic.Libraries {
 
         private void WinMove(ref StackFrame parameters) {
             parameters.Assert(4);
-            IntPtr hwnd = new IntPtr(parameters.Get<int>(1));
+            IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinMove(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
                 parameters.Status = 1;
             }
@@ -147,7 +146,7 @@ namespace Tbasic.Libraries {
 
         private void WinSize(ref StackFrame parameters) {
             parameters.Assert(4);
-            IntPtr hwnd = new IntPtr(parameters.Get<int>(1));
+            IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSize(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
                 parameters.Status = 1;
             }
@@ -159,7 +158,7 @@ namespace Tbasic.Libraries {
 
         private void WinKill(ref StackFrame parameters) {
             parameters.Assert(2);
-            int hwnd = parameters.Get<int>(1);
+            long hwnd = parameters.Get<long>(1);
             if (!WinKill(new IntPtr(hwnd))) {
                 parameters.Status = 1;
             }
@@ -171,7 +170,7 @@ namespace Tbasic.Libraries {
 
         private void WinClose(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = WinClose(new IntPtr(parameters.Get<int>(1)));
+            parameters.Data = WinClose(new IntPtr(parameters.Get<long>(1)));
         }
 
         public static bool WinSetTrans(IntPtr hwnd, byte trans) {
@@ -181,7 +180,7 @@ namespace Tbasic.Libraries {
 
         private void WinSetTrans(ref StackFrame parameters) {
             parameters.Assert(3);
-            IntPtr hwnd = new IntPtr(parameters.Get<int>(1));
+            IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSetTrans(hwnd, parameters.Get<byte>(2))) {
                 parameters.Status = 1;
             }
@@ -237,7 +236,7 @@ namespace Tbasic.Libraries {
         private void WinPicture(ref StackFrame parameters) {
             parameters.Assert(3);
             int compression = parameters.GetIntRange(2, 0, 100);
-            IntPtr hwnd = new IntPtr(parameters.Get<int>(1));
+            IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             parameters.Data = WinPicture(hwnd, compression);
         }
 
@@ -247,7 +246,7 @@ namespace Tbasic.Libraries {
 
         private void WinExists(ref StackFrame parameters) {
             parameters.Assert(2);
-            parameters.Data = Windows.WindowExists(new IntPtr(parameters.Get<int>(1)));
+            parameters.Data = Windows.WindowExists(new IntPtr(parameters.Get<long>(1)));
         }
     }
 }
