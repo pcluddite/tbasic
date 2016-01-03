@@ -7,8 +7,6 @@ While 1
 		Exit
 	End If
 
-	StringUpper(@return)
-
 	If @return = "HELLO" Or @return = "HI" Then
 		MsgBox(64, "Hello!", "OR Test")
 		Exit
