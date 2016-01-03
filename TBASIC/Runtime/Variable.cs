@@ -1,0 +1,163 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Tbasic.Runtime {
+    internal class Variable : IExpression {
+
+        #region Private Members
+
+        private string _expression;
+        private string _variable = null;
+
+        #endregion
+
+        #region Properties
+
+        public int[] Indices { get; private set; }
+
+        public bool IsMacro {
+            get {
+                return Name.StartsWith("@");
+            }
+        }
+
+        public bool IsValid {
+            get {
+                return Name.EndsWith("$");
+            }
+        }
+
+        public ObjectContext CurrentContext {
+            get {
+                return CurrentExecution.Context;
+            }
+        }
+
+        public Executer CurrentExecution { get; set; }
+        
+        public string Expression {
+            get {
+                return _expression;
+            }
+            set {
+                _expression = value.Trim();
+                if (_expression.Length > Name.Length) {
+                    string index = _expression.Substring(Name.Length);
+                    if (index.Trim().StartsWith("[")) {
+                        IList<object> indices;
+                        int last = Evaluator.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
+                        _expression = value.Remove(last) + ']';
+                        if (indices.Count == 0) {
+                            throw ScriptException.NoIndexSpecified();
+                        }
+                        Indices = new int[indices.Count];
+                        for (int i = 0; i < Indices.Length; i++) {
+                            if (indices[i] is int) {
+                                Indices[i] = (int)indices[i];
+                            }
+                            else {
+                                throw ScriptException.InvalidExpression(indices[i].GetType().Name, typeof(int).Name);
+                            }
+                        }
+                    }
+                    else {
+                        Indices = null;
+                    }
+                }
+                else {
+                    Indices = null;
+                }
+            }
+        }
+
+        public string Name {
+            get {
+                if (_variable == null) {
+                    _variable = GetName(_expression);
+                }
+                return _variable;
+            }
+        }
+
+        #endregion
+
+        public Variable(string full, Executer exec) {
+            CurrentExecution = exec;
+            Expression = full;
+        }
+
+        private string GetName(string str) {
+            int bracket = str.IndexOf('[');
+            int space = str.IndexOf(' ');
+            if (bracket < 0 && space < 0) {
+                return str;
+            }
+            else if (bracket < 0 && space > 0) {
+                return str.Remove(space);
+            }
+            else if (space < 0 && bracket > 0) {
+                return str.Remove(bracket);
+            }
+            else if (space < bracket) {
+                return str.Remove(space);
+            }
+            else {
+                return str.Remove(bracket);
+            }
+        }
+
+        public override string ToString() {
+            return _expression;
+        }
+
+        public object Evaluate() {
+            object obj = CurrentContext.GetVariable(Name);
+            if (Indices != null) {
+                for (int n = 0; n < Indices.Length; n++) {
+                    if (obj.GetType().IsArray) {
+                        object[] _aObj = (object[])obj;
+                        if (Indices[n] < _aObj.Length) {
+                            obj = _aObj[Indices[n]];
+                        }
+                        else {
+                            throw ScriptException.IndexOutOfRange(BuildName(n - 1), Indices[n]);
+                        }
+                    }
+                    else {
+                        throw ScriptException.IndexUnavailable(BuildName(n));
+                    }
+                }
+            }
+            return DuckType(obj);
+        }
+
+        private string BuildName(int n) {
+            StringBuilder sb = new StringBuilder(Name);
+            if (n > 0) {
+                sb.Append("[");
+                while (n > 0) {
+                    sb.AppendFormat("{0},", Indices[n]);
+                    n--;
+                }
+                sb.AppendFormat("{0}]", Indices[0]);
+            }
+            return sb.ToString();
+        }
+
+        public static object DuckType(object _oObj) {
+            if (_oObj == null) {
+                return 0;
+            }
+            try {
+                double _dObj = (double)_oObj;
+                if (_dObj % 1 == 0) {
+                    return (int)_dObj;
+                }
+            }
+            catch (InvalidCastException) {
+            }
+            return _oObj;
+        }
+    }
+}

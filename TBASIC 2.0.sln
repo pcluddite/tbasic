@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Executer", "Executer\Executer.csproj", "{DB156F57-2EBE-4900-A135-4D5C27944351}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBASIC", "TBASIC\TBASIC.csproj", "{86EC7054-1D77-4DEE-854F-AD7377FC27AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB156F57-2EBE-4900-A135-4D5C27944351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB156F57-2EBE-4900-A135-4D5C27944351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB156F57-2EBE-4900-A135-4D5C27944351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB156F57-2EBE-4900-A135-4D5C27944351}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86EC7054-1D77-4DEE-854F-AD7377FC27AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EC7054-1D77-4DEE-854F-AD7377FC27AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86EC7054-1D77-4DEE-854F-AD7377FC27AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86EC7054-1D77-4DEE-854F-AD7377FC27AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
