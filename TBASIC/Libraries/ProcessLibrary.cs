@@ -12,16 +12,16 @@ namespace Tbasic.Libraries {
     internal class ProcessLibrary : Library {
 
         public ProcessLibrary() {
-            Add("ProcessStart", Run);
-            Add("ProcessClose", ProcessClose);
-            Add("ProcessKill", ProcessKill);
-            Add("ProcessExists", ProcessExists);
-            Add("ProcessBlockList", BlockedList);
-            Add("ProcessBlock", ProcessBlock);
-            Add("ProcessRedirect", ProcessRedirect);
-            Add("ProcessSetDebugger", ProcessSetDebugger);
-            Add("ProcessUnblock", Unblock);
-            Add("ProcessList", ProcessList);
+            Add("ProcStart", Run);
+            Add("ProcClose", ProcessClose);
+            Add("ProcKill", ProcessKill);
+            Add("ProcExists", ProcessExists);
+            Add("ProcBlockList", BlockedList);
+            Add("ProcBlock", ProcessBlock);
+            Add("ProcRedirect", ProcessRedirect);
+            Add("ProcSetDebugger", ProcessSetDebugger);
+            Add("ProcUnblock", Unblock);
+            Add("ProcList", ProcessList);
         }
 
         private void ProcessExists(ref StackFrame _sframe) {

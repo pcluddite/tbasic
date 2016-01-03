@@ -3,7 +3,7 @@ If @return = "No" Then
     Exit
 End If
 
-Shell("notepad.exe")
+ProcStart("notepad.exe")
 
 hwnd$ = 0
 
