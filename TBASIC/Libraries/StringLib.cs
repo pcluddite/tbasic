@@ -11,7 +11,7 @@ namespace Tbasic.Libraries {
             Add("StrIndexOf", StringIndexOf);
             Add("StrLastIndexOf", StringLastIndexOf);
             Add("StrUpper", StringUpper);
-            Add("StrUpper", StringCompare);
+            Add("StrCompare", StringCompare);
             Add("StrLower", StringLower);
             Add("StrLeft", StringLeft);
             Add("StrRight", StringRight);
