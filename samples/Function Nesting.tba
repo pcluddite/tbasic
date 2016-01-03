@@ -1,0 +1,1 @@
+msgbox(64,'You said "' + input("Say something:", "Fubar") + '"', "Fubar")

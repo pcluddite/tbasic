@@ -1,0 +1,9 @@
+input("Enter a boolean expression:\n" + _
+      "Proper boolean values are: 1/0 or True/False\n" + _
+      "Use \"AND\", \"OR\", and \"NOT\" for the appropriate operations.", "Math")
+
+IF @status = 204 THEN
+	exit
+END IF
+
+MsgBox(64, "The answer is:\n" + eval(@return), "Math")
