@@ -17,8 +17,8 @@ namespace Tbasic.Libraries {
             Add("ProcKill", ProcessKill);
             Add("ProcExists", ProcessExists);
             Add("ProcBlockList", BlockedList);
-            Add("ProcBlock", ProcessBlock);
-            Add("ProcRedirect", ProcessRedirect);
+            //Add("ProcBlock", ProcessBlock);
+            //Add("ProcRedirect", ProcessRedirect);
             Add("ProcSetDebugger", ProcessSetDebugger);
             Add("ProcUnblock", Unblock);
             Add("ProcList", ProcessList);
@@ -57,7 +57,7 @@ namespace Tbasic.Libraries {
                     return;
                 }
             }
-            _sframe.Status = 1; // error -1 if it does not exist
+            _sframe.Status = -1; // error -1 if it does not exist 1/3/16
         }
 
         private void ProcessClose(ref StackFrame _sframe) {
@@ -68,7 +68,7 @@ namespace Tbasic.Libraries {
                     return;
                 }
             }
-            _sframe.Status = 1; // error -1 if it does not exist
+            _sframe.Status = -1; // error -1 if it does not exist 1/3/16
         }
 
         private void BlockedList(ref StackFrame _sframe) {
