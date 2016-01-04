@@ -160,10 +160,7 @@ namespace Tbasic.Runtime
                 stackFrame.SetAll(codeLine.Text);
                 context.GetCommand(codeLine.Name).Invoke(ref stackFrame);
             }
-            stackFrame.Context.SetVariable("@return", stackFrame.Data);
-            stackFrame.Context.SetVariable("@ret", stackFrame.Data);
-            stackFrame.Context.SetVariable("@status", stackFrame.Status);
-            stackFrame.Context.SetVariable("@error", stackFrame.Status);
+            stackFrame.Context.SetReturns(stackFrame);
         }
 
         internal static LineCollection ScanLines(string[] lines, out CodeBlock[] userFunctions)

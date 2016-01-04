@@ -257,10 +257,7 @@ namespace Tbasic.Runtime
                 _sframe.SetAll(a_evaluated);
                 _sframe.Name = name;
                 context.GetFunction(name).Invoke(ref _sframe);
-                CurrentContext.SetVariable("@status", _sframe.Status);
-                CurrentContext.SetVariable("@error", _sframe.Status);
-                CurrentContext.SetVariable("@return", _sframe.Data);
-                CurrentContext.SetVariable("@ret", _sframe.Data);
+                CurrentContext.SetReturns(_sframe);
                 return _sframe.Data;
             }
         }

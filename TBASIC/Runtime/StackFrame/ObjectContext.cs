@@ -356,6 +356,14 @@ namespace Tbasic.Runtime
 
         #region Set
 
+        internal void SetReturns(StackFrame _sframe)
+        {
+            SetVariable("@status", _sframe.Status);
+            SetVariable("@error", _sframe.Status);
+            SetVariable("@return", _sframe.Data);
+            SetVariable("@ret", _sframe.Data);
+        }
+
         /// <summary>
         /// Sets a code block in this context. If the block exists, it is set in
         /// the context in which it was declared. Otherwise, it is declared in this context.
