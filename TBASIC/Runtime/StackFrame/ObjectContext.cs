@@ -17,7 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *  USA
  **/
-#undef DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -220,10 +219,10 @@ namespace Tbasic.Runtime {
         }
 
         /// <summary>
-        /// Searches for the context in which a variable is declared. If the variable cannot be found, null is returned.
+        /// Searches for the context in which any name is declared (variable, constant, function, command or block). If no definition cannot be found, null is returned.
         /// </summary>
         /// <param name="name">the variable name</param>
-        /// <returns>the ObjectContext in which the variable is declared</returns>
+        /// <returns>the ObjectContext in which the name is defined</returns>
         public ObjectContext FindContext(string name) {
             ObjectContext context = FindVariableContext(name);
             if (context != null) {
