@@ -27,7 +27,6 @@ namespace Tbasic.Runtime
     /// <summary>
     /// This class provides functionality for evaluating functions
     /// </summary>
-    //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly")]
     internal class Function : IExpression {
         #region Private Members
 

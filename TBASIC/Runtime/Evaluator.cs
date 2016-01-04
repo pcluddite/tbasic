@@ -28,7 +28,6 @@ namespace Tbasic.Runtime
     /// <summary>
     /// This class will evaluate boolean and mathmatical expressions
     /// </summary>
-    //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly")]
     internal class Evaluator : IExpression
     {
         #region Internal Structures and Classes
