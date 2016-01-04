@@ -1,3 +1,7 @@
+/**
+ * The Code Project Open License 1.02
+ **/
+
 ﻿using Microsoft.Win32;
 
 // RenameRegistryKey © Copyright 2006 Active Computing
