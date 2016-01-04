@@ -19,19 +19,20 @@
  **/
 using System;
 
-namespace Tbasic {
-
+namespace Tbasic
+{
     /// <summary>
     /// Defines a set of methods and properties for a line of Tbasic code
     /// </summary>
-    public class Line : IComparable<Line>, IEquatable<Line> {
-
+    public class Line : IComparable<Line>, IEquatable<Line>
+    {
         /// <summary>
         /// Initializes a line of Tbasic code
         /// </summary>
         /// <param name="id">The id of the line. This should be the line number.</param>
         /// <param name="line">The text of the line</param>
-        public Line(int id, string line) {
+        public Line(int id, string line)
+        {
             LineNumber = id;
             Text = line.Trim(); // Ignore leading and trailing whitespace.
             VisibleName = Name;
@@ -41,7 +42,8 @@ namespace Tbasic {
         /// Initializes a line of Tbasic code carring the same information as another Tbasic.Line
         /// </summary>
         /// <param name="line"></param>
-        public Line(Line line) {
+        public Line(Line line)
+        {
             LineNumber = line.LineNumber;
             Text = line.Text;
             VisibleName = line.Name;
@@ -67,7 +69,8 @@ namespace Tbasic {
         /// <summary>
         /// Gets or sets the name of the line displayed in exceptions
         /// </summary>
-        public string VisibleName {
+        public string VisibleName
+        {
             get {
                 if (visibleName == null) {
                     return Name;
@@ -84,7 +87,8 @@ namespace Tbasic {
         /// <summary>
         /// Retrieves the name that is retreived from the Tbasic.ObjectContext libraries
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get {
                 if (name == null) { // This way we don't have to do this every time
                     int bracket = Text.IndexOf('(');
@@ -113,7 +117,8 @@ namespace Tbasic {
         /// Returns the text that this line represents
         /// </summary>
         /// <returns></returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return Text;
         }
 
@@ -122,7 +127,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public int CompareTo(Line other) {
+        public int CompareTo(Line other)
+        {
             return LineNumber.CompareTo(other.LineNumber);
         }
 
@@ -131,7 +137,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public override bool Equals(object other) {
+        public override bool Equals(object other)
+        {
             if (other is Line) {
                 return this.Equals((Line)other);
             }
@@ -142,7 +149,8 @@ namespace Tbasic {
         /// Hash code for the LineNumber
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return LineNumber.GetHashCode();
         }
 
@@ -151,7 +159,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(Line other) {
+        public bool Equals(Line other)
+        {
             return other.LineNumber == LineNumber;
         }
     }

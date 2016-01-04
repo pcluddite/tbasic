@@ -23,7 +23,8 @@ using System.Linq;
 using System.Text;
 using Tbasic.Libraries;
 
-namespace Tbasic.Runtime {
+namespace Tbasic.Runtime
+{
     /// <summary>
     /// An event handler for a user exit
     /// </summary>
@@ -32,9 +33,10 @@ namespace Tbasic.Runtime {
     public delegate void UserExittedEventHandler(object sender, EventArgs e);
 
     /// <summary>
-    /// Stores information on the state of the current function execution
+    /// Executes a script and stores information on the current state of the line being executed
     /// </summary>
-    public class Executer {
+    public class Executer
+    {
         /// <summary>
         /// A string containing information on this version of Tbasic
         /// </summary>
@@ -60,7 +62,7 @@ namespace Tbasic.Runtime {
         /// Gets or sets the ObjectContext in which the code is executed
         /// </summary>
         public ObjectContext Context { get; set; }
-        
+
         /// <summary>
         /// Gets if a request to exit has been petitioned. This should apply to the scope of the whole application.
         /// </summary>
@@ -76,7 +78,8 @@ namespace Tbasic.Runtime {
         /// <summary>
         /// Initializes a new script executer
         /// </summary>
-        public Executer() {
+        public Executer()
+        {
             Global = new ObjectContext(null);
             Context = Global;
             CurrentLine = 0;
@@ -87,7 +90,8 @@ namespace Tbasic.Runtime {
         /// Runs a Tbasic script
         /// </summary>
         /// <param name="script">the full text of the script to process</param>
-        public void Execute(string script) {
+        public void Execute(string script)
+        {
             Execute(script.Replace("\r\n", "\n").Split('\n'));
         }
 
@@ -95,8 +99,8 @@ namespace Tbasic.Runtime {
         /// Runs a Tbasic script
         /// </summary>
         /// <param name="lines">the lines of the script to process</param>
-        public void Execute(string[] lines) {
-
+        public void Execute(string[] lines)
+        {
             CodeBlock[] userFuncs;
             LineCollection code = ScanLines(lines, out userFuncs);
 
@@ -112,8 +116,9 @@ namespace Tbasic.Runtime {
                 System.Windows.Forms.Application.Run(new FormLoader(this));
             }*/
         }
-        
-        internal StackFrame Execute(LineCollection lines) {
+
+        internal StackFrame Execute(LineCollection lines)
+        {
             StackFrame stackFrame = new StackFrame(this);
             for (int index = 0; index < lines.Count; index++) {
                 if (BreakRequest) {
@@ -142,7 +147,8 @@ namespace Tbasic.Runtime {
             return stackFrame;
         }
 
-        internal static void Execute(ref StackFrame stackFrame, Line codeLine) {
+        internal static void Execute(ref StackFrame stackFrame, Line codeLine)
+        {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {
                 Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
@@ -160,7 +166,8 @@ namespace Tbasic.Runtime {
             stackFrame.Context.SetVariable("@error", stackFrame.Status);
         }
 
-        internal static LineCollection ScanLines(string[] lines, out CodeBlock[] userFunctions) {
+        internal static LineCollection ScanLines(string[] lines, out CodeBlock[] userFunctions)
+        {
             LineCollection allLines = new LineCollection();
             List<int> funLines = new List<int>();
 
@@ -204,23 +211,27 @@ namespace Tbasic.Runtime {
             return allLines;
         }
 
-        internal void RequestBreak() {
+        internal void RequestBreak()
+        {
             BreakRequest = true;
         }
 
-        internal void HonorBreak() {
+        internal void HonorBreak()
+        {
             if (!ExitRequest) {
                 BreakRequest = false;
             }
         }
 
-        internal void RequestExit() {
+        internal void RequestExit()
+        {
             ExitRequest = true;
             BreakRequest = true;
             OnUserExit(EventArgs.Empty);
         }
 
-        private void OnUserExit(EventArgs e) {
+        private void OnUserExit(EventArgs e)
+        {
             if (OnUserExitRequest != null) {
                 OnUserExitRequest(this, e);
             }

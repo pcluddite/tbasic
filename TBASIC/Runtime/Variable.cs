@@ -21,8 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tbasic.Runtime {
-    internal class Variable : IExpression {
+namespace Tbasic.Runtime
+{
+    internal class Variable : IExpression
+    {
 
         #region Private Members
 
@@ -35,27 +37,31 @@ namespace Tbasic.Runtime {
 
         public int[] Indices { get; private set; }
 
-        public bool IsMacro {
+        public bool IsMacro
+        {
             get {
                 return Name.StartsWith("@");
             }
         }
 
-        public bool IsValid {
+        public bool IsValid
+        {
             get {
                 return Name.EndsWith("$");
             }
         }
 
-        public ObjectContext CurrentContext {
+        public ObjectContext CurrentContext
+        {
             get {
                 return CurrentExecution.Context;
             }
         }
 
         public Executer CurrentExecution { get; set; }
-        
-        public string Expression {
+
+        public string Expression
+        {
             get {
                 return _expression;
             }
@@ -90,7 +96,8 @@ namespace Tbasic.Runtime {
             }
         }
 
-        public string Name {
+        public string Name
+        {
             get {
                 if (_variable == null) {
                     _variable = GetName(_expression);
@@ -101,12 +108,14 @@ namespace Tbasic.Runtime {
 
         #endregion
 
-        public Variable(string full, Executer exec) {
+        public Variable(string full, Executer exec)
+        {
             CurrentExecution = exec;
             Expression = full;
         }
 
-        private string GetName(string str) {
+        private string GetName(string str)
+        {
             int bracket = str.IndexOf('[');
             int space = str.IndexOf(' ');
             if (bracket < 0 && space < 0) {
@@ -126,11 +135,13 @@ namespace Tbasic.Runtime {
             }
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return _expression;
         }
 
-        public object Evaluate() {
+        public object Evaluate()
+        {
             object obj = CurrentContext.GetVariable(Name);
             if (Indices != null) {
                 for (int n = 0; n < Indices.Length; n++) {
@@ -151,7 +162,8 @@ namespace Tbasic.Runtime {
             return DuckType(obj);
         }
 
-        private string BuildName(int n) {
+        private string BuildName(int n)
+        {
             StringBuilder sb = new StringBuilder(Name);
             if (n > 0) {
                 sb.Append("[");
@@ -164,7 +176,8 @@ namespace Tbasic.Runtime {
             return sb.ToString();
         }
 
-        public static object DuckType(object _oObj) {
+        public static object DuckType(object _oObj)
+        {
             if (_oObj == null) {
                 return 0;
             }

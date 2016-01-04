@@ -24,11 +24,13 @@ using System.Linq;
 using System.Text;
 using Tbasic.Runtime;
 
-namespace Tbasic {
+namespace Tbasic
+{
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class StackFrame : ICollection, IList, ICloneable {
+    public class StackFrame : ICollection, IList, ICloneable
+    {
 
         private List<object> _params = new List<object>();
 
@@ -40,7 +42,8 @@ namespace Tbasic {
         /// <summary>
         /// Gets or sets the current context of stack executer
         /// </summary>
-        public ObjectContext Context {
+        public ObjectContext Context
+        {
             get {
                 return StackExecuter.Context;
             }
@@ -59,7 +62,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index">the zero-based index of the parameter</param>
         /// <returns></returns>
-        public object this[int index] {
+        public object this[int index]
+        {
             get {
                 return Get(index);
             }
@@ -71,7 +75,8 @@ namespace Tbasic {
         /// <summary>
         /// The name of the function (the first parameter)
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get {
                 if (_params != null && _params.Count > 0) {
                     return _params[0].ToString();
@@ -93,13 +98,14 @@ namespace Tbasic {
         /// <summary>
         /// Gets the number of parameters in this collection
         /// </summary>
-        public int Count {
+        public int Count
+        {
             get {
                 return _params.Count;
             }
         }
 
-        
+
         /// <summary>
         /// Gets or sets the status that the function returned
         /// </summary>
@@ -109,12 +115,13 @@ namespace Tbasic {
         /// Gets or sets the return data for the function
         /// </summary>
         public object Data { get; set; }
-        
+
         /// <summary>
         /// Constructs a StackFrame object
         /// </summary>
         /// <param name="exec">the execution that called the function</param>
-        public StackFrame(Executer exec) {
+        public StackFrame(Executer exec)
+        {
             StackExecuter = exec;
             Status = 0;
             Data = null;
@@ -126,15 +133,17 @@ namespace Tbasic {
         /// <param name="text">the text to be processed (formatted as a shell command)</param>
         /// <param name="exec">the execution that called the function</param>
         public StackFrame(Executer exec, string text)
-            : this(exec) {
+            : this(exec)
+        {
             SetAll(text);
         }
-        
+
         /// <summary>
         /// Sets the data for this StackFrame object
         /// </summary>
         /// <param name="parameters">parameters to manage</param>
-        public void SetAll(params object[] parameters) {
+        public void SetAll(params object[] parameters)
+        {
             if (parameters == null) {
                 _params = new List<object>();
             }
@@ -143,7 +152,8 @@ namespace Tbasic {
             }
         }
 
-        internal void SetAll(List<object> parameters) {
+        internal void SetAll(List<object> parameters)
+        {
             if (parameters == null) {
                 _params = new List<object>();
             }
@@ -156,12 +166,14 @@ namespace Tbasic {
         ///  Sets the data for this StackFrame object
         /// </summary>
         /// <param name="message">the text to be processed (formatted as a shell command)</param>
-        public void SetAll(string message) {
+        public void SetAll(string message)
+        {
             Text = message;
             _params = new List<object>(ParseArguments(message));
         }
 
-        private string[] ParseArguments(string commandLine) {
+        private string[] ParseArguments(string commandLine)
+        {
             commandLine = commandLine.Trim(); // just a precaution
             List<string> args = new List<string>();
             StringBuilder sb = new StringBuilder();
@@ -203,7 +215,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="o">the new parameter to add</param>
         /// <return></return>
-        public void Add(object o) {
+        public void Add(object o)
+        {
             _params.Add(o);
         }
 
@@ -211,7 +224,8 @@ namespace Tbasic {
         /// Adds a range of parameters to this collection
         /// </summary>
         /// <param name="col_params">the new parameters to add</param>
-        public void AddRange(ICollection<object> col_params) {
+        public void AddRange(ICollection<object> col_params)
+        {
             object[] a_newObj = new object[_params.Count + col_params.Count];
             _params.CopyTo(a_newObj, 0);
             col_params.CopyTo(a_newObj, _params.Count);
@@ -222,7 +236,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index">The index of the argument</param>
         /// <param name="data">The new string data to assign</param>
-        public void Set(int index, object data) {
+        public void Set(int index, object data)
+        {
             if (index < _params.Count) {
                 _params[index] = data;
             }
@@ -232,7 +247,8 @@ namespace Tbasic {
         /// Throws an ArgumentException if the number of parameters does not match a specified count
         /// </summary>
         /// <param name="count">the number of parameters expected</param>
-        public void Assert(int count) {
+        public void Assert(int count)
+        {
             if (_params.Count != count) {
                 throw new ArgumentException(string.Format("{0} does not take {1} parameter{2}", Name.ToUpper(), _params.Count - 1,
                 _params.Count == 2 ? "" : "s"));
@@ -244,7 +260,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index">The index of the argument</param>
         /// <returns></returns>
-        public object Get(int index) {
+        public object Get(int index)
+        {
             if (index < _params.Count && index >= 0) {
                 return _params[index];
             }
@@ -256,7 +273,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index">index of the argument</param>
         /// <returns></returns>
-        public Type GetTypeAt(int index) {
+        public Type GetTypeAt(int index)
+        {
             return Get(index).GetType();
         }
 
@@ -267,7 +285,8 @@ namespace Tbasic {
         /// <param name="lower">the inclusive lower bound</param>
         /// <param name="upper">the inclusive upper bound</param>
         /// <returns></returns>
-        public int GetIntRange(int index, int lower, int upper) {
+        public int GetIntRange(int index, int lower, int upper)
+        {
             int n = Get<int>(index);
             if (n < lower || n > upper) {
                 throw new FormatException(string.Format("parameter {0} expected to be integer between {1} and {2}", index, lower, upper));
@@ -281,7 +300,8 @@ namespace Tbasic {
         /// <typeparam name="T">the type to convert the object</typeparam>
         /// <param name="index">the zero-based index of the parameter</param>
         /// <returns></returns>
-        public T Get<T>(int index) {
+        public T Get<T>(int index)
+        {
             object obj = Get(index);
             try {
                 return (T)obj;
@@ -302,7 +322,8 @@ namespace Tbasic {
         /// <param name="typeName">The type the argument represents</param>
         /// <param name="values">Acceptable string values</param>
         /// <returns></returns>
-        internal string Get(int index, string typeName, params string[] values) {
+        internal string Get(int index, string typeName, params string[] values)
+        {
             string arg = Get(index).ToString();
             foreach (string val in values) {
                 if (val.Equals(arg, StringComparison.OrdinalIgnoreCase)) {
@@ -316,7 +337,8 @@ namespace Tbasic {
         /// Clones this StackFrame
         /// </summary>
         /// <returns>A new StackFrame object with the same data</returns>
-        public StackFrame Clone() {
+        public StackFrame Clone()
+        {
             StackFrame clone = new StackFrame(StackExecuter);
             clone.Text = Text;
             if (_params == null) {
@@ -332,18 +354,21 @@ namespace Tbasic {
         /// Returns this StackFrame enumerator
         /// </summary>
         /// <returns></returns>
-        public IEnumerator GetEnumerator() {
+        public IEnumerator GetEnumerator()
+        {
             return _params.GetEnumerator();
         }
 
-        object ICloneable.Clone() {
+        object ICloneable.Clone()
+        {
             return this.Clone();
         }
 
         /// <summary>
         /// Removes all elements from the collection
         /// </summary>
-        public void Clear() {
+        public void Clear()
+        {
             _params.Clear();
         }
 
@@ -352,7 +377,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="value">the object to contains (value cannot be null)</param>
         /// <returns></returns>
-        public bool Contains(object value) {
+        public bool Contains(object value)
+        {
             return _params.Contains(value);
         }
 
@@ -361,7 +387,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="value">the object to locate (value cannot be null)</param>
         /// <returns></returns>
-        public int IndexOf(object value) {
+        public int IndexOf(object value)
+        {
             return _params.IndexOf(value);
         }
 
@@ -370,7 +397,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index">the zero-based index of the element to remove</param>
         /// <param name="value">the object to insert (value cannot be null)</param>
-        public void Insert(int index, object value) {
+        public void Insert(int index, object value)
+        {
             _params.Insert(index, value);
         }
 
@@ -378,7 +406,8 @@ namespace Tbasic {
         /// Removes an element at the specified index
         /// </summary>
         /// <param name="value">the object to remove (value cannot be null)</param>
-        public void Remove(object value) {
+        public void Remove(object value)
+        {
             _params.Remove(value);
         }
 
@@ -386,31 +415,38 @@ namespace Tbasic {
         /// Removes an element at the specified index
         /// </summary>
         /// <param name="index">the zero-based index of the element to remove</param>
-        public void RemoveAt(int index) {
+        public void RemoveAt(int index)
+        {
             _params.RemoveAt(index);
         }
 
-        bool IList.IsFixedSize {
+        bool IList.IsFixedSize
+        {
             get { return false; }
         }
 
-        bool IList.IsReadOnly {
+        bool IList.IsReadOnly
+        {
             get { return false; }
         }
 
-        void ICollection.CopyTo(Array array, int index) {
+        void ICollection.CopyTo(Array array, int index)
+        {
             throw new NotImplementedException();
         }
 
-        bool ICollection.IsSynchronized {
+        bool ICollection.IsSynchronized
+        {
             get { throw new NotImplementedException(); }
         }
 
-        object ICollection.SyncRoot {
+        object ICollection.SyncRoot
+        {
             get { throw new NotImplementedException(); }
         }
 
-        int IList.Add(object value) {
+        int IList.Add(object value)
+        {
             Add(value);
             return _params.Count - 1;
         }

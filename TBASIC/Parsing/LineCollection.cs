@@ -24,17 +24,20 @@ using System.Text;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace Tbasic {
+namespace Tbasic
+{
     /// <summary>
     /// A collection of Tbasic.Line objects sorted by line number
     /// </summary>
-    public class LineCollection : IList<Line>, ICollection<Line>, ICloneable {
+    public class LineCollection : IList<Line>, ICollection<Line>, ICloneable
+    {
         private SortedList<int, Line> allLines;
 
         /// <summary>
         /// Initializes a new Tbasic.LineCollection
         /// </summary>
-        public LineCollection() {
+        public LineCollection()
+        {
             allLines = new SortedList<int, Line>();
         }
 
@@ -43,7 +46,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="lines">the collection to add to this Tbasic.LineCollection</param>
         public LineCollection(ICollection<Line> lines)
-            : this() {
+            : this()
+        {
             foreach (Line line in lines) {
                 allLines.Add(line.LineNumber, line);
             }
@@ -56,8 +60,8 @@ namespace Tbasic {
         /// <param name="startPredicate">the condition which confirms the start of the block</param>
         /// <param name="endPredicate">the condition which confirms the end of a block</param>
         /// <returns>a Tbasic.LineCollection of the extracted lines</returns>
-        public LineCollection ParseBlock(int index, Predicate<Line> startPredicate, Predicate<Line> endPredicate) {
-
+        public LineCollection ParseBlock(int index, Predicate<Line> startPredicate, Predicate<Line> endPredicate)
+        {
             LineCollection blockLines = new LineCollection();
 
             int expected = 0;
@@ -82,14 +86,16 @@ namespace Tbasic {
         /// Adds a Tbasic.Line and sorts it by its LineNumber
         /// </summary>
         /// <param name="item"></param>
-        public void Add(Line item) {
+        public void Add(Line item)
+        {
             allLines.Add(item.LineNumber, item);
         }
 
         /// <summary>
         /// Removes all items from this collection
         /// </summary>
-        public void Clear() {
+        public void Clear()
+        {
             allLines.Clear();
         }
 
@@ -98,7 +104,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool Contains(Line item) {
+        public bool Contains(Line item)
+        {
             return allLines.ContainsKey(item.LineNumber);
         }
 
@@ -107,21 +114,24 @@ namespace Tbasic {
         /// </summary>
         /// <param name="array"></param>
         /// <param name="arrayIndex"></param>
-        public void CopyTo(Line[] array, int arrayIndex) {
+        public void CopyTo(Line[] array, int arrayIndex)
+        {
             allLines.Values.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
         /// Gets the number of Tbasic.Lines contained in this collection
         /// </summary>
-        public int Count {
+        public int Count
+        {
             get { return allLines.Count; }
         }
 
         /// <summary>
         /// Gets a value indicating whether this collection is read-only
         /// </summary>
-        public bool IsReadOnly {
+        public bool IsReadOnly
+        {
             get { return false; }
         }
 
@@ -129,7 +139,8 @@ namespace Tbasic {
         /// Removes multiple elements from this collection
         /// </summary>
         /// <param name="lines"></param>
-        public void Remove(ICollection<Line> lines) {
+        public void Remove(ICollection<Line> lines)
+        {
             foreach (Line line in lines) {
                 Remove(line);
             }
@@ -140,7 +151,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool Remove(Line item) {
+        public bool Remove(Line item)
+        {
             return allLines.Remove(item.LineNumber);
         }
 
@@ -148,11 +160,13 @@ namespace Tbasic {
         /// Returns an enumerator that iterates through the collection
         /// </summary>
         /// <returns></returns>
-        public IEnumerator<Line> GetEnumerator() {
+        public IEnumerator<Line> GetEnumerator()
+        {
             return allLines.Values.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return allLines.Values.GetEnumerator();
         }
 
@@ -161,7 +175,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public int IndexOf(Line item) {
+        public int IndexOf(Line item)
+        {
             return allLines.IndexOfKey(item.LineNumber);
         }
 
@@ -170,7 +185,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="lineNumber"></param>
         /// <returns></returns>
-        public int IndexOf(int lineNumber) {
+        public int IndexOf(int lineNumber)
+        {
             return allLines.IndexOfKey(lineNumber);
         }
 
@@ -179,7 +195,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index"></param>
         /// <param name="item"></param>
-        public void Insert(int index, Line item) {
+        public void Insert(int index, Line item)
+        {
             throw new NotImplementedException();
         }
 
@@ -187,7 +204,8 @@ namespace Tbasic {
         /// Removes a code line at its list index, not its line index
         /// </summary>
         /// <param name="index"></param>
-        public void RemoveAt(int index) {
+        public void RemoveAt(int index)
+        {
             allLines.RemoveAt(index);
         }
 
@@ -196,7 +214,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="lineNumber"></param>
         /// <returns></returns>
-        public Line LineAt(int lineNumber) {
+        public Line LineAt(int lineNumber)
+        {
             return allLines[lineNumber];
         }
 
@@ -205,7 +224,8 @@ namespace Tbasic {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Line this[int index] {
+        public Line this[int index]
+        {
             get {
                 return allLines.Values[index];
             }
@@ -218,11 +238,13 @@ namespace Tbasic {
         /// Returns a shallow copy of this collection
         /// </summary>
         /// <returns></returns>
-        public LineCollection Clone() {
+        public LineCollection Clone()
+        {
             return new LineCollection(allLines.Values);
         }
 
-        object ICloneable.Clone() {
+        object ICloneable.Clone()
+        {
             return this.Clone();
         }
     }

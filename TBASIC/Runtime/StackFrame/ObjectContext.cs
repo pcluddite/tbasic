@@ -22,11 +22,13 @@ using System;
 using System.Collections.Generic;
 using Tbasic.Libraries;
 
-namespace Tbasic.Runtime {
+namespace Tbasic.Runtime
+{
     /// <summary>
     /// Manages the variables, functions, and commands declared in a given context
     /// </summary>
-    public class ObjectContext {
+    public class ObjectContext
+    {
 
         #region Private Fields
 
@@ -40,17 +42,18 @@ namespace Tbasic.Runtime {
         private bool _bCollected = false;
 
         #endregion
-        
+
         #region Constructors
 
-        internal ObjectContext(ObjectContext superContext) {
+        internal ObjectContext(ObjectContext superContext)
+        {
             _super = superContext;
             _functions = new Library();
             _commands = new Library();
             _variables = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _constants = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _blocks = new Dictionary<string, BlockCreator>(StringComparer.OrdinalIgnoreCase);
-#if DEBUG
+#if SHOW_OBJECTS
             Console.WriteLine();
             Console.WriteLine("ObjectContext initialized.");
             Console.WriteLine("\tHash:\t{0}", GetHashCode());
@@ -63,7 +66,8 @@ namespace Tbasic.Runtime {
         /// <summary>
         /// Loads the standard library of functions, statements, constants and code blocks
         /// </summary>
-        public void LoadStandardLibrary() {
+        public void LoadStandardLibrary()
+        {
             _functions = new Library(
                 new Library[] { 
                     new MathLib(this),
@@ -92,7 +96,8 @@ namespace Tbasic.Runtime {
         /// Adds the functions of a library to this one
         /// </summary>
         /// <param name="lib">the library to add</param>
-        public void AddLibrary(Library lib) {
+        public void AddLibrary(Library lib)
+        {
             _functions.AddLibrary(lib);
         }
 
@@ -104,7 +109,8 @@ namespace Tbasic.Runtime {
         /// Creates a sub-context nested in this one. The sub-context inherits all variables, functions, and commands of declared in this one.
         /// </summary>
         /// <returns>the new sub-context</returns>
-        public ObjectContext CreateSubContext() {
+        public ObjectContext CreateSubContext()
+        {
             if (_bCollected) {
                 throw ScriptException.ContextCleared();
             }
@@ -120,7 +126,8 @@ namespace Tbasic.Runtime {
         /// no super-context exists, the object will not be collected, and the same object is returned.
         /// </summary>
         /// <returns>the super context of this context</returns>
-        public ObjectContext Collect() {
+        public ObjectContext Collect()
+        {
             if (_bCollected) {
                 throw ScriptException.ContextCleared();
             }
@@ -128,7 +135,7 @@ namespace Tbasic.Runtime {
                 return this; // You won't ever get rid of me
             }
             _bCollected = true;
-#if DEBUG
+#if SHOW_OBJECTS
             foreach (var v in _variables) {
                 Console.WriteLine("{0} = {1} collected", v.Key, v.Value);
             }
@@ -147,7 +154,7 @@ namespace Tbasic.Runtime {
         }
 
         #endregion
-        
+
         #region FindContext
 
         /// <summary>
@@ -155,7 +162,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the block name</param>
         /// <returns>the ObjectContext in which the block is declared</returns>
-        public ObjectContext FindBlockContext(string name) {
+        public ObjectContext FindBlockContext(string name)
+        {
             if (_blocks.ContainsKey(name)) {
                 return this;
             }
@@ -172,7 +180,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the command name</param>
         /// <returns>the ObjectContext in which the command is declared</returns>
-        public ObjectContext FindCommandContext(string name) {
+        public ObjectContext FindCommandContext(string name)
+        {
             if (_commands.ContainsKey(name)) {
                 return this;
             }
@@ -189,7 +198,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the function name</param>
         /// <returns>the ObjectContext in which the function is declared</returns>
-        public ObjectContext FindFunctionContext(string name) {
+        public ObjectContext FindFunctionContext(string name)
+        {
             if (_functions.ContainsKey(name)) {
                 return this;
             }
@@ -206,7 +216,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the variable name</param>
         /// <returns>the ObjectContext in which the variable is declared</returns>
-        public ObjectContext FindVariableContext(string name) {
+        public ObjectContext FindVariableContext(string name)
+        {
             if (_variables.ContainsKey(name)) {
                 return this;
             }
@@ -223,7 +234,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the variable name</param>
         /// <returns>the ObjectContext in which the name is defined</returns>
-        public ObjectContext FindContext(string name) {
+        public ObjectContext FindContext(string name)
+        {
             ObjectContext context = FindVariableContext(name);
             if (context != null) {
                 return context;
@@ -248,7 +260,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the constant name</param>
         /// <returns>the ObjectContext in which the constant is declared</returns>
-        public ObjectContext FindConstantContext(string name) {
+        public ObjectContext FindConstantContext(string name)
+        {
             if (_constants.ContainsKey(name)) {
                 return this;
             }
@@ -269,7 +282,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">block name</param>
         /// <returns>the code block</returns>
-        public BlockCreator GetBlock(string name) {
+        public BlockCreator GetBlock(string name)
+        {
             if (_blocks.ContainsKey(name)) {
                 return _blocks[name];
             }
@@ -286,7 +300,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">variable name</param>
         /// <returns>the variable data</returns>
-        public object GetVariable(string name) {
+        public object GetVariable(string name)
+        {
             if (_constants.ContainsKey(name)) {
                 return _constants[name];
             }
@@ -306,7 +321,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">function name</param>
         /// <returns>the function delegate</returns>
-        public TBasicFunction GetFunction(string name) {
+        public TBasicFunction GetFunction(string name)
+        {
             if (_functions.ContainsKey(name)) {
                 return _functions[name];
             }
@@ -323,7 +339,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">command name</param>
         /// <returns>the command delegate</returns>
-        public TBasicFunction GetCommand(string name) {
+        public TBasicFunction GetCommand(string name)
+        {
             if (_commands.ContainsKey(name)) {
                 return _commands[name];
             }
@@ -345,17 +362,18 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the constant name</param>
         /// <param name="block">a method that can be called to initialize the block</param>
-        public void SetBlock(string name, BlockCreator block) {
+        public void SetBlock(string name, BlockCreator block)
+        {
             ObjectContext c = FindBlockContext(name);
             if (c == null) {
                 _blocks.Add(name, block);
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} declared in {0}", GetHashCode(), name);
 #endif
             }
             else {
                 c._blocks[name] = block;
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} set in {0}", c.GetHashCode(), name);
 #endif
             }
@@ -366,7 +384,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the constant name</param>
         /// <param name="obj">the object data</param>
-        public void SetConstant(string name, object obj) {
+        public void SetConstant(string name, object obj)
+        {
             ObjectContext context = FindVariableContext(name);
             if (context == null) {
                 context = FindConstantContext(name);
@@ -379,7 +398,7 @@ namespace Tbasic.Runtime {
             }
             else {
                 throw ScriptException.AlreadyDefined(name, "variable", "constant");
-            }   
+            }
         }
 
         /// <summary>
@@ -388,7 +407,8 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the variable name</param>
         /// <param name="obj">the object data</param>
-        public void SetVariable(string name, object obj) {
+        public void SetVariable(string name, object obj)
+        {
             ObjectContext c = FindConstantContext(name);
             if (c != null) {
                 throw ScriptException.ConstantChange();
@@ -396,13 +416,13 @@ namespace Tbasic.Runtime {
             c = FindVariableContext(name);
             if (c == null) {
                 _variables.Add(name, obj);
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} = {2} declared in {0}", GetHashCode(), name, obj);
 #endif
             }
             else {
                 c._variables[name] = obj;
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} = {2} set in {0}", c.GetHashCode(), name, obj);
 #endif
             }
@@ -414,17 +434,18 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the function name</param>
         /// <param name="func">the delegate to the function</param>
-        public void SetFunction(string name, TBasicFunction func) {
+        public void SetFunction(string name, TBasicFunction func)
+        {
             ObjectContext c = FindFunctionContext(name);
             if (c == null) {
                 _functions.Add(name, func);
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} function declared in {0}", GetHashCode(), name);
 #endif
             }
             else {
                 c._functions[name] = func;
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} function declared in {0}", c.GetHashCode(), name);
 #endif
             }
@@ -436,17 +457,18 @@ namespace Tbasic.Runtime {
         /// </summary>
         /// <param name="name">the command name</param>
         /// <param name="func">the delegate to the command</param>
-        public void SetCommand(string name, TBasicFunction func) {
+        public void SetCommand(string name, TBasicFunction func)
+        {
             ObjectContext c = FindCommandContext(name);
             if (c == null) {
                 _commands.Add(name, func);
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{1} command declared in {1}", GetHashCode(), name);
 #endif
             }
             else {
                 c._commands[name] = func;
-#if DEBUG
+#if SHOW_OBJECTS
                 Console.WriteLine("{0} command set in {1}", c.GetHashCode(), name);
 #endif
             }

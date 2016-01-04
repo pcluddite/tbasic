@@ -23,11 +23,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Tbasic.Runtime
-{    
+{
     /// <summary>
     /// This class provides functionality for evaluating functions
     /// </summary>
-    internal class Function : IExpression {
+    internal class Function : IExpression
+    {
         #region Private Members
 
         private string _expression = "";
@@ -43,7 +44,8 @@ namespace Tbasic.Runtime
         /// Gets or sets the expression to be evaluated
         /// </summary>
         /// <value></value>
-        public string Expression {
+        public string Expression
+        {
             get { return _expression; }
             set {
                 _expression = value;
@@ -55,7 +57,8 @@ namespace Tbasic.Runtime
 
         public int LastIndex { get; private set; }
 
-        public string Name {
+        public string Name
+        {
             get {
                 if (_function == null || _function.Equals("")) {
                     int index = _expression.IndexOf('(');
@@ -81,7 +84,8 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public Function(Executer exec) {
+        public Function(Executer exec)
+        {
             CurrentExecution = exec;
         }
 
@@ -90,7 +94,8 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="exec">the current context</param>
-        public Function(string expression, Executer exec) {
+        public Function(string expression, Executer exec)
+        {
             CurrentExecution = exec;
             Expression = expression;
         }
@@ -99,7 +104,8 @@ namespace Tbasic.Runtime
 
         #region Methods
 
-        public void Parse() {
+        public void Parse()
+        {
             if (!_bParsed) {
                 _params = GetParameters();
                 _bParsed = true;
@@ -111,21 +117,23 @@ namespace Tbasic.Runtime
         /// Evaluates the Expression
         /// </summary>
         /// <returns></returns>
-        public object Evaluate() {
+        public object Evaluate()
+        {
             if (Executer.ExitRequest) {
                 return CurrentContext.GetVariable("@return");
             }
             Parse();
             return ExecuteFunction(_function, _params);
         }
-        
+
         /// <summary>
         /// Evaluates a string expression of a function
         /// </summary>
         /// <param name="expression"></param>
         /// <param name="exec">the current execution</param>
         /// <returns>evauluated value</returns>
-        public static object Evaluate(string expression, Executer exec) {
+        public static object Evaluate(string expression, Executer exec)
+        {
             if (Executer.ExitRequest) {
                 return exec.Context.GetVariable("@return");
             }
@@ -139,7 +147,8 @@ namespace Tbasic.Runtime
         /// <param name="input">input string</param>
         /// <param name="exec">the current context</param>
         /// <returns>input string with all found functions replaced with returned values</returns>
-        public static string Replace(string input, Executer exec) {
+        public static string Replace(string input, Executer exec)
+        {
             Function expr = new Function(input, exec);
             return expr.Replace();
         }
@@ -150,7 +159,8 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="input">input string</param>
         /// <returns>filtered string</returns>
-        public string ReplaceEx(string input) {
+        public string ReplaceEx(string input)
+        {
             if ("" + input == "")
                 return "";
             Expression = input;
@@ -161,7 +171,8 @@ namespace Tbasic.Runtime
         /// This routine will replace functions existing in the Expression property with thier respective values
         /// </summary>
         /// <returns>Expression string with all found functions replaced with returned values</returns>
-        public string Replace() {
+        public string Replace()
+        {
             StringBuilder strbRet = new StringBuilder(Expression);
             Match m = DefinedRegex.Function.Match(Expression);
 
@@ -205,7 +216,8 @@ namespace Tbasic.Runtime
         /// returns the parameters of a function
         /// </summary>
         /// <returns></returns>
-        public IList<object> GetParameters() {
+        public IList<object> GetParameters()
+        {
             IList<object> result;
             LastIndex = Evaluator.ReadGroup(_expression,
                                             Name.Length, // Start at the end of the name
@@ -219,7 +231,8 @@ namespace Tbasic.Runtime
         /// <param name="name">name of the function to execute</param>
         /// <param name="l_params">parameter list</param>
         /// <returns>returned value of executed function</returns>
-        private object ExecuteFunction(string name, IList<object> l_params) {
+        private object ExecuteFunction(string name, IList<object> l_params)
+        {
             if (Executer.ExitRequest) {
                 return CurrentContext.GetVariable("@return");
             }
