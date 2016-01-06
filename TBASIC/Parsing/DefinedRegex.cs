@@ -30,7 +30,7 @@ namespace Tbasic.Runtime
         private const string c_strHex           = @"0x([0-9a-fA-F]+)";
         private const string c_strBool          = @"true|false";
         private const string c_strFunction      = @"([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)";
-        private const string c_strVariable      = @"(([a-zA-Z][a-zA-Z0-9]*)\$|\@([a-zA-Z][a-zA-Z0-9]*))(\s*\[(.*)\])?";
+        private const string c_strVariable      = @"(([a-zA-Z_][a-zA-Z0-9_]*)\$|\@([a-zA-Z_][a-zA-Z0-9_]*))(\s*\[(.*)\])?";
         private const string c_strString        = @"\""((\\"")|[^""])*\""|\'((\\')|[^'])*\'";
         private const string c_strNull          = @"null";
 
