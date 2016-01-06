@@ -181,13 +181,9 @@ namespace Tbasic.Runtime
             if (_oObj == null) {
                 return 0;
             }
-            try {
-                double _dObj = (double)_oObj;
-                if (_dObj % 1 == 0) {
-                    return (int)_dObj;
-                }
-            }
-            catch (InvalidCastException) {
+            double? _dObj = _oObj as double?;
+            if (_dObj.HasValue && _dObj.Value % 1 == 0) {
+                return (int)_dObj;
             }
             return _oObj;
         }
