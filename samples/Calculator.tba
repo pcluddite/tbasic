@@ -1,9 +1,9 @@
 expr$ = input("Enter a math expression:", "Math")
-if @status then
+if @err then
     exit
 end if
 ans$ = eval(expr$)
-if @status then
+if @err then
 	msgbox(48, "The expression you entered doesn't seem valid.")
 else
 	MsgBox(64, "The answer is:\n" + ans$, "Math")

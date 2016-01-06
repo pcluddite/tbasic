@@ -1,13 +1,13 @@
 
-While 1
+While True
 
-	Input("Type \"Hello\" or \"Hi\".", "OR Test")
+	ret$ = Input("Type \"Hello\" or \"Hi\".", "OR Test")
 
-	If @status = -1 Then
+	If @err = -1 Then
 		Exit
 	End If
 
-	If @return = "HELLO" Or @return = "HI" Then
+	If ret$ = "HELLO" Or ret$ = "HI" Then
 		MsgBox(64, "Hello!", "OR Test")
 		Exit
 	Else

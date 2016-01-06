@@ -1,5 +1,4 @@
-MsgBox(68, "This will open a notepad program and send it some text.\nContinue?", "Send Test")
-If @return = "No" Then
+if MsgBox(68, "This will open a notepad program and send it some text.\nContinue?", "Send Test") = "No" then
     Exit
 End If
 
