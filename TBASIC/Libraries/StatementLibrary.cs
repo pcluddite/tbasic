@@ -75,12 +75,7 @@ namespace Tbasic.Libraries {
         }
 
         internal static void NULL(ref StackFrame stackFrame) {
-            ObjectContext ret_context = stackFrame.Context.FindVariableContext("@return");
-            ObjectContext stat_context = stackFrame.Context.FindVariableContext("@status");
-            if (ret_context != null && stat_context != null) {
-                stackFrame.Status = (int)stat_context.GetVariable("@status");
-                stackFrame.Data =  ret_context.GetVariable("@return");
-            }
+            stackFrame.Context.PersistReturns(stackFrame);
         }
 
         internal void UhOh(ref StackFrame stackFrame) {

@@ -153,7 +153,7 @@ namespace Tbasic.Runtime
             if (context == null) {
                 Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
                 object result = eval.Evaluate();
-                stackFrame.Status = (int)stackFrame.Context.GetVariable("@status");
+                stackFrame.Context.PersistReturns(stackFrame);
                 stackFrame.Data = result;
             }
             else {

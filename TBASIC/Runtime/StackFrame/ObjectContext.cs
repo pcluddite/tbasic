@@ -358,10 +358,17 @@ namespace Tbasic.Runtime
 
         internal void SetReturns(StackFrame _sframe)
         {
-            SetVariable("@status", _sframe.Status);
+            SetVariable("@lasterror", _sframe.Status);
+            SetVariable("@lasterr", _sframe.Status);
+            SetVariable("@err", _sframe.Status);
             SetVariable("@error", _sframe.Status);
-            SetVariable("@return", _sframe.Data);
-            SetVariable("@ret", _sframe.Data);
+        }
+
+        internal void PersistReturns(StackFrame _sframe)
+        {
+            ObjectContext context = FindVariableContext("@error");
+            if (context != null)
+                _sframe.Status = (int)context.GetVariable("@error");
         }
 
         /// <summary>
