@@ -28,13 +28,24 @@ namespace Tbasic.Libraries
 {
     internal class UserIOLibrary : Library
     {
-        public UserIOLibrary() {
-            Add("TRAYTIP", TrayTip);
-            Add("MSGBOX", MsgBox);
-            Add("SAY", Say);
-            Add("INPUT", Input);
-            Add("CONSOLEWRITE", ConsoleWrite);
-            Add("CONSOLEPAUSE", ConsolePause);
+        public UserIOLibrary()
+        {
+            Add("TrayTip", TrayTip);
+            Add("MsgBox", MsgBox);
+            Add("Say", Say);
+            Add("Input", Input);
+            Add("StdRead", ConsoleRead);
+            Add("StdReadLine", ConsoleReadLine);
+            Add("StdReadKey", ConsoleReadKey);
+            Add("StdWrite", ConsoleWrite);
+            Add("StdWriteLine", ConsoleWriteline);
+            Add("StdPause", ConsolePause);
+        }
+
+        private void ConsoleWriteline(ref StackFrame _sframe)
+        {
+            _sframe.AssertArgs(2);
+            Console.WriteLine(_sframe.Get(1));
         }
 
         private void ConsoleWrite(ref StackFrame _sframe) {
@@ -42,12 +53,31 @@ namespace Tbasic.Libraries
             Console.Write(_sframe.Get(1));
         }
 
+        private void ConsoleRead(ref StackFrame _sframe)
+        {
+            _sframe.AssertArgs(1);
+            _sframe.Data = Console.Read();
+        }
+
+        private void ConsoleReadLine(ref StackFrame _sframe)
+        {
+            _sframe.AssertArgs(1);
+            _sframe.Data = Console.ReadLine();
+        }
+
+        private void ConsoleReadKey(ref StackFrame _sframe)
+        {
+            _sframe.AssertArgs(1);
+            _sframe.Data = Console.ReadKey().KeyChar;
+        }
+
         private void ConsolePause(ref StackFrame _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data =  Console.ReadKey(true).KeyChar;
         }
 
-        private void Input(ref StackFrame _sframe) {
+        private void Input(ref StackFrame _sframe)
+        {
             if (_sframe.Count == 2) {
                 _sframe.SetAll(
                     _sframe.Get(0), _sframe.Get(1),
@@ -83,7 +113,8 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void TrayTip(ref StackFrame _sframe) {
+        private void TrayTip(ref StackFrame _sframe) 
+        {
             if (_sframe.Count == 2) {
                 _sframe.Add(""); // title
                 _sframe.Add(0); // icon
@@ -105,7 +136,8 @@ namespace Tbasic.Libraries
             t.Start(new object[] { timeout, icon, text, title });
         }
 
-        private void TrayTip(object param) {
+        private void TrayTip(object param)
+        {
             try {
                 object[] cmd = (object[])param;
                 using (NotifyIcon tray = new NotifyIcon()) {
@@ -128,7 +160,8 @@ namespace Tbasic.Libraries
             }
         }
 
-        public static void MsgBox(ref StackFrame _sframe) {
+        public static void MsgBox(ref StackFrame _sframe)
+        {
             if (_sframe.Count == 3) {
                 _sframe.Add("");
             }
@@ -141,13 +174,15 @@ namespace Tbasic.Libraries
             _sframe.Data =  Interaction.MsgBox(text, (MsgBoxStyle)flag, title).ToString();
         }
 
-        private void Say(ref StackFrame _sframe) {
+        private void Say(ref StackFrame _sframe)
+        {
             _sframe.AssertArgs(2);
             Thread t = new Thread(Say);
             t.Start(_sframe.Get<string>(1));
         }
 
-        public void Say(object text) {
+        public void Say(object text)
+        {
             try {
                 using (SpeechSynthesizer ss = new SpeechSynthesizer()) {
                     ss.Speak(text.ToString());
