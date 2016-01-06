@@ -38,12 +38,12 @@ namespace Tbasic.Libraries
         }
 
         private void ConsoleWrite(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Console.Write(_sframe.Get(1));
         }
 
         private void ConsolePause(ref StackFrame _sframe) {
-            _sframe.Assert(1);
+            _sframe.AssertArgs(1);
             _sframe.Data =  Console.ReadKey(true).KeyChar;
         }
 
@@ -64,7 +64,7 @@ namespace Tbasic.Libraries
                     _sframe.Get(0), _sframe.Get(1),
                     _sframe.Get(2), _sframe.Get(3), -1);
             }
-            _sframe.Assert(5);
+            _sframe.AssertArgs(5);
 
             int x = _sframe.Get<int>(3),
                 y = _sframe.Get<int>(4);
@@ -96,7 +96,7 @@ namespace Tbasic.Libraries
             else if (_sframe.Count == 4) {
                 _sframe.Add(5000); // timeout
             }
-            _sframe.Assert(5);
+            _sframe.AssertArgs(5);
             string text = _sframe.Get<string>(1);
             string title = _sframe.Get<string>(2);
             int icon = _sframe.GetIntRange(3, 0, 3);
@@ -132,7 +132,7 @@ namespace Tbasic.Libraries
             if (_sframe.Count == 3) {
                 _sframe.Add("");
             }
-            _sframe.Assert(4);
+            _sframe.AssertArgs(4);
 
             int flag = _sframe.Get<int>(1);
             string text = _sframe.Get<string>(2),
@@ -142,7 +142,7 @@ namespace Tbasic.Libraries
         }
 
         private void Say(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Thread t = new Thread(Say);
             t.Start(_sframe.Get<string>(1));
         }

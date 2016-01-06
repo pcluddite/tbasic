@@ -43,7 +43,7 @@ namespace Tbasic {
         }
 
         public void Execute(ref StackFrame stackFrame) {
-            stackFrame.Assert(Template.Count);
+            stackFrame.AssertArgs(Template.Count);
 
             Executer exec = stackFrame.StackExecuter;
             exec.Context = exec.Context.CreateSubContext();
@@ -61,7 +61,7 @@ namespace Tbasic {
         
         private void Return(ref StackFrame stackFrame) {
             if (stackFrame.Count < 2) {
-                stackFrame.Assert(2);
+                stackFrame.AssertArgs(2);
             }
             Evaluator e = new Evaluator(
                 stackFrame.Text.Substring(stackFrame.Name.Length),
@@ -71,7 +71,7 @@ namespace Tbasic {
         }
 
         private void SetStatus(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Status = stackFrame.Get<int>(1);
         }
 

@@ -42,7 +42,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Include(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             string path = Path.GetFullPath(stackFrame.Get<string>(1));
             if (!File.Exists(path)) {
                 throw new FileNotFoundException();
@@ -57,19 +57,19 @@ namespace Tbasic.Libraries {
         }
 
         private void Sleep(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
             NULL(ref stackFrame);
         }
 
         private void Break(ref StackFrame stackFrame) {
-            stackFrame.Assert(1);
+            stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestBreak();
             NULL(ref stackFrame);
         }
 
         internal void Exit(ref StackFrame stackFrame) {
-            stackFrame.Assert(1);
+            stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestExit();
             NULL(ref stackFrame);
         }
@@ -89,7 +89,7 @@ namespace Tbasic.Libraries {
 
         internal void Const(ref StackFrame stackFrame) {
             if (stackFrame.Count < 4) {
-                stackFrame.Assert(4);
+                stackFrame.AssertArgs(4);
             }
             if (!stackFrame.Get(2).Equals("=")) {
                 throw ScriptException.InvalidOperatorDeclaration(stackFrame.Get(2));
@@ -111,7 +111,7 @@ namespace Tbasic.Libraries {
 
         internal void DIM(ref StackFrame stackFrame) {
             if (stackFrame.Count < 4) {
-                stackFrame.Assert(2);
+                stackFrame.AssertArgs(2);
             }
             if (stackFrame.Count > 2) {
                 LET(ref stackFrame);
@@ -168,7 +168,7 @@ namespace Tbasic.Libraries {
 
         internal void LET(ref StackFrame stackFrame) {
             if (stackFrame.Count < 4) {
-                stackFrame.Assert(4);
+                stackFrame.AssertArgs(4);
             }
             if (!stackFrame.Get(2).Equals("=")) {
                 throw ScriptException.InvalidOperatorDeclaration(stackFrame.Get(2));

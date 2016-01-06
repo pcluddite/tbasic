@@ -55,47 +55,47 @@ namespace Tbasic.Libraries {
         }
 
         private void DirExists(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             _sframe.Data =  Directory.Exists(_sframe.Get<string>(1));
         }
 
         private void FileExists(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             _sframe.Data =  File.Exists(_sframe.Get<string>(1));
         }
 
         private void FileMove(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             File.Move(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
         private void FileCopy(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             File.Copy(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
         private void FileDelete(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             File.Delete(_sframe.Get<string>(1));
         }
 
         private void DirDelete(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Directory.Delete(_sframe.Get<string>(1));
         }
 
         private void DirMove(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             Directory.Move(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
         private void DirCreate(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Directory.CreateDirectory(_sframe.Get<string>(1));
         }
 
         private void DirGetFileList(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (Directory.Exists(path)) {
                 _sframe.Data = Directory.GetFiles(path);
@@ -106,7 +106,7 @@ namespace Tbasic.Libraries {
         }
 
         private void DirGetDirList(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (Directory.Exists(path)) {
                 _sframe.Data = Directory.GetDirectories(path);
@@ -117,7 +117,7 @@ namespace Tbasic.Libraries {
         }
 
         private void FileReadAll(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
                 _sframe.Data = File.ReadAllText(path);
@@ -128,7 +128,7 @@ namespace Tbasic.Libraries {
         }
 
         private void FileWriteAll(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (_sframe.Get(2) is string) {
                 File.WriteAllText(path, _sframe.Get(2).ToString());
@@ -154,7 +154,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Recycle(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (!File.Exists(path)) {
                 _sframe.Status = -1;
@@ -163,14 +163,14 @@ namespace Tbasic.Libraries {
         }
 
         private void FileGetAttributes(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             FileAttributes current = File.GetAttributes(path);
             _sframe.Data = GetStringFromAttributes(current);
         }
 
         private void FileSetAttributes(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             FileAttributes current = File.GetAttributes(path);
             if ((current & FileAttributes.ReadOnly) == FileAttributes.ReadOnly) {
@@ -210,7 +210,7 @@ namespace Tbasic.Libraries {
         }
 
         private void FileSetAccessDate(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
                 File.SetLastAccessTime(path, DateTime.Parse(_sframe.Get<string>(2)));
@@ -224,7 +224,7 @@ namespace Tbasic.Libraries {
         }
 
         private void FileSetModifiedDate(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
                 File.SetLastWriteTime(path, DateTime.Parse(_sframe.Get<string>(2)));
@@ -238,7 +238,7 @@ namespace Tbasic.Libraries {
         }
 
         private void FileSetCreatedDate(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
                 File.SetCreationTime(path, DateTime.Parse(_sframe.Get<string>(2)));
@@ -252,12 +252,12 @@ namespace Tbasic.Libraries {
         }
 
         private void DirectoryGetCurrent(ref StackFrame _sframe) {
-            _sframe.Assert(1);
+            _sframe.AssertArgs(1);
             _sframe.Data = Directory.GetCurrentDirectory();
         }
 
         private void DirectorySetCurrent(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Directory.SetCurrentDirectory(_sframe.Get<string>(1));
             
         }
@@ -284,7 +284,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Shell(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string output;
             _sframe.Status = Shell(_sframe.Get<string>(1), out output);
             _sframe.Data = output;

@@ -56,67 +56,67 @@ namespace Tbasic.Libraries {
         }
 
         private void Log(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Log10(stackFrame.Get<double>(1));
         }
 
         private void Ln(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Log(stackFrame.Get<double>(1));
         }
 
         private void Abs(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Abs(stackFrame.Get<double>(1));
         }
 
         private void Sin(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Sin(stackFrame.Get<double>(1));
         }
 
         private void Asin(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Asin(stackFrame.Get<double>(1));
         }
 
         private void Sinh(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Sinh(stackFrame.Get<double>(1));
         }
 
         private void Cos(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Cos(stackFrame.Get<double>(1));
         }
 
         private void Acos(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Acos(stackFrame.Get<double>(1));
         }
 
         private void Cosh(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Cosh(stackFrame.Get<double>(1));
         }
 
         private void Tan(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Tan(stackFrame.Get<double>(1));
         }
 
         private void Atan(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Atan(stackFrame.Get<double>(1));
         }
 
         private void Tanh(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Tanh(stackFrame.Get<double>(1));
         }
 
         private void Not(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             Evaluator e = new Evaluator(stackFrame.Get<string>(1),stackFrame.StackExecuter);
             try {
                 stackFrame.Data = !e.EvaluateBool();
@@ -135,7 +135,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Rand(ref StackFrame stackFrame) {
-            stackFrame.Assert(1);
+            stackFrame.AssertArgs(1);
             stackFrame.Data = Rand();
         }
 
@@ -153,7 +153,7 @@ namespace Tbasic.Libraries {
             if (stackFrame.Count == 2) { 
                 stackFrame.Add(2);
             }
-            stackFrame.Assert(3);
+            stackFrame.AssertArgs(3);
             stackFrame.Data = Round(stackFrame.Get<double>(1), stackFrame.Get<int>(2));
         }
 
@@ -167,7 +167,7 @@ namespace Tbasic.Libraries {
         }
 
         private void iPart(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = iPart(stackFrame.Get<double>(1));
         }
 
@@ -182,7 +182,7 @@ namespace Tbasic.Libraries {
         }
 
         private void fPart(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = fPart(stackFrame.Get<double>(1));
         }
 
@@ -200,7 +200,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Eval(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = Eval(stackFrame.Get<string>(1));
             }
@@ -210,7 +210,7 @@ namespace Tbasic.Libraries {
         }
 
         private static void Pow(ref StackFrame stackFrame) {
-            stackFrame.Assert(3);
+            stackFrame.AssertArgs(3);
             stackFrame.Data = Pow(stackFrame.Get<double>(1), stackFrame.Get<double>(2));
         }
 

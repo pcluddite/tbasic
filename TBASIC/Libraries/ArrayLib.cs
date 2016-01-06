@@ -33,7 +33,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ArrayContains(ref StackFrame stackFrame) {
-            stackFrame.Assert(2);
+            stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<object[]>(1).Contains(stackFrame.Get(2));
         }
 
@@ -45,7 +45,7 @@ namespace Tbasic.Libraries {
             if (stackFrame.Count == 4) {
                 stackFrame.Add(arr.Length);
             }
-            stackFrame.Assert(5);
+            stackFrame.AssertArgs(5);
             object o = stackFrame.Get(2);
             int i = stackFrame.Get<int>(3);
             int count = stackFrame.Get<int>(5);
@@ -66,7 +66,7 @@ namespace Tbasic.Libraries {
             if (stackFrame.Count == 4) {
                 stackFrame.Add(arr.Length);
             }
-            stackFrame.Assert(5);
+            stackFrame.AssertArgs(5);
             int i = stackFrame.Get<int>(3);
             object o = stackFrame.Get(2);
             int count = stackFrame.Get<int>(5);

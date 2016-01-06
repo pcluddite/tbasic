@@ -81,7 +81,7 @@ namespace Tbasic.Libraries {
             if (_sframe.Count == 5) {
                 _sframe.Add("5");
             }
-            _sframe.Assert(6);
+            _sframe.AssertArgs(6);
 
             int x = _sframe.Get<int>(2),
                 y = _sframe.Get<int>(3),
@@ -102,7 +102,7 @@ namespace Tbasic.Libraries {
             if (_sframe.Count == 3) {
                 _sframe.Add(1);
             }
-            _sframe.Assert(4);
+            _sframe.AssertArgs(4);
 
             MouseMove(_sframe.Get<int>(1),
                       _sframe.Get<int>(2),
@@ -157,7 +157,7 @@ namespace Tbasic.Libraries {
         }
 
         private void BlockInput(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             _sframe.SetAll(_sframe.Get(0), _sframe.Get(1).ToString().Replace("1", "true").Replace("0", "false"));
             _sframe.Data = BlockInput(_sframe.Get<bool>(1));
         }
@@ -171,7 +171,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Send(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             Send(_sframe.Get<string>(1));
         }
 
@@ -189,7 +189,7 @@ namespace Tbasic.Libraries {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
             }
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             VolumeUp(_sframe.Get<int>(1));
         }
 
@@ -207,7 +207,7 @@ namespace Tbasic.Libraries {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
             }
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             VolumeDown(_sframe.Get<int>(1));
         }
 
@@ -219,7 +219,7 @@ namespace Tbasic.Libraries {
         }
 
         private void VolumeMute(ref StackFrame _sframe) {
-            _sframe.Assert(1);
+            _sframe.AssertArgs(1);
             VolumeMute();
         }
 

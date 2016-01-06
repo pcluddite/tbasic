@@ -247,7 +247,7 @@ namespace Tbasic
         /// Throws an ArgumentException if the number of parameters does not match a specified count
         /// </summary>
         /// <param name="count">the number of parameters expected</param>
-        public void Assert(int count)
+        public void AssertArgs(int count)
         {
             if (_params.Count != count) {
                 throw new ArgumentException(string.Format("{0} does not take {1} parameter{2}", Name.ToUpper(), _params.Count - 1,

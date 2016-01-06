@@ -72,7 +72,7 @@ namespace Tbasic.Libraries {
         }
 
         private void RegValueKind(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), false)) {
                 _sframe.Data = key.GetValueKind(_sframe.Get<string>(2)).ToString();
             }
@@ -87,7 +87,7 @@ namespace Tbasic.Libraries {
         }
 
         private void RegRead(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
 
             object ret = RegRead(_sframe.Get<string>(1), _sframe.Get<string>(2));
 
@@ -108,7 +108,7 @@ namespace Tbasic.Libraries {
         }
 
         private void RegDelete(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             RegistryKey key = GetRootKey(_sframe.Get<string>(1));
             using (key = key.OpenSubKey(RemoveKeyRoot(_sframe.Get<string>(1)), true)) {
                 key.DeleteValue(_sframe.Get<string>(2), true);
@@ -116,7 +116,7 @@ namespace Tbasic.Libraries {
         }
 
         private void RegRename(ref StackFrame _sframe) {
-            _sframe.Assert(4);
+            _sframe.AssertArgs(4);
             RegistryKey key = GetRootKey(_sframe.Get<string>(1));
             using (key = key.OpenSubKey(RemoveKeyRoot(_sframe.Get<string>(1)), true)) {
                 key.SetValue(_sframe.Get<string>(3), key.GetValue(_sframe.Get<string>(2)), key.GetValueKind(_sframe.Get<string>(2)));
@@ -125,21 +125,21 @@ namespace Tbasic.Libraries {
         }
 
         private void RegDeleteKey(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             using (RegistryKey key = GetRootKey(_sframe.Get<string>(1))) {
                 key.DeleteSubKeyTree(RemoveKeyRoot(_sframe.Get<string>(1)));
             }
         }
 
         private void RegRenameKey(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             using (RegistryKey key = OpenParentKey(_sframe.Get<string>(1), true)) {
                 RegistryUtilities.RenameSubKey(key, RemoveKeyRoot(_sframe.Get<string>(1)), _sframe.Get<string>(2));
             }
         }
 
         private void RegCreateKey(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), true)) {
                 key.CreateSubKey(_sframe.Get<string>(2));
             }
@@ -150,7 +150,7 @@ namespace Tbasic.Libraries {
         }
 
         private void RegEnumValues(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
 
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), false)) {
                 List<object[]> values = new List<object[]>();
@@ -176,14 +176,14 @@ namespace Tbasic.Libraries {
         }
 
         private void RegEnumKeys(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), false)) {
                 _sframe.Data = key.GetSubKeyNames();
             }
         }
 
         private void RegWrite(ref StackFrame _sframe) {
-            _sframe.Assert(5);
+            _sframe.AssertArgs(5);
 
             object value = _sframe.Get(3);
 

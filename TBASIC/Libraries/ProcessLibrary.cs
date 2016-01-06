@@ -44,7 +44,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessExists(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             _sframe.Data = false;
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
@@ -54,7 +54,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessList(ref StackFrame _sframe) {
-            _sframe.Assert(1);
+            _sframe.AssertArgs(1);
             Process[] procs = Process.GetProcesses();
             if (procs.Length > 0) {
                 object[][] _ret = new object[procs.Length][];
@@ -69,7 +69,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessKill(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
                     p.Kill();
@@ -80,7 +80,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessClose(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
                     p.Close();
@@ -91,7 +91,7 @@ namespace Tbasic.Libraries {
         }
 
         private void BlockedList(ref StackFrame _sframe) {
-            _sframe.Assert(1);
+            _sframe.AssertArgs(1);
             var list = BlockedList(); // dicts currently are not supported 2/24/15
             if (list.Count == 0) {
                 _sframe.Status = -1; // -1 if there are no blocked items 2/24/15
@@ -128,7 +128,7 @@ namespace Tbasic.Libraries {
                 _sframe.Add("The application you requested has been blocked");
                 _sframe.Add("Blocked");
             }
-            _sframe.Assert(5);
+            _sframe.AssertArgs(5);
             string name = _sframe.Get<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
@@ -140,7 +140,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessRedirect(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
@@ -155,7 +155,7 @@ namespace Tbasic.Libraries {
         }
 
         private void ProcessSetDebugger(ref StackFrame _sframe) {
-            _sframe.Assert(3);
+            _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
@@ -170,7 +170,7 @@ namespace Tbasic.Libraries {
         }
 
         private void Unblock(ref StackFrame _sframe) {
-            _sframe.Assert(2);
+            _sframe.AssertArgs(2);
             string name = _sframe.Get<string>(1);
             if (!name.Contains(".")) {
                 name += ".exe";
@@ -196,7 +196,7 @@ namespace Tbasic.Libraries {
             if (_sframe.Count == 4) {
                 _sframe.Add(false);
             }
-            _sframe.Assert(5);
+            _sframe.AssertArgs(5);
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = _sframe.Get<string>(1);
             startInfo.Arguments = _sframe.Get<string>(2);
