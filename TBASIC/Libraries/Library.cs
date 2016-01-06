@@ -22,8 +22,8 @@ using System.Collections.Generic;
 using System.Collections;
 using Tbasic.Runtime;
 
-namespace Tbasic.Libraries {
-    
+namespace Tbasic.Libraries
+{
     /// <summary>
     /// Delegate for processing a TBasic function
     /// </summary>
@@ -107,7 +107,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        public void ICollection<KeyValuePair<string, TBasicFunction>>.Add(KeyValuePair<string, TBasicFunction> item)
+        void ICollection<KeyValuePair<string, TBasicFunction>>.Add(KeyValuePair<string, TBasicFunction> item)
         {
             ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).Add(item);
         }
@@ -117,12 +117,12 @@ namespace Tbasic.Libraries {
             lib.Clear();
         }
 
-        public bool ICollection<KeyValuePair<string, TBasicFunction>>.Contains(KeyValuePair<string, TBasicFunction> item)
+        bool ICollection<KeyValuePair<string, TBasicFunction>>.Contains(KeyValuePair<string, TBasicFunction> item)
         {
             return ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).Contains(item);
         }
 
-        public void ICollection<KeyValuePair<string, TBasicFunction>>.CopyTo(KeyValuePair<string, TBasicFunction>[] array, int arrayIndex)
+        void ICollection<KeyValuePair<string, TBasicFunction>>.CopyTo(KeyValuePair<string, TBasicFunction>[] array, int arrayIndex)
         {
             ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).CopyTo(array, arrayIndex);
         }
@@ -132,12 +132,12 @@ namespace Tbasic.Libraries {
             get { return lib.Count; }
         }
 
-        public bool ICollection<KeyValuePair<string, TBasicFunction>>.IsReadOnly
+        bool ICollection<KeyValuePair<string, TBasicFunction>>.IsReadOnly
         {
             get { return ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).IsReadOnly; }
         }
 
-        public bool ICollection<KeyValuePair<string, TBasicFunction>>.Remove(KeyValuePair<string, TBasicFunction> item)
+        bool ICollection<KeyValuePair<string, TBasicFunction>>.Remove(KeyValuePair<string, TBasicFunction> item)
         {
             return ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).Remove(item);
         }

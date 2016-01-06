@@ -46,6 +46,7 @@
     <Compile Include="Libraries\StringLib.cs" />
     <Compile Include="Libraries\SystemLibrary.cs" />
     <Compile Include="Runtime\Evaluator.cs" />
+    <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
     <Compile Include="Runtime\Function.cs" />
     <Compile Include="Runtime\IExpression.cs" />
     <Compile Include="Parsing\LineCollection.cs" />
