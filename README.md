@@ -1,4 +1,4 @@
-# TBASIC 2.0
+# TBASIC
 A simple and extensible scripting language written in C#. The project is licensed under the LGPL, unless a specific source file is labled otherwise.
 
 This project is split into two parts - a library (tbasic.dll) that can be added to any .NET application for a customizable BASIC language and an executer application (texecuter.exe) that uses that library, loads all standard symbols and runs a script.

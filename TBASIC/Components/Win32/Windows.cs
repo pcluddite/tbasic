@@ -1,5 +1,5 @@
 ﻿/**
- *  TBASIC 2.0
+ *  TBASIC
  *  Copyright (C) 2016 Timothy Baxendale
  *  
  *  This library is free software; you can redistribute it and/or
