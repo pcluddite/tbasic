@@ -382,13 +382,7 @@ namespace Tbasic.Runtime
                     }
                     if (m.Success) {
                         mRet = new MatchInfo(m);
-                        double d = double.Parse(m.Value, CultureInfo.CurrentCulture);
-                        if (d % 1 == 0) {
-                            val = (int)d; // don't make it a double if it doesn't have to be 2/25
-                        }
-                        else {
-                            val = d;
-                        }
+                        val = Variable.DuckType(double.Parse(m.Value, CultureInfo.CurrentCulture));
                     }
                 }
             }
@@ -551,14 +545,13 @@ namespace Tbasic.Runtime
         /// <param name="v1">left operand</param>
         /// <param name="v2">right operand</param>
         /// <returns>v1 (op) v2</returns>
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private static object PerformBinaryOp(BinaryOperator op, object v1, object v2) {
             IExpression tv = v1 as IExpression;
             if (tv != null) {
                 v1 = tv.Evaluate();
             }
 
-            switch (op.OperatorString) { // lazy evaluation
+            switch (op.OperatorString) { // short circuit evaluation 1/6/16
                 case "AND":
                     if (Convert.ToBoolean(v1, CultureInfo.CurrentCulture)) {
                         tv = v2 as IExpression;
@@ -704,9 +697,12 @@ namespace Tbasic.Runtime
         }
 
         private static object FormatString(object o) {
-            if (o is string) {
+            string str = o as string;
+            if (str == null) {
+                return o;
+            }
+            else {
                 StringBuilder sb = new StringBuilder();
-                string str = o.ToString();
                 for (int index = 0; index < str.Length; index++) {
                     char c = str[index];
                     switch (c) {
@@ -731,17 +727,11 @@ namespace Tbasic.Runtime
                 }
                 return "\"" + sb + "\"";
             }
-            else {
-                return o;
-            }
         }
 
         private static string GetTypeName(Type t) {
             if (t.IsArray) {
                 return "object array";
-            }
-            else if (t == typeof(IntPtr)) {
-                return "int32";
             }
             else {
                 return t.Name.ToLower();
