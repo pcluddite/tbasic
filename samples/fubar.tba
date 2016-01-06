@@ -1,2 +1,0 @@
-windows$ = WinList(2)
-msgbox(0, windows$ + "")
