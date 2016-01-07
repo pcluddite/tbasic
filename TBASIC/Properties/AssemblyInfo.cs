@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tbasic")]
-[assembly: AssemblyDescription("Library of Tbasic classes functions")]
+[assembly: AssemblyTitle("TBASIC")]
+[assembly: AssemblyDescription("Library of TBASIC classes and functions")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Timothy Baxendale")]
-[assembly: AssemblyProduct("Tbasic")]
-[assembly: AssemblyCopyright("Copyright © 2013-2015 Timothy Baxendale")]
+[assembly: AssemblyProduct("TBASIC")]
+[assembly: AssemblyCopyright("Copyright © 2013-2016 Timothy Baxendale")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

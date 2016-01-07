@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tbasic executer")]
-[assembly: AssemblyDescription("Execute a Tbasic script")]
+[assembly: AssemblyTitle("TBASIC executer")]
+[assembly: AssemblyDescription("Execute a TBASIC script")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Timothy Baxendale")]
 [assembly: AssemblyProduct("Executer")]
-[assembly: AssemblyCopyright("Copyright © 2014-2015 Timothy Baxendale")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016 Timothy Baxendale")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
