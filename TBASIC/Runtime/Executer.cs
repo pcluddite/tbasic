@@ -208,19 +208,28 @@ namespace Tbasic.Runtime
             return allLines;
         }
 
-        internal void RequestBreak()
+        /// <summary>
+        /// Requests a break from a code block
+        /// </summary>
+        public void RequestBreak()
         {
             BreakRequest = true;
         }
 
-        internal void HonorBreak()
+        /// <summary>
+        /// Signals that a break request will be honored in the immediate future
+        /// </summary>
+        public void HonorBreak()
         {
             if (!ExitRequest) {
                 BreakRequest = false;
             }
         }
 
-        internal void RequestExit()
+        /// <summary>
+        /// Requests the script to exit
+        /// </summary>
+        public void RequestExit()
         {
             ExitRequest = true;
             BreakRequest = true;
