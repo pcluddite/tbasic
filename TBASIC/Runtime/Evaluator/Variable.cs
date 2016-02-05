@@ -181,10 +181,24 @@ namespace Tbasic.Runtime
             if (_oObj == null) {
                 return 0;
             }
+            int? _iObj = _oObj as int?;
+            if (_iObj != null)
+                return _iObj.Value;
+            
             double? _dObj = _oObj as double?;
-            if (_dObj.HasValue && _dObj.Value % 1 == 0) {
-                return (int)_dObj;
+            if (_dObj != null) {
+                Number n = new Number(_dObj.Value);
+                if (!n.HasFraction())
+                    return n.ToInt();
             }
+
+            decimal? _mObj = _oObj as decimal?;
+            if (_mObj != null) {
+                Number n = new Number(_dObj.Value);
+                if (!n.HasFraction())
+                    return n.ToInt();
+            }
+
             return _oObj;
         }
     }
