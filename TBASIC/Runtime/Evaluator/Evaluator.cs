@@ -35,13 +35,14 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Value and index of a Regex Match.
         /// </summary>
-        internal class MatchInfo {
-
+        internal class MatchInfo
+        {
             public int Index { get; private set; }
             public string Value { get; set; }
             public int Length { get { return Value.Length; } }
 
-            public MatchInfo(Match m) {
+            public MatchInfo(Match m)
+            {
                 Index = m.Index;
                 Value = m.Value;
             }
@@ -62,7 +63,8 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public Evaluator(Executer exec) {
+        public Evaluator(Executer exec)
+        {
             CurrentExecution = exec;
         }
 
@@ -71,7 +73,8 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="expression">string of the Expression to evaluate</param>
         /// <param name="exec">the current context</param>
-        public Evaluator(string expression, Executer exec) {
+        public Evaluator(string expression, Executer exec)
+        {
             CurrentExecution = exec;
             Expression = expression;
         }
@@ -86,23 +89,24 @@ namespace Tbasic.Runtime
         public string Expression
         {
             get { return _expression; }
-            set
-            {
+            set {
                 _expression = value.Trim();
                 _bParsed = false;
                 _expressionlist.Clear();
             }
         }
 
-        public ObjectContext CurrentContext {
+        public ObjectContext CurrentContext
+        {
             get {
                 return CurrentExecution.Context;
             }
         }
 
-        public Executer CurrentExecution { get;  set; }
+        public Executer CurrentExecution { get; set; }
 
-        public bool Reparse {
+        public bool Reparse
+        {
             private get {
                 return _bParsed;
             }
@@ -136,7 +140,8 @@ namespace Tbasic.Runtime
         /// Evaluates the expression
         /// </summary>
         /// <returns>bool value of the evaluated expression</returns>
-        public bool EvaluateBool() {
+        public bool EvaluateBool()
+        {
             return Convert.ToBoolean(Evaluate(), CultureInfo.CurrentCulture);
         }
 
@@ -166,7 +171,7 @@ namespace Tbasic.Runtime
         /// <returns>long value of the evaluated expression</returns>
         public long EvaluateLong()
         { return Convert.ToInt64(Evaluate(), CultureInfo.CurrentCulture); }
-        
+
         #endregion
 
         /// <summary>
@@ -196,7 +201,8 @@ namespace Tbasic.Runtime
         /// <param name="nIdx">Start Position of Search</param>
         /// <returns>First character index after token.</returns>
         //[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private int NextToken(int nIdx) {
+        private int NextToken(int nIdx)
+        {
             MatchInfo mRet = null;
             int nRet = nIdx;
             object val = null;
@@ -212,7 +218,7 @@ namespace Tbasic.Runtime
             if (m.Success) {
                 mRet = new MatchInfo(m);
             }
-            
+
 
             //Check String
             m = DefinedRegex.String.Match(Expression, nIdx);
@@ -279,7 +285,7 @@ namespace Tbasic.Runtime
             if (mRet == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Boolean.Match(Expression, nIdx);
                 if (m.Success && (mRet == null || m.Index < mRet.Index)) {
-                    mRet = new MatchInfo(m); 
+                    mRet = new MatchInfo(m);
                     val = bool.Parse(m.Value);
                 }
             }
@@ -301,9 +307,9 @@ namespace Tbasic.Runtime
             //Check Binary Operator
             if (mRet == null || mRet.Index > nIdx) {
                 m = DefinedRegex.BinaryOp.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) { 
+                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
                     mRet = new MatchInfo(m);
-                    val = new BinaryOperator(m.Value); 
+                    val = new BinaryOperator(m.Value);
                 }
             }
 
@@ -353,7 +359,7 @@ namespace Tbasic.Runtime
                     list.Remove(x.Next);
                 }
             }
-            
+
             //Get the queued binary operations
             BinaryOpQueue opqueue = new BinaryOpQueue(list);
 
@@ -404,14 +410,15 @@ namespace Tbasic.Runtime
         #endregion
 
         #region static methods
-        
+
         /// <summary>
         /// Static version of the Expression Evaluator
         /// </summary>
         /// <param name="expressionString">expression to be evaluated</param>
         /// <param name="exec">the current execution</param>
         /// <returns></returns>
-        public static object Evaluate(string expressionString, Executer exec) {
+        public static object Evaluate(string expressionString, Executer exec)
+        {
             Evaluator expression = new Evaluator(expressionString, exec);
             return expression.Evaluate();
         }
@@ -423,7 +430,8 @@ namespace Tbasic.Runtime
         /// <param name="v1">left operand</param>
         /// <param name="v2">right operand</param>
         /// <returns>v1 (op) v2</returns>
-        private static object PerformBinaryOp(BinaryOperator op, object v1, object v2) {
+        private static object PerformBinaryOp(BinaryOperator op, object v1, object v2)
+        {
             IExpression tv = v1 as IExpression;
             if (tv != null) {
                 v1 = tv.Evaluate();
@@ -463,22 +471,26 @@ namespace Tbasic.Runtime
             }
 
             switch (op.OperatorString) {
-                case "*": return (Convert.ToDouble(v1, CultureInfo.CurrentCulture) *
-                                  Convert.ToDouble(v2, CultureInfo.CurrentCulture));
+                case "*":
+                    return (Convert.ToDouble(v1, CultureInfo.CurrentCulture) *
+                            Convert.ToDouble(v2, CultureInfo.CurrentCulture));
                 case "/": {
-                    double d1 = Convert.ToDouble(v1, CultureInfo.CurrentCulture);
-                    double d2 = Convert.ToDouble(v2, CultureInfo.CurrentCulture);
-                    if (d2 == 0) {
-                        throw new DivideByZeroException();
+                        double d1 = Convert.ToDouble(v1, CultureInfo.CurrentCulture);
+                        double d2 = Convert.ToDouble(v2, CultureInfo.CurrentCulture);
+                        if (d2 == 0) {
+                            throw new DivideByZeroException();
+                        }
+                        return d1 / d2;
                     }
-                    return d1 / d2;
-                }
-                case "MOD": return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) %
-                                  Convert.ToInt64(v2, CultureInfo.CurrentCulture));
-                case "<<": return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) <<
-                                   Convert.ToInt32(v2, CultureInfo.CurrentCulture));
-                case ">>": return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) >>
-                                   Convert.ToInt32(v2, CultureInfo.CurrentCulture));
+                case "MOD":
+                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) %
+                          Convert.ToInt64(v2, CultureInfo.CurrentCulture));
+                case "<<":
+                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) <<
+                            Convert.ToInt32(v2, CultureInfo.CurrentCulture));
+                case ">>":
+                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) >>
+                            Convert.ToInt32(v2, CultureInfo.CurrentCulture));
                 case "+":
                 case "-":
                 case "<":
@@ -491,17 +503,21 @@ namespace Tbasic.Runtime
                 case "=":
                 case "<>":
                 case "!=": return DoSpecialOperator(op, v1, v2);
-                case "&": return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) &
-                                  Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
-                case "^": return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) ^
-                                  Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
-                case "|": return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) |
-                                  Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
+                case "&":
+                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) &
+                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
+                case "^":
+                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) ^
+                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
+                case "|":
+                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) |
+                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
             }
             throw new ArgumentException("binary operator " + op.OperatorString + " not defined.");
         }
 
-        private static object DoSpecialOperator(BinaryOperator op, object v1, object v2) {
+        private static object DoSpecialOperator(BinaryOperator op, object v1, object v2)
+        {
             string str1 = v1 as string,
                    str2 = v2 as string;
             if (str1 == null && str2 == null) {
@@ -552,7 +568,8 @@ namespace Tbasic.Runtime
                 ));
         }
 
-        private static object ConvertToString(object obj) {
+        private static object ConvertToString(object obj)
+        {
             if (obj == null) {
                 return "";
             }
@@ -574,7 +591,8 @@ namespace Tbasic.Runtime
             return obj;
         }
 
-        private static object FormatString(object o) {
+        private static object FormatString(object o)
+        {
             string str = o as string;
             if (str == null) {
                 return o;
@@ -584,30 +602,31 @@ namespace Tbasic.Runtime
                 for (int index = 0; index < str.Length; index++) {
                     char c = str[index];
                     switch (c) {
-                         case '\n': sb.Append("\\n"); break;
-                         case '\r': sb.Append("\\r"); break;
-                         case '\\': sb.Append("\\\\"); break;
-                         case '\b': sb.Append("\\b"); break;
-                         case '\t': sb.Append("\\t"); break;
-                         case '\f': sb.Append("\\f"); break;
-                         case '\"': sb.Append("\\\""); break;
-                         case '\'': sb.Append("\\'"); break;
+                        case '\n': sb.Append("\\n"); break;
+                        case '\r': sb.Append("\\r"); break;
+                        case '\\': sb.Append("\\\\"); break;
+                        case '\b': sb.Append("\\b"); break;
+                        case '\t': sb.Append("\\t"); break;
+                        case '\f': sb.Append("\\f"); break;
+                        case '\"': sb.Append("\\\""); break;
+                        case '\'': sb.Append("\\'"); break;
                         default:
-                             if (c < ' ') {
-                                 sb.Append("\\u");
-                                 sb.Append(Convert.ToString((int)c, 16).PadLeft(4, '0'));
-                             }
-                             else {
-                                 sb.Append(c);
-                             }
-                             break;
+                            if (c < ' ') {
+                                sb.Append("\\u");
+                                sb.Append(Convert.ToString((int)c, 16).PadLeft(4, '0'));
+                            }
+                            else {
+                                sb.Append(c);
+                            }
+                            break;
                     }
                 }
                 return "\"" + sb + "\"";
             }
         }
 
-        private static string GetTypeName(Type t) {
+        private static string GetTypeName(Type t)
+        {
             if (t.IsArray) {
                 return "object array";
             }
@@ -616,7 +635,8 @@ namespace Tbasic.Runtime
             }
         }
 
-        private static object PerformUnaryOp(UnaryOperator op, object v) {
+        private static object PerformUnaryOp(UnaryOperator op, object v)
+        {
             IExpression tempv = v as IExpression;
             if (tempv != null) {
                 v = tempv.Evaluate();
@@ -637,7 +657,8 @@ namespace Tbasic.Runtime
         /// <param name="str_full">the full string containing the string to be checked</param>
         /// <param name="index">the index in the full string of the first quote of the string to be indexed</param>
         /// <returns>the index of the terminating quote  in the full string</returns>
-        internal static int IndexString(string str_full, int index) {
+        internal static int IndexString(string str_full, int index)
+        {
             char quote = str_full[index]; // The first character should be the quote
 
             index++; // We used the first character
@@ -690,7 +711,8 @@ namespace Tbasic.Runtime
         /// <param name="index">the index in the full string of the first quote of the string to be indexed</param>
         /// <param name="s_parsed">the parsed string (without quotes and escape sequences replaced)</param>
         /// <returns>the index of the terminating quote  in the full string</returns>
-        internal static int ReadString(string str_full, int index, out string s_parsed) {
+        internal static int ReadString(string str_full, int index, out string s_parsed)
+        {
             char quote = str_full[index]; // The first character should be the quote
 
             index++; // We used the first character
@@ -748,7 +770,8 @@ namespace Tbasic.Runtime
         /// <param name="s_full">the full string containing the group to be indexed</param>
         /// <param name="firstIndex">the index in the full string of the character of the group to be indexed</param>
         /// <returns>the index of the terminating grouping character in the full string</returns>
-        internal static int IndexGroup(string s_full, int firstIndex) {
+        internal static int IndexGroup(string s_full, int firstIndex)
+        {
             char c_open = s_full[firstIndex]; // The first character should be the grouping character (i.e. '(' or '[')
             char c_close = c_open == '(' ? ')' : ']';
 
@@ -787,7 +810,8 @@ namespace Tbasic.Runtime
             throw new FormatException("unterminated group");
         }
 
-        internal static int ReadGroup(string s_full, int c_index, Executer _curExec, out IList<object> _oParams) {
+        internal static int ReadGroup(string s_full, int c_index, Executer _curExec, out IList<object> _oParams)
+        {
             List<object> result = new List<object>();
             char c_open = s_full[c_index];
             char c_close = c_open == '(' ? ')' : ']';
@@ -838,7 +862,8 @@ namespace Tbasic.Runtime
             throw new FormatException("unterminated group");
         }
 
-        internal static bool TryParse<T>(object input, out T result) {
+        internal static bool TryParse<T>(object input, out T result)
+        {
             try {
                 result = (T)input;
                 return true;
