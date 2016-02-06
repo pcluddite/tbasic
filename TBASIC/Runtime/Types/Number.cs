@@ -29,6 +29,13 @@ namespace Tbasic.Runtime
             return (int)Value;
         }
 
+        public object ToObject()
+        {
+            if (HasFraction())
+                return Value;
+            return ToInt();
+        }
+
         #region IComparable
 
         public int CompareTo(object obj)

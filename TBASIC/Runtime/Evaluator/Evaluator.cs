@@ -144,7 +144,7 @@ namespace Tbasic.Runtime
                 m.Index = str.IndexOf(search, start, StringComparison.OrdinalIgnoreCase);
                 if (m.Index > -1) {
                     m.Success = true;
-                    m.Value = search.ToString();
+                    m.Value = search;
                     m.Length = 1;
                 }
                 return m;
