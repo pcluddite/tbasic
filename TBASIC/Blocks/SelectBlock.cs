@@ -21,18 +21,22 @@ using System;
 using Tbasic.Runtime;
 using System.Collections.Generic;
 
-namespace Tbasic {
-    internal class SelectBlock : CodeBlock {
-        public SelectBlock(int index, LineCollection code) {
+namespace Tbasic
+{
+    internal class SelectBlock : CodeBlock
+    {
+        public SelectBlock(int index, LineCollection code)
+        {
             LoadFromCollection(
                 code.ParseBlock(
                     index,
-                    c => c.Name.Equals("SELECT", StringComparison.OrdinalIgnoreCase),
-                    c => c.Text.Equals("END SELECT", StringComparison.OrdinalIgnoreCase)
+                    c => c.Name.EqualsIgnoreCase("SELECT"),
+                    c => c.Text.EqualsIgnoreCase("END SELECT")
                 ));
         }
 
-        public override void Execute(Executer exec) {
+        public override void Execute(Executer exec)
+        {
             StackFrame parms = new StackFrame(exec, Header.Text);
             if (parms.Count < 2) {
                 throw ScriptException.NoCondition();
@@ -48,17 +52,18 @@ namespace Tbasic {
             }
         }
 
-        public Dictionary<object, CodeBlock> ToDictionary(Executer exec, out CodeBlock _default) {
+        public Dictionary<object, CodeBlock> ToDictionary(Executer exec, out CodeBlock _default)
+        {
             Dictionary<object, CodeBlock> dict = new Dictionary<object, CodeBlock>();
             _default = null;
             for (int index = 0; index < Body.Count; index++) {
                 CaseBlock caseBlock;
                 index = CaseBlock.ParseBlock(index, Body, out caseBlock) - 1;
 
-                if (caseBlock.Header.Name.Equals("DEFAULT", StringComparison.OrdinalIgnoreCase)) {
+                if (caseBlock.Header.Name.EqualsIgnoreCase("DEFAULT")) {
                     _default = caseBlock;
                 }
-                else if (caseBlock.Header.Name.Equals("CASE", StringComparison.OrdinalIgnoreCase)) {
+                else if (caseBlock.Header.Name.EqualsIgnoreCase("CASE")) {
                     dict.Add(
                         Evaluator.Evaluate(caseBlock.Condition, exec),
                         caseBlock
@@ -72,8 +77,10 @@ namespace Tbasic {
             return dict;
         }
 
-        private class CaseBlock : CodeBlock {
-            public override Line Footer {
+        private class CaseBlock : CodeBlock
+        {
+            public override Line Footer
+            {
                 get {
                     throw new NotImplementedException();
                 }
@@ -82,7 +89,8 @@ namespace Tbasic {
                 }
             }
 
-            public override int Length {
+            public override int Length
+            {
                 get {
                     return Body.Count + 1;
                 }
@@ -90,10 +98,11 @@ namespace Tbasic {
 
             public string Condition { get; private set; }
 
-            private CaseBlock(LineCollection body) {
+            private CaseBlock(LineCollection body)
+            {
                 Header = body[0];
                 StackFrame parms = new StackFrame(null, Header.Text);
-                if (parms.Name.Equals("DEFAULT", StringComparison.OrdinalIgnoreCase)) {
+                if (parms.Name.EqualsIgnoreCase("DEFAULT")) {
                     Condition = "default";
                 }
                 else if (parms.Count < 2) {
@@ -106,22 +115,23 @@ namespace Tbasic {
                 Body = body;
             }
 
-            public static int ParseBlock(int index, LineCollection all, out CaseBlock caseBlock) {
+            public static int ParseBlock(int index, LineCollection all, out CaseBlock caseBlock)
+            {
                 LineCollection blockLines = new LineCollection();
 
                 bool isBlock = false;
                 for (; index < all.Count; index++) {
                     if (isBlock) {
-                        if (all[index].Name.Equals("CASE", StringComparison.OrdinalIgnoreCase) ||
-                            all[index].Name.Equals("DEFAULT", StringComparison.OrdinalIgnoreCase)) {
+                        if (all[index].Name.EqualsIgnoreCase("CASE") ||
+                            all[index].Name.EqualsIgnoreCase("DEFAULT")) {
                             break;
                         }
                         else {
                             blockLines.Add(all[index]);
                         }
                     }
-                    else if (all[index].Name.Equals("CASE", StringComparison.OrdinalIgnoreCase) ||
-                             all[index].Name.Equals("DEFAULT", StringComparison.OrdinalIgnoreCase)) {
+                    else if (all[index].Name.EqualsIgnoreCase("CASE") ||
+                             all[index].Name.EqualsIgnoreCase("DEFAULT")) {
                         isBlock = true;
                         blockLines.Add(all[index]);
                     }
@@ -135,7 +145,8 @@ namespace Tbasic {
                 return index;
             }
 
-            public override void Execute(Executer exec) {
+            public override void Execute(Executer exec)
+            {
                 exec.Execute(Body);
             }
         }

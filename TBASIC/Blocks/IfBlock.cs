@@ -61,18 +61,18 @@ namespace Tbasic
             for (; index < fullCode.Count; index++) {
                 Line cur = fullCode[index];
                 cur.CurrentBlock = this;
-                if (cur.Name.Equals("IF", StringComparison.OrdinalIgnoreCase)) {
+                if (cur.Name.EqualsIgnoreCase("IF")) {
                     expected_endif++;
                 }
 
                 if (expected_endif > 0) {
-                    if (expected_endif == 1 && cur.Name.Equals("ELSE", StringComparison.OrdinalIgnoreCase)) { // we are now in an else block
+                    if (expected_endif == 1 && cur.Name.EqualsIgnoreCase("ELSE")) { // we are now in an else block
                         isElse = true;
                         continue; // We don't need to add the word 'ELSE'
                     }
                 }
 
-                if (cur.Text.Equals("END IF", StringComparison.OrdinalIgnoreCase)) {
+                if (cur.Text.EqualsIgnoreCase("END IF")) {
                     expected_endif--;
                 }
 
@@ -98,7 +98,7 @@ namespace Tbasic
 
         public override void Execute(Executer exec)
         {
-            if (!Header.Text.EndsWith(" then", StringComparison.OrdinalIgnoreCase)) {
+            if (!Header.Text.EndsWithIgnoreCase(" then")) {
                 throw new ArgumentException("expected 'THEN'");
             }
 

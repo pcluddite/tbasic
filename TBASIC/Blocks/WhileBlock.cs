@@ -22,19 +22,22 @@ using System.Linq;
 using System.Collections.Generic;
 using Tbasic.Runtime;
 
-namespace Tbasic {
-    internal class WhileBlock : CodeBlock {
-
-        public WhileBlock(int index, LineCollection code) {
+namespace Tbasic
+{
+    internal class WhileBlock : CodeBlock
+    {
+        public WhileBlock(int index, LineCollection code)
+        {
             LoadFromCollection(
                 code.ParseBlock(
                     index,
-                    c => c.Name.Equals("WHILE", StringComparison.OrdinalIgnoreCase),
-                    c => c.Text.Equals("WEND", StringComparison.OrdinalIgnoreCase)
+                    c => c.Name.EqualsIgnoreCase("WHILE"),
+                    c => c.Text.EqualsIgnoreCase("WEND")
                 ));
         }
 
-        public override void Execute(Executer exec) {
+        public override void Execute(Executer exec)
+        {
             StackFrame parameters = new StackFrame(exec, Header.Text);
 
             if (parameters.Count < 2) {

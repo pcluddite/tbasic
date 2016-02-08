@@ -8,5 +8,10 @@ namespace Tbasic
         {
             return initial.Equals(other, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static bool EndsWithIgnoreCase(this string initial, string other)
+        {
+            return initial.EndsWith(other, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
