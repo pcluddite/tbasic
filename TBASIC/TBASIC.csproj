@@ -65,7 +65,6 @@
     <Compile Include="Libraries\MathLib.cs" />
     <Compile Include="Libraries\RuntimeLib.cs" />
     <Compile Include="Blocks\DoBlock.cs" />
-    <Compile Include="Blocks\ElseBlock.cs" />
     <Compile Include="Blocks\ForBlock.cs" />
     <Compile Include="Blocks\FuncBlock.cs" />
     <Compile Include="Blocks\SelectBlock.cs" />

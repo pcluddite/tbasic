@@ -20,21 +20,24 @@
 using System;
 using Tbasic.Runtime;
 
-namespace Tbasic {
-    internal class IfBlock : CodeBlock {
-        
-        public ElseBlock ElseBlock { get; private set; }
+namespace Tbasic
+{
+    internal class IfBlock : CodeBlock
+    {
+        public CodeBlock Else { get; private set; }
 
-        public bool HasElseBlock {
+        public bool HasElseBlock
+        {
             get {
-                return ElseBlock != null;
+                return Else != null;
             }
         }
 
-        public override int Length {
+        public override int Length
+        {
             get {
                 if (HasElseBlock) {
-                    return base.Length + ElseBlock.Length + 1; // There's an ELSE keyword too
+                    return base.Length + Else.Length + 1; // There's an ELSE keyword too
                 }
                 else {
                     return base.Length;
@@ -42,8 +45,9 @@ namespace Tbasic {
             }
         }
 
-        public IfBlock(int index, LineCollection fullCode) {
-            ElseBlock = null;
+        public IfBlock(int index, LineCollection fullCode)
+        {
+            Else = null;
             Header = fullCode[index];
 
             LineCollection ifLines = new LineCollection();
@@ -74,7 +78,7 @@ namespace Tbasic {
 
                 if (expected_endif == 0) {
                     if (elseLines.Count > 0) {
-                        ElseBlock = new ElseBlock(elseLines);
+                        Else = new ElseBlock(elseLines);
                     }
                     Footer = cur;
                     Body = ifLines;
@@ -92,7 +96,8 @@ namespace Tbasic {
             throw ScriptException.UnterminatedBlock(fullCode[index].LineNumber, Header.VisibleName);
         }
 
-        public override void Execute(Executer exec) {
+        public override void Execute(Executer exec)
+        {
             if (!Header.Text.EndsWith(" then", StringComparison.OrdinalIgnoreCase)) {
                 throw new ArgumentException("expected 'THEN'");
             }
@@ -107,7 +112,22 @@ namespace Tbasic {
                 exec.Execute(Body);
             }
             else if (HasElseBlock) {
-                exec.Execute(ElseBlock.Body);
+                exec.Execute(Else.Body);
+            }
+        }
+
+        private class ElseBlock : CodeBlock
+        {
+            internal ElseBlock(LineCollection lines)
+            {
+                Body = lines;
+                Header = lines[0];
+                Footer = lines[lines.Count - 1];
+            }
+
+            public override void Execute(Executer exec)
+            {
+                throw new NotImplementedException();
             }
         }
     }
