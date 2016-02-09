@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Extensions.cs" />
     <Compile Include="Libraries\ArrayLib.cs" />
     <Compile Include="Libraries\StringLib.cs" />
     <Compile Include="Libraries\SystemLibrary.cs" />
