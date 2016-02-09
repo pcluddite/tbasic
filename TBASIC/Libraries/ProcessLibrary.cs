@@ -47,7 +47,7 @@ namespace Tbasic.Libraries {
             _sframe.AssertArgs(2);
             _sframe.Data = false;
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
                     _sframe.Data = true;
                 }
             }
@@ -71,7 +71,7 @@ namespace Tbasic.Libraries {
         private void ProcessKill(ref StackFrame _sframe) {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
                     p.Kill();
                     return;
                 }
@@ -82,7 +82,7 @@ namespace Tbasic.Libraries {
         private void ProcessClose(ref StackFrame _sframe) {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.Equals(_sframe.Get<string>(1), StringComparison.OrdinalIgnoreCase)) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
                     p.Close();
                     return;
                 }

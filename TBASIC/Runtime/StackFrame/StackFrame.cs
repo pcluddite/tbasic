@@ -31,7 +31,6 @@ namespace Tbasic
     /// </summary>
     public class StackFrame : ICollection, IList, ICloneable
     {
-
         private List<object> _params = new List<object>();
 
         /// <summary>
@@ -302,14 +301,8 @@ namespace Tbasic
         /// <returns></returns>
         public T Get<T>(int index)
         {
-            object obj = Get(index);
-            try {
-                return (T)obj;
-            }
-            catch (InvalidCastException) {
-            }
             T ret;
-            if (Evaluator.TryParse<T>(obj, out ret)) {
+            if (Evaluator.TryParse<T>(Get(index), out ret)) {
                 return ret;
             }
             throw new InvalidCastException(string.Format("expected parameter {0} to be of type {1}", index, typeof(T).Name));
@@ -326,7 +319,7 @@ namespace Tbasic
         {
             string arg = Get(index).ToString();
             foreach (string val in values) {
-                if (val.Equals(arg, StringComparison.OrdinalIgnoreCase)) {
+                if (val.EqualsIgnoreCase(arg)) {
                     return arg;
                 }
             }

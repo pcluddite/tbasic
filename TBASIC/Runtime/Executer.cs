@@ -171,14 +171,14 @@ namespace Tbasic.Runtime
             for (int lineNumber = 0; lineNumber < lines.Length; lineNumber++) {
                 Line current = new Line(lineNumber + 1, lines[lineNumber]); // Tag all lines with its line number (index + 1)
 
-                if (current.Text.StartsWith(";") || current.Text.Equals("")) {
+                if (current.Text.StartsWith(";") || string.IsNullOrEmpty(current.Text)) {
                     continue;
                 }
                 if (current.Name.EndsWith("$") || current.Name.EndsWith("]")) {
                     current = new Line(current);
                     current.Text = "LET " + current.Text; // add the word LET if it's an equality
                 }
-                else if (current.Name.Equals("FUNCTION", StringComparison.OrdinalIgnoreCase)) {
+                else if (current.Name.EqualsIgnoreCase("FUNCTION")) {
                     funLines.Add(current.LineNumber);
                 }
                 else {

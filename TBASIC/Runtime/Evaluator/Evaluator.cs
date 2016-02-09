@@ -141,7 +141,7 @@ namespace Tbasic.Runtime
             public static MatchInfo FromIndexOf(string str, string search, int start)
             {
                 MatchInfo m = new MatchInfo();
-                m.Index = str.IndexOf(search, start, StringComparison.OrdinalIgnoreCase);
+                m.Index = str.IndexOfIgnoreCase(search, start);
                 if (m.Index > -1) {
                     m.Success = true;
                     m.Value = search;
@@ -591,7 +591,7 @@ namespace Tbasic.Runtime
                     case "==":
                         return str1 == str2;
                     case "=":
-                        return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase); // = is case insensitive 1/2/16
+                        return Extensions.EqualsIgnoreCase(str1, str2); // = is case insensitive 1/2/16
                     case "<>":
                     case "!=":
                         return str1 != str2;
