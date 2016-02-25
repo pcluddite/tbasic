@@ -53,25 +53,25 @@ namespace Tbasic.Libraries {
 
 
 
-            NULL(ref stackFrame);
+            NULL(stackFrame);
         }
 
         private void Sleep(Paramaters stackFrame) {
             stackFrame.AssertArgs(2);
             System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
-            NULL(ref stackFrame);
+            NULL(stackFrame);
         }
 
         private void Break(Paramaters stackFrame) {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestBreak();
-            NULL(ref stackFrame);
+            NULL(stackFrame);
         }
 
         internal void Exit(Paramaters stackFrame) {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestExit();
-            NULL(ref stackFrame);
+            NULL(stackFrame);
         }
 
         internal static void NULL(Paramaters stackFrame) {
@@ -97,7 +97,7 @@ namespace Tbasic.Libraries {
                 Evaluator e = new Evaluator(stackFrame.Text.Substring(stackFrame.Text.IndexOf('=')), stackFrame.StackExecuter);
                 stackFrame.StackExecuter.Context.SetConstant(stackFrame.Get<string>(1), e.Evaluate());
 
-                NULL(ref stackFrame);
+                NULL(stackFrame);
             }
             else {
                 throw new ArgumentException("arrays cannot be defined as constants");
@@ -109,7 +109,7 @@ namespace Tbasic.Libraries {
                 stackFrame.AssertArgs(2);
             }
             if (stackFrame.Count > 2) {
-                LET(ref stackFrame);
+                LET(stackFrame);
             }
             else {
                 Variable v = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
@@ -124,7 +124,7 @@ namespace Tbasic.Libraries {
                     array_realloc(ref obj, v.Indices, 0);
                     context.SetVariable(v.Name, obj);
                 }
-                NULL(ref stackFrame);
+                NULL(stackFrame);
             }
         }
 
@@ -180,7 +180,7 @@ namespace Tbasic.Libraries {
                 data
                 );
 
-            NULL(ref stackFrame);
+            NULL(stackFrame);
         }
     }
 }

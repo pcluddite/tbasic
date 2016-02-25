@@ -129,7 +129,7 @@ namespace Tbasic.Runtime
                 try {
                     ObjectContext blockContext = Context.FindBlockContext(current.Name);
                     if (blockContext == null) {
-                        Execute(ref stackFrame, current);
+                        Execute(stackFrame, current);
                     }
                     else {
                         CodeBlock block = blockContext.GetBlock(current.Name).Invoke(index, lines);
@@ -158,7 +158,7 @@ namespace Tbasic.Runtime
             }
             else {
                 stackFrame.SetAll(codeLine.Text);
-                context.GetCommand(codeLine.Name).Invoke(ref stackFrame);
+                context.GetCommand(codeLine.Name).Invoke(stackFrame);
             }
             stackFrame.Context.SetReturns(stackFrame);
         }
