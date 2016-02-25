@@ -256,7 +256,7 @@ namespace Tbasic.Runtime
                 Paramaters _sframe = new Paramaters(CurrentExecution);
                 _sframe.SetAll(a_evaluated);
                 _sframe.Name = name;
-                context.GetFunction(name).Invoke(ref _sframe);
+                context.GetFunction(name).Invoke(_sframe);
                 CurrentContext.SetReturns(_sframe);
                 return _sframe.Data;
             }
