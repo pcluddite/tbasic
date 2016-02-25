@@ -29,7 +29,7 @@ namespace Tbasic
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class Paramaters : ICollection, IList, ICloneable
+    public class Paramaters : IList<object>, ICloneable
     {
         private List<object> _params = new List<object>();
 
@@ -399,9 +399,9 @@ namespace Tbasic
         /// Removes an element at the specified index
         /// </summary>
         /// <param name="value">the object to remove (value cannot be null)</param>
-        public void Remove(object value)
+        public bool Remove(object value)
         {
-            _params.Remove(value);
+            return _params.Remove(value);
         }
 
         /// <summary>
@@ -412,36 +412,25 @@ namespace Tbasic
         {
             _params.RemoveAt(index);
         }
-
-        bool IList.IsFixedSize
+        
+        bool ICollection<object>.IsReadOnly
         {
             get { return false; }
         }
-
-        bool IList.IsReadOnly
+        
+        void ICollection<object>.CopyTo(object[] array, int index)
         {
-            get { return false; }
+            _params.CopyTo(array, index);
         }
-
-        void ICollection.CopyTo(Array array, int index)
+        
+        IEnumerator<object> IEnumerable<object>.GetEnumerator()
         {
             throw new NotImplementedException();
         }
 
-        bool ICollection.IsSynchronized
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            get { throw new NotImplementedException(); }
-        }
-
-        object ICollection.SyncRoot
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        int IList.Add(object value)
-        {
-            Add(value);
-            return _params.Count - 1;
+            throw new NotImplementedException();
         }
     }
 }
