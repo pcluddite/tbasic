@@ -343,15 +343,6 @@ namespace Tbasic
             return clone;
         }
 
-        /// <summary>
-        /// Returns this StackFrame enumerator
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator GetEnumerator()
-        {
-            return _params.GetEnumerator();
-        }
-
         object ICloneable.Clone()
         {
             return this.Clone();
@@ -412,25 +403,34 @@ namespace Tbasic
         {
             _params.RemoveAt(index);
         }
-        
+
         bool ICollection<object>.IsReadOnly
         {
             get { return false; }
         }
-        
-        void ICollection<object>.CopyTo(object[] array, int index)
+
+        /// <summary>
+        /// Copies the values of this collection into an array
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        public void CopyTo(object[] array, int index)
         {
             _params.CopyTo(array, index);
         }
-        
-        IEnumerator<object> IEnumerable<object>.GetEnumerator()
+
+        /// <summary>
+        /// Returns this StackFrame enumerator
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<object> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _params.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }
