@@ -42,41 +42,41 @@ namespace Tbasic.Libraries
             Add("StdPause", ConsolePause);
         }
 
-        private void ConsoleWriteline(ref StackFrame _sframe)
+        private void ConsoleWriteline(ref Paramaters _sframe)
         {
             _sframe.AssertArgs(2);
             Console.WriteLine(_sframe.Get(1));
         }
 
-        private void ConsoleWrite(ref StackFrame _sframe) {
+        private void ConsoleWrite(ref Paramaters _sframe) {
             _sframe.AssertArgs(2);
             Console.Write(_sframe.Get(1));
         }
 
-        private void ConsoleRead(ref StackFrame _sframe)
+        private void ConsoleRead(ref Paramaters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.Read();
         }
 
-        private void ConsoleReadLine(ref StackFrame _sframe)
+        private void ConsoleReadLine(ref Paramaters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadLine();
         }
 
-        private void ConsoleReadKey(ref StackFrame _sframe)
+        private void ConsoleReadKey(ref Paramaters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadKey().KeyChar;
         }
 
-        private void ConsolePause(ref StackFrame _sframe) {
+        private void ConsolePause(ref Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data =  Console.ReadKey(true).KeyChar;
         }
 
-        private void Input(ref StackFrame _sframe)
+        private void Input(ref Paramaters _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.SetAll(
@@ -113,7 +113,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void TrayTip(ref StackFrame _sframe) 
+        private void TrayTip(ref Paramaters _sframe) 
         {
             if (_sframe.Count == 2) {
                 _sframe.Add(""); // title
@@ -160,7 +160,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        public static void MsgBox(ref StackFrame _sframe)
+        public static void MsgBox(ref Paramaters _sframe)
         {
             if (_sframe.Count == 3) {
                 _sframe.Add("");
@@ -174,7 +174,7 @@ namespace Tbasic.Libraries
             _sframe.Data =  Interaction.MsgBox(text, (MsgBoxStyle)flag, title).ToString();
         }
 
-        private void Say(ref StackFrame _sframe)
+        private void Say(ref Paramaters _sframe)
         {
             _sframe.AssertArgs(2);
             Thread t = new Thread(Say);

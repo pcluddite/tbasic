@@ -117,9 +117,9 @@ namespace Tbasic.Runtime
             }*/
         }
 
-        internal StackFrame Execute(LineCollection lines)
+        internal Paramaters Execute(LineCollection lines)
         {
-            StackFrame stackFrame = new StackFrame(this);
+            Paramaters stackFrame = new Paramaters(this);
             for (int index = 0; index < lines.Count; index++) {
                 if (BreakRequest) {
                     break;
@@ -147,7 +147,7 @@ namespace Tbasic.Runtime
             return stackFrame;
         }
 
-        internal static void Execute(ref StackFrame stackFrame, Line codeLine)
+        internal static void Execute(ref Paramaters stackFrame, Line codeLine)
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {

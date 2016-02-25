@@ -43,7 +43,7 @@ namespace Tbasic.Libraries {
             Add("ProcList", ProcessList);
         }
 
-        private void ProcessExists(ref StackFrame _sframe) {
+        private void ProcessExists(ref Paramaters _sframe) {
             _sframe.AssertArgs(2);
             _sframe.Data = false;
             foreach (Process p in Process.GetProcesses()) {
@@ -53,7 +53,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void ProcessList(ref StackFrame _sframe) {
+        private void ProcessList(ref Paramaters _sframe) {
             _sframe.AssertArgs(1);
             Process[] procs = Process.GetProcesses();
             if (procs.Length > 0) {
@@ -68,7 +68,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void ProcessKill(ref StackFrame _sframe) {
+        private void ProcessKill(ref Paramaters _sframe) {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
@@ -79,7 +79,7 @@ namespace Tbasic.Libraries {
             _sframe.Status = -1; // error -1 if it does not exist 1/3/16
         }
 
-        private void ProcessClose(ref StackFrame _sframe) {
+        private void ProcessClose(ref Paramaters _sframe) {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
@@ -90,7 +90,7 @@ namespace Tbasic.Libraries {
             _sframe.Status = -1; // error -1 if it does not exist 1/3/16
         }
 
-        private void BlockedList(ref StackFrame _sframe) {
+        private void BlockedList(ref Paramaters _sframe) {
             _sframe.AssertArgs(1);
             var list = BlockedList(); // dicts currently are not supported 2/24/15
             if (list.Count == 0) {
@@ -122,7 +122,7 @@ namespace Tbasic.Libraries {
 
         private const string REG_EXEC_PATH = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\";
 
-        private void ProcessBlock(ref StackFrame _sframe) {
+        private void ProcessBlock(ref Paramaters _sframe) {
             if (_sframe.Count == 2) {
                 _sframe.Add(16);
                 _sframe.Add("The application you requested has been blocked");
@@ -139,7 +139,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void ProcessRedirect(ref StackFrame _sframe) {
+        private void ProcessRedirect(ref Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
             if (!Path.HasExtension(name)) {
@@ -154,7 +154,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void ProcessSetDebugger(ref StackFrame _sframe) {
+        private void ProcessSetDebugger(ref Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
             if (!Path.HasExtension(name)) {
@@ -169,7 +169,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void Unblock(ref StackFrame _sframe) {
+        private void Unblock(ref Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string name = _sframe.Get<string>(1);
             if (!name.Contains(".")) {
@@ -186,7 +186,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void Run(ref StackFrame _sframe) {
+        private void Run(ref Paramaters _sframe) {
             if (_sframe.Count == 2) {
                 _sframe.Add("");
             }

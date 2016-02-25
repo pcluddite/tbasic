@@ -37,7 +37,7 @@ namespace Tbasic
 
         public override void Execute(Executer exec)
         {
-            StackFrame parms = new StackFrame(exec, Header.Text);
+            Paramaters parms = new Paramaters(exec, Header.Text);
             if (parms.Count < 2) {
                 throw ScriptException.NoCondition();
             }
@@ -101,7 +101,7 @@ namespace Tbasic
             private CaseBlock(LineCollection body)
             {
                 Header = body[0];
-                StackFrame parms = new StackFrame(null, Header.Text);
+                Paramaters parms = new Paramaters(null, Header.Text);
                 if (parms.Name.EqualsIgnoreCase("DEFAULT")) {
                     Condition = "default";
                 }
