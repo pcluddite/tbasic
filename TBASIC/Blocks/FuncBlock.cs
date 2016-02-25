@@ -45,7 +45,7 @@ namespace Tbasic
             return new TBasicFunction(Execute);
         }
 
-        public void Execute(ref Paramaters stackFrame)
+        public void Execute(Paramaters stackFrame)
         {
             stackFrame.AssertArgs(Template.Count);
 
@@ -63,7 +63,7 @@ namespace Tbasic
             exec.Context = exec.Context.Collect();
         }
 
-        private void Return(ref Paramaters stackFrame)
+        private void Return(Paramaters stackFrame)
         {
             if (stackFrame.Count < 2) {
                 stackFrame.AssertArgs(2);
@@ -75,7 +75,7 @@ namespace Tbasic
             stackFrame.StackExecuter.RequestBreak();
         }
 
-        private void SetStatus(ref Paramaters stackFrame)
+        private void SetStatus(Paramaters stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Status = stackFrame.Get<int>(1);

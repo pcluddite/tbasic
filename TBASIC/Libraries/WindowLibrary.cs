@@ -53,7 +53,7 @@ namespace Tbasic.Libraries {
             return User32.RemoveMenu(hMenu, menuItemCount - 1, User32.MF_BYPOSITION);
         }
 
-        private void WinRemoveClose(ref Paramaters parameters) {
+        private void WinRemoveClose(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = WinRemoveClose(new IntPtr(parameters.Get<long>(1)));
         }
@@ -62,12 +62,12 @@ namespace Tbasic.Libraries {
             return User32.FindWindow(sz_class, title);
         }
 
-        private void WinGetHandle(ref Paramaters parameters) {
+        private void WinGetHandle(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = WinGetHandle(parameters.Get<string>(1)).ToInt64();
         }
 
-        private void WinGetTitle(ref Paramaters parameters) {
+        private void WinGetTitle(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = WinGetTitle(new IntPtr(parameters.Get<long>(1)));
         }
@@ -79,7 +79,7 @@ namespace Tbasic.Libraries {
             return sb.ToString();
         }
 
-        private void WinSetTitle(ref Paramaters parameters) {
+        private void WinSetTitle(Paramaters parameters) {
             parameters.AssertArgs(3);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!User32.SetWindowText(hwnd, parameters.Get<string>(2))) {
@@ -91,7 +91,7 @@ namespace Tbasic.Libraries {
             return User32.ShowWindow(hwnd, flag);
         }
 
-        private void WinGetState(ref Paramaters parameters) {
+        private void WinGetState(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = WinGetState(parameters.Get<long>(1));
         }
@@ -104,7 +104,7 @@ namespace Tbasic.Libraries {
             return Windows.GetState(hwnd);
         }
 
-        private void WinSetState(ref Paramaters parameters) {
+        private void WinSetState(Paramaters parameters) {
             parameters.AssertArgs(3);
             uint flag = parameters.Get<uint>(2);
             if (!WinSetState(new IntPtr(parameters.Get<long>(1)), flag)) {
@@ -116,7 +116,7 @@ namespace Tbasic.Libraries {
             return User32.SetForegroundWindow(hwnd);
         }
 
-        private void WinActivate(ref Paramaters parameters) {
+        private void WinActivate(Paramaters parameters) {
             parameters.AssertArgs(2);
             if (!WinActivate(new IntPtr(parameters.Get<long>(1)))) {
                 parameters.Status = 1;
@@ -138,7 +138,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void WinMove(ref Paramaters parameters) {
+        private void WinMove(Paramaters parameters) {
             parameters.AssertArgs(4);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinMove(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
@@ -163,7 +163,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void WinSize(ref Paramaters parameters) {
+        private void WinSize(Paramaters parameters) {
             parameters.AssertArgs(4);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSize(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
@@ -175,7 +175,7 @@ namespace Tbasic.Libraries {
             return User32.DestroyWindow(hwnd);
         }
 
-        private void WinKill(ref Paramaters parameters) {
+        private void WinKill(Paramaters parameters) {
             parameters.AssertArgs(2);
             long hwnd = parameters.Get<long>(1);
             if (!WinKill(new IntPtr(hwnd))) {
@@ -187,7 +187,7 @@ namespace Tbasic.Libraries {
             return User32.SendMessage(hwnd, 0x0112, 0xF060, 0);
         }
 
-        private void WinClose(ref Paramaters parameters) {
+        private void WinClose(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = WinClose(new IntPtr(parameters.Get<long>(1)));
         }
@@ -197,7 +197,7 @@ namespace Tbasic.Libraries {
             return User32.SetLayeredWindowAttributes(hwnd, 0, trans, User32.LWA_ALPHA);
         }
 
-        private void WinSetTrans(ref Paramaters parameters) {
+        private void WinSetTrans(Paramaters parameters) {
             parameters.AssertArgs(3);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSetTrans(hwnd, parameters.Get<byte>(2))) {
@@ -209,7 +209,7 @@ namespace Tbasic.Libraries {
             return flag == 0 ? Windows.Enum() : Windows.Enum(flag);
         }
 
-        private void WinList(ref Paramaters parameters) {
+        private void WinList(Paramaters parameters) {
             if (parameters.Count == 1) {
                 parameters.Add((int)WindowFlag.Existing);
             }
@@ -230,7 +230,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void GetScreen(ref Paramaters parameters) {
+        private void GetScreen(Paramaters parameters) {
             parameters.AssertArgs(2);
             int compression = parameters.GetIntRange(1, 0, 100);
             parameters.Data = GetScreen(compression);
@@ -252,7 +252,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void WinPicture(ref Paramaters parameters) {
+        private void WinPicture(Paramaters parameters) {
             parameters.AssertArgs(3);
             int compression = parameters.GetIntRange(2, 0, 100);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
@@ -263,7 +263,7 @@ namespace Tbasic.Libraries {
             return Windows.WindowExists(hwnd);
         }
 
-        private void WinExists(ref Paramaters parameters) {
+        private void WinExists(Paramaters parameters) {
             parameters.AssertArgs(2);
             parameters.Data = Windows.WindowExists(new IntPtr(parameters.Get<long>(1)));
         }

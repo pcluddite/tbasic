@@ -54,47 +54,47 @@ namespace Tbasic.Libraries {
             Add("Shell", Shell);
         }
 
-        private void DirExists(ref Paramaters _sframe) {
+        private void DirExists(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             _sframe.Data =  Directory.Exists(_sframe.Get<string>(1));
         }
 
-        private void FileExists(ref Paramaters _sframe) {
+        private void FileExists(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             _sframe.Data =  File.Exists(_sframe.Get<string>(1));
         }
 
-        private void FileMove(ref Paramaters _sframe) {
+        private void FileMove(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             File.Move(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
-        private void FileCopy(ref Paramaters _sframe) {
+        private void FileCopy(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             File.Copy(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
-        private void FileDelete(ref Paramaters _sframe) {
+        private void FileDelete(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             File.Delete(_sframe.Get<string>(1));
         }
 
-        private void DirDelete(ref Paramaters _sframe) {
+        private void DirDelete(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             Directory.Delete(_sframe.Get<string>(1));
         }
 
-        private void DirMove(ref Paramaters _sframe) {
+        private void DirMove(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             Directory.Move(_sframe.Get<string>(1), _sframe.Get<string>(2));
         }
 
-        private void DirCreate(ref Paramaters _sframe) {
+        private void DirCreate(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             Directory.CreateDirectory(_sframe.Get<string>(1));
         }
 
-        private void DirGetFileList(ref Paramaters _sframe) {
+        private void DirGetFileList(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (Directory.Exists(path)) {
@@ -105,7 +105,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void DirGetDirList(ref Paramaters _sframe) {
+        private void DirGetDirList(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (Directory.Exists(path)) {
@@ -116,7 +116,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void FileReadAll(ref Paramaters _sframe) {
+        private void FileReadAll(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
@@ -127,7 +127,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void FileWriteAll(ref Paramaters _sframe) {
+        private void FileWriteAll(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (_sframe.Get(2) is string) {
@@ -153,7 +153,7 @@ namespace Tbasic.Libraries {
             FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
         }
 
-        private void Recycle(ref Paramaters _sframe) {
+        private void Recycle(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             if (!File.Exists(path)) {
@@ -162,14 +162,14 @@ namespace Tbasic.Libraries {
             Recycle(path);
         }
 
-        private void FileGetAttributes(ref Paramaters _sframe) {
+        private void FileGetAttributes(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string path = _sframe.Get<string>(1);
             FileAttributes current = File.GetAttributes(path);
             _sframe.Data = GetStringFromAttributes(current);
         }
 
-        private void FileSetAttributes(ref Paramaters _sframe) {
+        private void FileSetAttributes(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             FileAttributes current = File.GetAttributes(path);
@@ -209,7 +209,7 @@ namespace Tbasic.Libraries {
             return result;
         }
 
-        private void FileSetAccessDate(ref Paramaters _sframe) {
+        private void FileSetAccessDate(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
@@ -223,7 +223,7 @@ namespace Tbasic.Libraries {
             _sframe.Status = -1;
         }
 
-        private void FileSetModifiedDate(ref Paramaters _sframe) {
+        private void FileSetModifiedDate(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
@@ -237,7 +237,7 @@ namespace Tbasic.Libraries {
             _sframe.Status = -1;
         }
 
-        private void FileSetCreatedDate(ref Paramaters _sframe) {
+        private void FileSetCreatedDate(Paramaters _sframe) {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
             if (File.Exists(path)) {
@@ -251,12 +251,12 @@ namespace Tbasic.Libraries {
             _sframe.Status = -1;
         }
 
-        private void DirectoryGetCurrent(ref Paramaters _sframe) {
+        private void DirectoryGetCurrent(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = Directory.GetCurrentDirectory();
         }
 
-        private void DirectorySetCurrent(ref Paramaters _sframe) {
+        private void DirectorySetCurrent(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             Directory.SetCurrentDirectory(_sframe.Get<string>(1));
             
@@ -283,7 +283,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void Shell(ref Paramaters _sframe) {
+        private void Shell(Paramaters _sframe) {
             _sframe.AssertArgs(2);
             string output;
             _sframe.Status = Shell(_sframe.Get<string>(1), out output);

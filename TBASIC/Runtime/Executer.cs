@@ -147,7 +147,7 @@ namespace Tbasic.Runtime
             return stackFrame;
         }
 
-        internal static void Execute(ref Paramaters stackFrame, Line codeLine)
+        internal static void Execute(Paramaters stackFrame, Line codeLine)
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {

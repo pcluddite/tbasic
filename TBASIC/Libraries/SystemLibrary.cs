@@ -36,42 +36,42 @@ namespace Tbasic.Libraries {
             Add("GetMillisecond", GetMillisecond);
         }
 
-        private void GetMonth(ref Paramaters _sframe) {
+        private void GetMonth(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Month;
         }
 
-        private void GetDay(ref Paramaters _sframe) {
+        private void GetDay(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Day;
         }
 
-        private void GetDayOfWeek(ref Paramaters _sframe) {
+        private void GetDayOfWeek(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = (int)DateTime.Now.DayOfWeek;
         }
 
-        private void GetYear(ref Paramaters _sframe) {
+        private void GetYear(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Year;
         }
 
-        private void GetHour(ref Paramaters _sframe) {
+        private void GetHour(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Hour;
         }
 
-        private void GetMinute(ref Paramaters _sframe) {
+        private void GetMinute(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Minute;
         }
 
-        private void GetSecond(ref Paramaters _sframe) {
+        private void GetSecond(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Second;
         }
 
-        private void GetMillisecond(ref Paramaters _sframe) {
+        private void GetMillisecond(Paramaters _sframe) {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Millisecond;
         }

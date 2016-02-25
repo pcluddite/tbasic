@@ -41,7 +41,7 @@ namespace Tbasic.Libraries {
             Add("WEND", UhOh);
         }
 
-        private void Include(ref Paramaters stackFrame) {
+        private void Include(Paramaters stackFrame) {
             stackFrame.AssertArgs(2);
             string path = Path.GetFullPath(stackFrame.Get<string>(1));
             if (!File.Exists(path)) {
@@ -56,33 +56,33 @@ namespace Tbasic.Libraries {
             NULL(ref stackFrame);
         }
 
-        private void Sleep(ref Paramaters stackFrame) {
+        private void Sleep(Paramaters stackFrame) {
             stackFrame.AssertArgs(2);
             System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
             NULL(ref stackFrame);
         }
 
-        private void Break(ref Paramaters stackFrame) {
+        private void Break(Paramaters stackFrame) {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestBreak();
             NULL(ref stackFrame);
         }
 
-        internal void Exit(ref Paramaters stackFrame) {
+        internal void Exit(Paramaters stackFrame) {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestExit();
             NULL(ref stackFrame);
         }
 
-        internal static void NULL(ref Paramaters stackFrame) {
+        internal static void NULL(Paramaters stackFrame) {
             stackFrame.Context.PersistReturns(stackFrame);
         }
 
-        internal void UhOh(ref Paramaters stackFrame) {
+        internal void UhOh(Paramaters stackFrame) {
             throw ScriptException.NoOpeningStatement(stackFrame.Text);
         }
 
-        internal void Const(ref Paramaters stackFrame) {
+        internal void Const(Paramaters stackFrame) {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);
             }
@@ -104,7 +104,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        internal void DIM(ref Paramaters stackFrame) {
+        internal void DIM(Paramaters stackFrame) {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(2);
             }
@@ -161,7 +161,7 @@ namespace Tbasic.Libraries {
             }
         }
 
-        internal void LET(ref Paramaters stackFrame) {
+        internal void LET(Paramaters stackFrame) {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);
             }
