@@ -23,7 +23,7 @@ While True
 
 	ret$ = Input("Type \"Hello\" or \"Hi\".", "OR Test")
 
-	If @err = -1 Then
+	If @err = 204 Then
 		Exit
 	End If
 

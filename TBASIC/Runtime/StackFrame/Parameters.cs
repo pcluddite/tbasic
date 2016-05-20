@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Tbasic.Runtime;
+using Tbasic.Errors;
 
 namespace Tbasic
 {
@@ -107,12 +108,12 @@ namespace Tbasic
         /// <summary>
         /// Gets or sets the status that the function returned
         /// </summary>
-        public int Status { get; set; }
+        public int Status { get; set; } = ErrorSuccess.OK;
 
         /// <summary>
         /// Gets or sets the return data for the function
         /// </summary>
-        public object Data { get; set; }
+        public object Data { get; set; } = null;
 
         /// <summary>
         /// Constructs a StackFrame object
@@ -121,8 +122,6 @@ namespace Tbasic
         public Parameters(Executer exec)
         {
             StackExecuter = exec;
-            Status = 0;
-            Data = null;
         }
 
         /// <summary>

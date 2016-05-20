@@ -182,7 +182,7 @@ namespace Tbasic.Libraries
 
         }
 
-        private string GetStringFromAttributes(FileAttributes attributes)
+        private static string GetStringFromAttributes(FileAttributes attributes)
         {
             StringBuilder sb = new StringBuilder();
             if ((attributes & FileAttributes.Archive) == FileAttributes.Archive) { sb.Append("a"); }
@@ -194,7 +194,7 @@ namespace Tbasic.Libraries
             return sb.ToString();
         }
 
-        private FileAttributes GetAttributesFromString(string attributes)
+        private static FileAttributes GetAttributesFromString(string attributes)
         {
             FileAttributes result = new FileAttributes();
             foreach (char c in attributes.ToUpper()) {
@@ -206,7 +206,7 @@ namespace Tbasic.Libraries
                     case 'R': result = result | FileAttributes.ReadOnly; break;
                     case 'S': result = result | FileAttributes.System; break;
                     default:
-                        throw new ArgumentException("invalid attribute '" + c + "'");
+                        throw new ArgumentException("Invalid attribute '" + c + "'");
                 }
             }
             return result;
@@ -216,45 +216,57 @@ namespace Tbasic.Libraries
         {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
-            if (File.Exists(path)) {
-                File.SetLastAccessTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = File.GetLastAccessTime(path).ToString();
+            try {
+                if (File.Exists(path)) {
+                    File.SetLastAccessTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = File.GetLastAccessTime(path).ToString();
+                }
+                else if (Directory.Exists(path)) {
+                    Directory.SetLastAccessTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = Directory.GetLastAccessTime(path).ToString();
+                }
             }
-            else if (Directory.Exists(path)) {
-                Directory.SetLastAccessTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = Directory.GetLastAccessTime(path).ToString();
+            catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
+                throw new CustomException(ErrorClient.NotFound, path, ex);
             }
-            throw new FileNotFoundException(path);
         }
 
         private void FileSetModifiedDate(Parameters _sframe)
         {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
-            if (File.Exists(path)) {
-                File.SetLastWriteTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = File.GetLastWriteTime(path).ToString();
+            try {
+                if (File.Exists(path)) {
+                    File.SetLastWriteTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = File.GetLastWriteTime(path).ToString();
+                }
+                else if (Directory.Exists(path)) {
+                    Directory.SetLastWriteTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = Directory.GetLastWriteTime(path).ToString();
+                }
             }
-            else if (Directory.Exists(path)) {
-                Directory.SetLastWriteTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = Directory.GetLastWriteTime(path).ToString();
+            catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
+                throw new CustomException(ErrorClient.NotFound, path, ex);
             }
-            throw new FileNotFoundException(path);
         }
 
         private void FileSetCreatedDate(Parameters _sframe)
         {
             _sframe.AssertArgs(3);
             string path = _sframe.Get<string>(1);
-            if (File.Exists(path)) {
-                File.SetCreationTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = File.GetCreationTime(path).ToString();
+            try {
+                if (File.Exists(path)) {
+                    File.SetCreationTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = File.GetCreationTime(path).ToString();
+                }
+                else if (Directory.Exists(path)) {
+                    Directory.SetCreationTime(path, DateTime.Parse(_sframe.Get<string>(2)));
+                    _sframe.Data = Directory.GetCreationTime(path).ToString();
+                }
             }
-            else if (Directory.Exists(path)) {
-                Directory.SetCreationTime(path, DateTime.Parse(_sframe.Get<string>(2)));
-                _sframe.Data = Directory.GetCreationTime(path).ToString();
+            catch(Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
+                throw new CustomException(ErrorClient.NotFound, path, ex);
             }
-            throw new FileNotFoundException(path);
         }
 
         private void DirectoryGetCurrent(Parameters _sframe)
@@ -267,7 +279,6 @@ namespace Tbasic.Libraries
         {
             _sframe.AssertArgs(2);
             Directory.SetCurrentDirectory(_sframe.Get<string>(1));
-
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ Input("Enter a boolean expression:\n" + _
       "Proper boolean values are: 1/0 or True/False\n" + _
       "Use \"AND\", \"OR\", and \"NOT\" for the appropriate operations.", "Math")
 
-If @err = -1 Then
+If @err = 204 Then
     Exit
 End If
 

@@ -45,7 +45,7 @@ namespace Tbasic.Runtime
 
         #region Properties
         /// <summary>
-        /// The global context for this ScriptRunner
+        /// The global context for this object
         /// </summary>
         public ObjectContext Global { get; private set; }
 
@@ -154,12 +154,12 @@ namespace Tbasic.Runtime
 
         private void HandleError(Line current, Parameters stackFrame, Exception ex)
         {
-            CustomException cEx = ex as CustomException;
+            CustomException cEx = CustomException.WrapException(ex) as CustomException;
             if (cEx != null) {
                 int status = cEx.Status;
                 string msg = stackFrame.Data as string;
                 if (string.IsNullOrEmpty(msg)) {
-                    msg = CustomException.GetGenericMessage(status);
+                    msg = cEx.Message;
                 }
                 stackFrame.Status = status;
                 stackFrame.Data = msg;

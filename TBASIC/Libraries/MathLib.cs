@@ -20,6 +20,7 @@
 using System;
 using System.Globalization;
 using Tbasic.Runtime;
+using Tbasic.Errors;
 
 namespace Tbasic.Libraries
 {
@@ -41,7 +42,6 @@ namespace Tbasic.Libraries
             Add("ROUND", Round);
             Add("EVAL", Eval);
             Add("RANDOM", Rand);
-            Add("NOT", Not);
             Add("ABS", Abs);
             Add("SIN", Sin);
             Add("ASIN", Asin);
@@ -129,18 +129,6 @@ namespace Tbasic.Libraries
             stackFrame.Data = Math.Tanh(stackFrame.Get<double>(1));
         }
 
-        private void Not(Parameters stackFrame)
-        {
-            stackFrame.AssertArgs(2);
-            Evaluator e = new Evaluator(stackFrame.Get<string>(1), stackFrame.StackExecuter);
-            try {
-                stackFrame.Data = !e.EvaluateBool();
-            }
-            catch {
-                stackFrame.Status = 1;
-            }
-        }
-
         /// <summary>
         /// Returns a pseudo-random double between 0 and 1
         /// </summary>
@@ -219,7 +207,6 @@ namespace Tbasic.Libraries
             Executer e = new Executer(); // local execution
             e.Global.AddLibrary(new MathLib(e.Global)); // only allow math libs
             e.Global.SetFunction("eval", null); // that's a no-no
-            e.Global.SetFunction("not", null); // also a no-no
             return Evaluator.Evaluate(expr, e);
         }
 
@@ -229,8 +216,8 @@ namespace Tbasic.Libraries
             try {
                 stackFrame.Data = Eval(stackFrame.Get<string>(1));
             }
-            catch {
-                stackFrame.Status = 1;
+            catch(Exception ex) {
+                throw CustomException.WrapException(ex);
             }
         }
 

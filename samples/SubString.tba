@@ -26,11 +26,11 @@ Function GetNumChars()
     amnt$ = 0
     While 1
         amnt$ = Input("How many characters do you want to take?", "SubString")
-        If @err = -1 Then
+        If @err = 204 Then
             Exit
         End If
         amnt$ = Int(amnt$)
-        If @err Then
+        If @err = 400 Then
             MsgBox(16, "What you entered is not a valid integer!", "SubString")
         Else
             Break

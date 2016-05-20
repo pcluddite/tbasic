@@ -20,11 +20,11 @@
 ; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ; SOFTWARE.
 expr$ = input("Enter a math expression:", "Math")
-if @err then
+if @err = 204 then
     exit
 end if
 ans$ = eval(expr$)
-if @err then
+if @err = 204 then
 	msgbox(48, "The expression you entered doesn't seem valid.")
 else
 	MsgBox(64, "The answer is:\n" + ans$, "Math")
