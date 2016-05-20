@@ -28,7 +28,7 @@ namespace Tbasic.Libraries
     /// Delegate for processing a TBasic function
     /// </summary>
     /// <param name="stack">The StackFrame containing parameter and execution information</param>
-    public delegate void TBasicFunction(Paramaters stack);
+    public delegate void TBasicFunction(Parameters stack);
 
     /// <summary>
     /// A library for storing and processing TBasic functions
@@ -147,7 +147,7 @@ namespace Tbasic.Libraries
             return ((ICollection<KeyValuePair<string, TBasicFunction>>)lib).GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

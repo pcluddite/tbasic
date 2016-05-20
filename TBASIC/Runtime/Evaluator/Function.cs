@@ -253,7 +253,7 @@ namespace Tbasic.Runtime
                 throw ScriptException.UndefinedObject(name);
             }
             else {
-                Paramaters _sframe = new Paramaters(CurrentExecution);
+                Parameters _sframe = new Parameters(CurrentExecution);
                 _sframe.SetAll(a_evaluated);
                 _sframe.Name = name;
                 context.GetFunction(name).Invoke(_sframe);

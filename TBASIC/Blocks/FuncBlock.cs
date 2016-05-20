@@ -26,7 +26,7 @@ namespace Tbasic
 {
     internal class FuncBlock : CodeBlock
     {
-        public Paramaters Template { get; private set; }
+        public Parameters Template { get; private set; }
 
         public FuncBlock(int index, LineCollection code)
         {
@@ -36,7 +36,7 @@ namespace Tbasic
                     c => c.Name.EqualsIgnoreCase("FUNCTION"),
                     c => c.Text.EqualsIgnoreCase("END FUNCTION")
                 ));
-            Template = new Paramaters(null);
+            Template = new Parameters(null);
             Template.SetAll(ParseFunction(Header.Text.Substring(Header.Name.Length)));
         }
 
@@ -45,7 +45,7 @@ namespace Tbasic
             return new TBasicFunction(Execute);
         }
 
-        public void Execute(Paramaters stackFrame)
+        public void Execute(Parameters stackFrame)
         {
             stackFrame.AssertArgs(Template.Count);
 
@@ -63,7 +63,7 @@ namespace Tbasic
             exec.Context = exec.Context.Collect();
         }
 
-        private void Return(Paramaters stackFrame)
+        private void Return(Parameters stackFrame)
         {
             if (stackFrame.Count < 2) {
                 stackFrame.AssertArgs(2);
@@ -75,7 +75,7 @@ namespace Tbasic
             stackFrame.StackExecuter.RequestBreak();
         }
 
-        private void SetStatus(Paramaters stackFrame)
+        private void SetStatus(Parameters stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Status = stackFrame.Get<int>(1);

@@ -20,7 +20,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Tbasic.Runtime;
 
@@ -29,7 +28,7 @@ namespace Tbasic
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class Paramaters : IList<object>, ICloneable
+    public class Parameters : IList<object>, ICloneable
     {
         private List<object> _params = new List<object>();
 
@@ -119,7 +118,7 @@ namespace Tbasic
         /// Constructs a StackFrame object
         /// </summary>
         /// <param name="exec">the execution that called the function</param>
-        public Paramaters(Executer exec)
+        public Parameters(Executer exec)
         {
             StackExecuter = exec;
             Status = 0;
@@ -131,7 +130,7 @@ namespace Tbasic
         /// </summary>
         /// <param name="text">the text to be processed (formatted as a shell command)</param>
         /// <param name="exec">the execution that called the function</param>
-        public Paramaters(Executer exec, string text)
+        public Parameters(Executer exec, string text)
             : this(exec)
         {
             SetAll(text);
@@ -330,9 +329,9 @@ namespace Tbasic
         /// Clones this StackFrame
         /// </summary>
         /// <returns>A new StackFrame object with the same data</returns>
-        public Paramaters Clone()
+        public Parameters Clone()
         {
-            Paramaters clone = new Paramaters(StackExecuter);
+            Parameters clone = new Parameters(StackExecuter);
             clone.Text = Text;
             if (_params == null) {
                 clone._params = new List<object>();

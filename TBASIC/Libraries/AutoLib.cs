@@ -22,31 +22,36 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Tbasic.Win32;
+using Tbasic.Errors;
 using Forms = System.Windows.Forms;
 
-namespace Tbasic.Libraries {
+namespace Tbasic.Libraries
+{
     /// <summary>
     /// A library used to automate and manipulate key strokes, mouse clicks and other input
     /// </summary>
-    public class AutoLib : Library {
+    public class AutoLib : Library
+    {
 
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
-        public AutoLib() {
-            Add("MOUSECLICK", MouseClick);
-            Add("BLOCKINPUT", BlockInput);
-            Add("MOUSEMOVE", MouseMove);
-            Add("SEND", Send);
-            Add("VOLUMEUP", VolumeUp);
-            Add("VOLUMEDOWN", VolumeDown);
-            Add("VOLUMEMUTE", VolumeMute);
+        public AutoLib()
+        {
+            Add("MouseClick", MouseClick);
+            Add("BlockInput", BlockInput);
+            Add("MouseMove", MouseMove);
+            Add("Send", Send);
+            Add("VolumeUp", VolumeUp);
+            Add("VolumeDown", VolumeDown);
+            Add("VolumeMute", VolumeMute);
         }
 
         /// <summary>
         /// Mouse buttons
         /// </summary>
-        public enum MouseButton : long {
+        public enum MouseButton : long
+        {
             /// <summary>
             /// The left mouse button
             /// </summary>
@@ -65,21 +70,23 @@ namespace Tbasic.Libraries {
         /// <param name="y">the final y position of the cursor</param>
         /// <param name="clicks">the number of clicks</param>
         /// <param name="delay">the delay to cursor motion (higher numbers are slower)</param>
-        public static void MouseClick(MouseButton button, int x, int y, int clicks = 1, int delay = 1) {
+        public static void MouseClick(MouseButton button, int x, int y, int clicks = 1, int delay = 1)
+        {
             MouseMove(x, y, delay);
             long action = (long)button;
             for (int i = 0; i < clicks; i++) {
-                User32.mouse_event(action, x, y, 0,0);
+                User32.mouse_event(action, x, y, 0, 0);
             }
         }
 
-        private void MouseClick(Paramaters _sframe) {
+        private void MouseClick(Parameters _sframe)
+        {
             if (_sframe.Count == 4) {
-                _sframe.Add("1");
-                _sframe.Add("1");
+                _sframe.Add(1);
+                _sframe.Add(1);
             }
             if (_sframe.Count == 5) {
-                _sframe.Add("5");
+                _sframe.Add(5);
             }
             _sframe.AssertArgs(6);
 
@@ -98,7 +105,8 @@ namespace Tbasic.Libraries {
             MouseClick(button, x, y, clicks, speed);
         }
 
-        private void MouseMove(Paramaters _sframe) {
+        private void MouseMove(Parameters _sframe)
+        {
             if (_sframe.Count == 3) {
                 _sframe.Add(1);
             }
@@ -115,7 +123,8 @@ namespace Tbasic.Libraries {
         /// <param name="endX">the final x position of the cursor</param>
         /// <param name="endY">the final y position of the cursor</param>
         /// <param name="delay">the delay to cursor motion (higher numbers are slower)</param>
-        public static void MouseMove(double endX, double endY, int delay = 1) {
+        public static void MouseMove(double endX, double endY, int delay = 1)
+        {
             if (delay > 0) {
                 double startX = Cursor.Position.X,
                        startY = Cursor.Position.Y;
@@ -138,7 +147,8 @@ namespace Tbasic.Libraries {
             Cursor.Position = new Point((int)endX, (int)endY);
         }
 
-        private static bool IsBetween(double x, double d1, double d2) {
+        private static bool IsBetween(double x, double d1, double d2)
+        {
             if (d1 < d2) {
                 return (x <= d2) && (x >= d1);
             }
@@ -152,25 +162,31 @@ namespace Tbasic.Libraries {
         /// </summary>
         /// <param name="blocked">true will block, false will unblock</param>
         /// <returns>true if the operation succeeded, otherwise false</returns>
-        public static bool BlockInput(bool blocked = true) {
+        public static bool BlockInput(bool blocked = true)
+        {
             return User32.BlockInput(blocked);
         }
 
-        private void BlockInput(Paramaters _sframe) {
+        private void BlockInput(Parameters _sframe)
+        {
             _sframe.AssertArgs(2);
             _sframe.SetAll(_sframe.Get(0), _sframe.Get(1).ToString().Replace("1", "true").Replace("0", "false"));
-            _sframe.Data = BlockInput(_sframe.Get<bool>(1));
+            if (!BlockInput(_sframe.Get<bool>(1))) {
+                _sframe.Status = ErrorClient.Forbidden;
+            }
         }
 
         /// <summary>
         /// Sends keys to the active window
         /// </summary>
         /// <param name="keys">the formatted key string</param>
-        public static void Send(string keys) {
+        public static void Send(string keys)
+        {
             SendKeys.SendWait(keys);
         }
 
-        private void Send(Paramaters _sframe) {
+        private void Send(Parameters _sframe)
+        {
             _sframe.AssertArgs(2);
             Send(_sframe.Get<string>(1));
         }
@@ -179,13 +195,15 @@ namespace Tbasic.Libraries {
         /// Press the volume up key a given number of times
         /// </summary>
         /// <param name="amnt">number of times to press the key</param>
-        public static void VolumeUp(int amnt = 1) {
+        public static void VolumeUp(int amnt = 1)
+        {
             for (int i = 0; i < amnt; i++) {
                 User32.keybd_event((byte)Forms.Keys.VolumeUp, 0, 0, 0);
             }
         }
 
-        private void VolumeUp(Paramaters _sframe) {
+        private void VolumeUp(Parameters _sframe)
+        {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
             }
@@ -197,13 +215,15 @@ namespace Tbasic.Libraries {
         /// Press the volume down key a given number of times
         /// </summary>
         /// <param name="amnt">number of times to press the key</param>
-        public static void VolumeDown(int amnt = 1) {
+        public static void VolumeDown(int amnt = 1)
+        {
             for (int i = 0; i < amnt; i++) {
                 User32.keybd_event((byte)Forms.Keys.VolumeDown, 0, 0, 0);
             }
         }
 
-        private void VolumeDown(Paramaters _sframe) {
+        private void VolumeDown(Parameters _sframe)
+        {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
             }
@@ -214,16 +234,19 @@ namespace Tbasic.Libraries {
         /// <summary>
         /// Toggle volume mute
         /// </summary>
-        public static void VolumeMute() {
+        public static void VolumeMute()
+        {
             User32.keybd_event((byte)Forms.Keys.VolumeMute, 0, 0, 0);
         }
 
-        private void VolumeMute(Paramaters _sframe) {
+        private void VolumeMute(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             VolumeMute();
         }
 
-        internal static byte[] ReadToEnd(Stream stream) {
+        internal static byte[] ReadToEnd(Stream stream)
+        {
             long originalPosition = stream.Position;
             stream.Position = 0;
 

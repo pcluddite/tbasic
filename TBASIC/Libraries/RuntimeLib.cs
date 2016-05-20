@@ -22,13 +22,16 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Tbasic.Runtime;
+using Tbasic.Errors;
 
-namespace Tbasic.Libraries {
-    internal class RuntimeLib : Library {
-
-        public RuntimeLib() {
-            Add("SIZE", SizeOf);
-            Add("LEN", SizeOf);
+namespace Tbasic.Libraries
+{
+    internal class RuntimeLib : Library
+    {
+        public RuntimeLib()
+        {
+            Add("Size", SizeOf);
+            Add("Len", SizeOf);
             Add("IsStr", IsString);
             Add("IsInt", IsInt);
             Add("IsDouble", IsDouble);
@@ -45,67 +48,74 @@ namespace Tbasic.Libraries {
             AddLibrary(new ArrayLib());
         }
 
-        private void ToChar(Paramaters stackFrame) {
+        private void ToChar(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<char>(1);
             }
-            catch(InvalidCastException) {
-                stackFrame.Status = 1;
+            catch (InvalidCastException) {
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be char");
             }
         }
 
-        private void ToString(Paramaters stackFrame) {
+        private void ToString(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<string>(1);
             }
             catch (InvalidCastException) {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be string");
             }
         }
 
-        private void ToBool(Paramaters stackFrame) {
+        private void ToBool(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<bool>(1);
             }
             catch (InvalidCastException) {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be bool");
             }
         }
 
-        private void ToDouble(Paramaters stackFrame) {
+        private void ToDouble(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<double>(1);
             }
             catch (InvalidCastException) {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be double");
             }
         }
 
-        private void ToInt(Paramaters stackFrame) {
+        private void ToInt(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<int>(1);
             }
             catch (InvalidCastException) {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be int");
             }
         }
 
-        private void ToByte(Paramaters stackFrame) {
+        private void ToByte(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = stackFrame.Get<byte>(1);
             }
             catch (InvalidCastException) {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be byte");
             }
         }
 
-        private void SizeOf(Paramaters stackFrame) {
+        private void SizeOf(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             object obj = stackFrame.Get(1);
             int len = -1;
@@ -128,39 +138,45 @@ namespace Tbasic.Libraries {
                 len = ((object[])obj).Length;
             }
             else {
-                stackFrame.Status = 1;
+                throw new CustomException(ErrorClient.BadRequest, "Object size cannot be determined");
             }
             stackFrame.Data = len;
         }
 
-        private void IsInt(Paramaters stackFrame) {
+        private void IsInt(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is int;
         }
 
-        private void IsString(Paramaters stackFrame) {
+        private void IsString(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
-	        stackFrame.Data =  stackFrame.Get(1) is string;
+            stackFrame.Data = stackFrame.Get(1) is string;
         }
 
-        private void IsBool(Paramaters stackFrame) {
+        private void IsBool(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is bool;
         }
-        
-        private void IsDouble(Paramaters stackFrame) {
+
+        private void IsDouble(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is byte;
         }
-        
-        private void IsDefined(Paramaters stackFrame) {
+
+        private void IsDefined(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             string name = stackFrame.Get<string>(1);
             ObjectContext context = stackFrame.Context.FindContext(name);
             stackFrame.Data = context != null;
         }
-        
-        private void IsByte(Paramaters stackFrame) {
+
+        private void IsByte(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is byte;
         }

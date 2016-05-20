@@ -21,18 +21,20 @@ using System;
 using System.Globalization;
 using Tbasic.Runtime;
 
-namespace Tbasic.Libraries {
+namespace Tbasic.Libraries
+{
     /// <summary>
     /// A library containing several mathmatical functions
     /// </summary>
-    public class MathLib : Library {
-
+    public class MathLib : Library
+    {
         private static Random rand = new Random();
 
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
-        public MathLib(ObjectContext context) {
+        public MathLib(ObjectContext context)
+        {
             Add("POW", Pow);
             Add("IPART", iPart);
             Add("FPART", fPart);
@@ -55,69 +57,82 @@ namespace Tbasic.Libraries {
             context.SetConstant("@E", Math.E); // euler's number
         }
 
-        private void Log(Paramaters stackFrame) {
+        private void Log(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Log10(stackFrame.Get<double>(1));
         }
 
-        private void Ln(Paramaters stackFrame) {
+        private void Ln(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Log(stackFrame.Get<double>(1));
         }
 
-        private void Abs(Paramaters stackFrame) {
+        private void Abs(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Abs(stackFrame.Get<double>(1));
         }
 
-        private void Sin(Paramaters stackFrame) {
+        private void Sin(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Sin(stackFrame.Get<double>(1));
         }
 
-        private void Asin(Paramaters stackFrame) {
+        private void Asin(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Asin(stackFrame.Get<double>(1));
         }
 
-        private void Sinh(Paramaters stackFrame) {
+        private void Sinh(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Sinh(stackFrame.Get<double>(1));
         }
 
-        private void Cos(Paramaters stackFrame) {
+        private void Cos(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Cos(stackFrame.Get<double>(1));
         }
 
-        private void Acos(Paramaters stackFrame) {
+        private void Acos(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Acos(stackFrame.Get<double>(1));
         }
 
-        private void Cosh(Paramaters stackFrame) {
+        private void Cosh(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Cosh(stackFrame.Get<double>(1));
         }
 
-        private void Tan(Paramaters stackFrame) {
+        private void Tan(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Tan(stackFrame.Get<double>(1));
         }
 
-        private void Atan(Paramaters stackFrame) {
+        private void Atan(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Atan(stackFrame.Get<double>(1));
         }
 
-        private void Tanh(Paramaters stackFrame) {
+        private void Tanh(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = Math.Tanh(stackFrame.Get<double>(1));
         }
 
-        private void Not(Paramaters stackFrame) {
+        private void Not(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
-            Evaluator e = new Evaluator(stackFrame.Get<string>(1),stackFrame.StackExecuter);
+            Evaluator e = new Evaluator(stackFrame.Get<string>(1), stackFrame.StackExecuter);
             try {
                 stackFrame.Data = !e.EvaluateBool();
             }
@@ -130,11 +145,13 @@ namespace Tbasic.Libraries {
         /// Returns a pseudo-random double between 0 and 1
         /// </summary>
         /// <returns>a pseudo-random double between 0 and 1</returns>
-        public static double Rand() {
+        public static double Rand()
+        {
             return rand.NextDouble();
         }
 
-        private void Rand(Paramaters stackFrame) {
+        private void Rand(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(1);
             stackFrame.Data = Rand();
         }
@@ -145,12 +162,14 @@ namespace Tbasic.Libraries {
         /// <param name="number">the number to round</param>
         /// <param name="places">the number of places</param>
         /// <returns>the rounded double</returns>
-        public static double Round(double number, int places) {
+        public static double Round(double number, int places)
+        {
             return Math.Round(number, places);
         }
 
-        private void Round(Paramaters stackFrame) {
-            if (stackFrame.Count == 2) { 
+        private void Round(Parameters stackFrame)
+        {
+            if (stackFrame.Count == 2) {
                 stackFrame.Add(2);
             }
             stackFrame.AssertArgs(3);
@@ -162,11 +181,13 @@ namespace Tbasic.Libraries {
         /// </summary>
         /// <param name="d">the double to truncate</param>
         /// <returns>the truncated double</returns>
-        public static int iPart(double d) {
+        public static int iPart(double d)
+        {
             return (int)d;
         }
 
-        private void iPart(Paramaters stackFrame) {
+        private void iPart(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = iPart(stackFrame.Get<double>(1));
         }
@@ -176,12 +197,14 @@ namespace Tbasic.Libraries {
         /// </summary>
         /// <param name="d">the double to truncate</param>
         /// <returns>the truncated double</returns>
-        public static double fPart(double d) {
+        public static double fPart(double d)
+        {
             // TEST THIS! I'm just assuming that it works, but you know what they say about assuming...
             return (double)(d - (int)d);
         }
 
-        private void fPart(Paramaters stackFrame) {
+        private void fPart(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = fPart(stackFrame.Get<double>(1));
         }
@@ -191,7 +214,8 @@ namespace Tbasic.Libraries {
         /// </summary>
         /// <param name="expr">the expression to evaluate</param>
         /// <returns>the evaluated expression</returns>
-        public static object Eval(string expr) {
+        public static object Eval(string expr)
+        {
             Executer e = new Executer(); // local execution
             e.Global.AddLibrary(new MathLib(e.Global)); // only allow math libs
             e.Global.SetFunction("eval", null); // that's a no-no
@@ -199,7 +223,8 @@ namespace Tbasic.Libraries {
             return Evaluator.Evaluate(expr, e);
         }
 
-        private void Eval(Paramaters stackFrame) {
+        private void Eval(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             try {
                 stackFrame.Data = Eval(stackFrame.Get<string>(1));
@@ -209,7 +234,8 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private static void Pow(Paramaters stackFrame) {
+        private static void Pow(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(3);
             stackFrame.Data = Pow(stackFrame.Get<double>(1), stackFrame.Get<double>(2));
         }
@@ -220,7 +246,8 @@ namespace Tbasic.Libraries {
         /// <param name="dBase">the base</param>
         /// <param name="dPower">the exponent</param>
         /// <returns>the evaluated base raised to the given exponent</returns>
-        public static double Pow(double dBase, double dPower) {
+        public static double Pow(double dBase, double dPower)
+        {
             return Math.Pow(dBase, dPower);
         }
     }

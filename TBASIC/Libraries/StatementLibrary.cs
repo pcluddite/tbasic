@@ -18,18 +18,15 @@
  *  USA
  **/
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
-using Tbasic.Components;
 using Tbasic.Runtime;
 using System.IO;
-using Tbasic.Properties;
 
-namespace Tbasic.Libraries {
-    internal class StatementLibrary : Library {
-
-        public StatementLibrary() {
+namespace Tbasic.Libraries
+{
+    internal class StatementLibrary : Library
+    {
+        public StatementLibrary()
+        {
             Add("#include", Include);
             Add("LET", LET);
             Add("EXIT", Exit);
@@ -41,7 +38,8 @@ namespace Tbasic.Libraries {
             Add("WEND", UhOh);
         }
 
-        private void Include(Paramaters stackFrame) {
+        private void Include(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             string path = Path.GetFullPath(stackFrame.Get<string>(1));
             if (!File.Exists(path)) {
@@ -56,33 +54,39 @@ namespace Tbasic.Libraries {
             NULL(stackFrame);
         }
 
-        private void Sleep(Paramaters stackFrame) {
+        private void Sleep(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
             NULL(stackFrame);
         }
 
-        private void Break(Paramaters stackFrame) {
+        private void Break(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestBreak();
             NULL(stackFrame);
         }
 
-        internal void Exit(Paramaters stackFrame) {
+        internal void Exit(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestExit();
             NULL(stackFrame);
         }
 
-        internal static void NULL(Paramaters stackFrame) {
+        internal static void NULL(Parameters stackFrame)
+        {
             stackFrame.Context.PersistReturns(stackFrame);
         }
 
-        internal void UhOh(Paramaters stackFrame) {
+        internal void UhOh(Parameters stackFrame)
+        {
             throw ScriptException.NoOpeningStatement(stackFrame.Text);
         }
 
-        internal void Const(Paramaters stackFrame) {
+        internal void Const(Parameters stackFrame)
+        {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);
             }
@@ -104,7 +108,8 @@ namespace Tbasic.Libraries {
             }
         }
 
-        internal void DIM(Paramaters stackFrame) {
+        internal void DIM(Parameters stackFrame)
+        {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(2);
             }
@@ -128,7 +133,8 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private object array_alloc(int[] sizes, int index) {
+        private object array_alloc(int[] sizes, int index)
+        {
             if (index < sizes.Length) {
                 object[] o = new object[sizes[index]];
                 index++;
@@ -142,7 +148,8 @@ namespace Tbasic.Libraries {
             }
         }
 
-        private void array_realloc(ref object o, int[] sizes, int index) {
+        private void array_realloc(ref object o, int[] sizes, int index)
+        {
             if (o != null) {
                 if (o.GetType().IsArray) {
                     object[] _aObj = (object[])o;
@@ -161,7 +168,8 @@ namespace Tbasic.Libraries {
             }
         }
 
-        internal void LET(Paramaters stackFrame) {
+        internal void LET(Parameters stackFrame)
+        {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);
             }
@@ -176,7 +184,7 @@ namespace Tbasic.Libraries {
             object data = e.Evaluate();
 
             stackFrame.StackExecuter.Context.SetVariable(
-                stackFrame.Get<string>(1), 
+                stackFrame.Get<string>(1),
                 data
                 );
 

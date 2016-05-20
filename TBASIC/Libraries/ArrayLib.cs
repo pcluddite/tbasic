@@ -17,27 +17,28 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *  USA
  **/
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Tbasic.Libraries {
-    internal class ArrayLib : Library {
-
-        public ArrayLib() {
+namespace Tbasic.Libraries
+{
+    internal class ArrayLib : Library
+    {
+        public ArrayLib()
+        {
             Add("ArrayContains", ArrayContains);
             Add("ArrayIndexOf", ArrayIndexOf);
             Add("ArrayLastIndexOf", ArrayLastIndexOf);
             //Add("ArrayResize", ArrayResize);
         }
 
-        private void ArrayContains(Paramaters stackFrame) {
+        private void ArrayContains(Parameters stackFrame)
+        {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<object[]>(1).Contains(stackFrame.Get(2));
         }
 
-        private void ArrayIndexOf(Paramaters stackFrame) {
+        private void ArrayIndexOf(Parameters stackFrame)
+        {
             object[] arr = stackFrame.Get<object[]>(1);
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);
@@ -58,7 +59,8 @@ namespace Tbasic.Libraries {
             stackFrame.Data = -1;
         }
 
-        private void ArrayLastIndexOf(Paramaters stackFrame) {
+        private void ArrayLastIndexOf(Parameters stackFrame)
+        {
             object[] arr = stackFrame.Get<object[]>(1);
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);

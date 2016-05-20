@@ -22,7 +22,7 @@ using System;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Windows.Forms;
-using Tbasic.Runtime;
+using Tbasic.Errors;
 
 namespace Tbasic.Libraries
 {
@@ -42,46 +42,48 @@ namespace Tbasic.Libraries
             Add("StdPause", ConsolePause);
         }
 
-        private void ConsoleWriteline(Paramaters _sframe)
+        private void ConsoleWriteline(Parameters _sframe)
         {
             _sframe.AssertArgs(2);
             Console.WriteLine(_sframe.Get(1));
         }
 
-        private void ConsoleWrite(Paramaters _sframe) {
+        private void ConsoleWrite(Parameters _sframe)
+        {
             _sframe.AssertArgs(2);
             Console.Write(_sframe.Get(1));
         }
 
-        private void ConsoleRead(Paramaters _sframe)
+        private void ConsoleRead(Parameters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.Read();
         }
 
-        private void ConsoleReadLine(Paramaters _sframe)
+        private void ConsoleReadLine(Parameters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadLine();
         }
 
-        private void ConsoleReadKey(Paramaters _sframe)
+        private void ConsoleReadKey(Parameters _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadKey().KeyChar;
         }
 
-        private void ConsolePause(Paramaters _sframe) {
+        private void ConsolePause(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
-            _sframe.Data =  Console.ReadKey(true).KeyChar;
+            _sframe.Data = Console.ReadKey(true).KeyChar;
         }
 
-        private void Input(Paramaters _sframe)
+        private void Input(Parameters _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.SetAll(
                     _sframe.Get(0), _sframe.Get(1),
-                    "Input",  -1, -1
+                    "Input", -1, -1
                     );
             }
             if (_sframe.Count == 3) {
@@ -106,14 +108,14 @@ namespace Tbasic.Libraries
 
 
             if (resp == null || resp.Equals("")) {
-                _sframe.Status = -1; // -1 no input 2/24
+                _sframe.Status = ErrorSuccess.NoContent; // -1 no input 2/24
             }
             else {
-                _sframe.Data =  resp;
+                _sframe.Data = resp;
             }
         }
 
-        private void TrayTip(Paramaters _sframe) 
+        private void TrayTip(Parameters _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.Add(""); // title
@@ -160,7 +162,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        public static void MsgBox(Paramaters _sframe)
+        public static void MsgBox(Parameters _sframe)
         {
             if (_sframe.Count == 3) {
                 _sframe.Add("");
@@ -171,10 +173,10 @@ namespace Tbasic.Libraries
             string text = _sframe.Get<string>(2),
                    title = _sframe.Get<string>(3);
 
-            _sframe.Data =  Interaction.MsgBox(text, (MsgBoxStyle)flag, title).ToString();
+            _sframe.Data = Interaction.MsgBox(text, (MsgBoxStyle)flag, title).ToString();
         }
 
-        private void Say(Paramaters _sframe)
+        private void Say(Parameters _sframe)
         {
             _sframe.AssertArgs(2);
             Thread t = new Thread(Say);

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tbasic.Errors;
 using Tbasic.Libraries;
 
 namespace Tbasic.Runtime
@@ -40,9 +41,9 @@ namespace Tbasic.Runtime
         /// <summary>
         /// A string containing information on this version of Tbasic
         /// </summary>
-        public const string VERSION = "TBASIC 2.0.2015";
+        public const string VERSION = "TBASIC 2.1.2016";
 
-        #region properties
+        #region Properties
         /// <summary>
         /// The global context for this ScriptRunner
         /// </summary>
@@ -67,6 +68,11 @@ namespace Tbasic.Runtime
         /// Gets if a request to exit has been petitioned. This should apply to the scope of the whole application.
         /// </summary>
         public static bool ExitRequest { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets if minor errors should throw an exception instead of simply raising the error flag
+        /// </summary>
+        public bool ThrowError { get; set; }
 
         /// <summary>
         /// Raised when a user has requested to exit
@@ -117,9 +123,9 @@ namespace Tbasic.Runtime
             }*/
         }
 
-        internal Paramaters Execute(LineCollection lines)
+        internal Parameters Execute(LineCollection lines)
         {
-            Paramaters stackFrame = new Paramaters(this);
+            Parameters stackFrame = new Parameters(this);
             for (int index = 0; index < lines.Count; index++) {
                 if (BreakRequest) {
                     break;
@@ -140,14 +146,33 @@ namespace Tbasic.Runtime
                     }
                 }
                 catch (Exception ex) {
-                    throw new ScriptException(current.LineNumber, current.VisibleName,
-                        new ScriptException(current.LineNumber, current.VisibleName, ex));
+                    HandleError(current, stackFrame, ex);
                 }
             }
             return stackFrame;
         }
 
-        internal static void Execute(Paramaters stackFrame, Line codeLine)
+        private void HandleError(Line current, Parameters stackFrame, Exception ex)
+        {
+            CustomException cEx = ex as CustomException;
+            if (cEx != null) {
+                int status = cEx.Status;
+                string msg = stackFrame.Data as string;
+                if (string.IsNullOrEmpty(msg)) {
+                    msg = CustomException.GetGenericMessage(status);
+                }
+                stackFrame.Status = status;
+                stackFrame.Data = msg;
+                if (ThrowError) {
+                    throw new ScriptException(current.LineNumber, current.VisibleName, cEx);
+                }
+            }
+            else {
+                throw new ScriptException(current.LineNumber, current.VisibleName, ex);
+            }
+        }
+
+        internal static void Execute(Parameters stackFrame, Line codeLine)
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {

@@ -21,18 +21,22 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Tbasic.Win32 {
+namespace Tbasic.Win32
+{
     internal delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    internal class User32 {
-
+    internal class User32
+    {
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
 
-        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        public const int MOUSEEVENTF_LEFTUP = 0x04;
-        public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-        public const int MOUSEEVENTF_RIGHTUP = 0x10;
+        public struct MouseEvents
+        {
+            public const int MOUSEEVENTF_LEFTDOWN = 0x02;
+            public const int MOUSEEVENTF_LEFTUP = 0x04;
+            public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+            public const int MOUSEEVENTF_RIGHTUP = 0x10;
+        }
 
         [DllImport("user32.dll")]
         public static extern bool BlockInput(bool fBlockIt);
@@ -122,14 +126,13 @@ namespace Tbasic.Win32 {
         public const int WS_EX_LAYERED = 0x80000;
         public const int LWA_ALPHA = 0x2;
         public const int LWA_COLORKEY = 0x1;
-
         public const int MF_BYPOSITION = 0x400;
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("User32")]
         public static extern int RemoveMenu(IntPtr hMenu, int nPosition, int wFlags);
@@ -144,5 +147,10 @@ namespace Tbasic.Win32 {
         public static extern System.IntPtr DefWindowProcW(
             IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam
         );
+
+        public struct SendMessages
+        {
+            public const uint WM_CLOSE = 0x010;
+        }
     }
 }

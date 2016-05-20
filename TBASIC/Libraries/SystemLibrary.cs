@@ -18,14 +18,13 @@
  *  USA
  **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Tbasic.Libraries {
-    internal class SystemLibrary : Library {
-
-        public SystemLibrary() {
+namespace Tbasic.Libraries
+{
+    internal class SystemLibrary : Library
+    {
+        public SystemLibrary()
+        {
             Add("GetMonth", GetMonth);
             Add("GetDay", GetDay);
             Add("GetDayOfWeek", GetDayOfWeek);
@@ -36,42 +35,50 @@ namespace Tbasic.Libraries {
             Add("GetMillisecond", GetMillisecond);
         }
 
-        private void GetMonth(Paramaters _sframe) {
+        private void GetMonth(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Month;
         }
 
-        private void GetDay(Paramaters _sframe) {
+        private void GetDay(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Day;
         }
 
-        private void GetDayOfWeek(Paramaters _sframe) {
+        private void GetDayOfWeek(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = (int)DateTime.Now.DayOfWeek;
         }
 
-        private void GetYear(Paramaters _sframe) {
+        private void GetYear(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Year;
         }
 
-        private void GetHour(Paramaters _sframe) {
+        private void GetHour(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Hour;
         }
 
-        private void GetMinute(Paramaters _sframe) {
+        private void GetMinute(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Minute;
         }
 
-        private void GetSecond(Paramaters _sframe) {
+        private void GetSecond(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Second;
         }
 
-        private void GetMillisecond(Paramaters _sframe) {
+        private void GetMillisecond(Parameters _sframe)
+        {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Millisecond;
         }
