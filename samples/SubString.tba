@@ -30,6 +30,7 @@ Function GetNumChars()
             Exit
         End If
         amnt$ = Int(amnt$)
+		;StdWrite(@err)
         If @err = 400 Then
             MsgBox(16, "What you entered is not a valid integer!", "SubString")
         Else

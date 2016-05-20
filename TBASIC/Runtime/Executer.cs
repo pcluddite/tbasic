@@ -163,6 +163,7 @@ namespace Tbasic.Runtime
                 }
                 stackFrame.Status = status;
                 stackFrame.Data = msg;
+                stackFrame.Context.SetReturns(stackFrame);
                 if (ThrowError) {
                     throw new ScriptException(current.LineNumber, current.VisibleName, cEx);
                 }
