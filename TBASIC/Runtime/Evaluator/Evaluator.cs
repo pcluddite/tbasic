@@ -255,7 +255,6 @@ namespace Tbasic.Runtime
                 mRet = m;
             }
 
-
             //Check String
             m = DefinedRegex.String.Match(Expression, nIdx);
             if (m.Success && (mRet == null || m.Index < mRet.Index)) {
