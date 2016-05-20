@@ -121,7 +121,7 @@ namespace Tbasic.Runtime
         public object Evaluate()
         {
             if (Executer.ExitRequest) {
-                return CurrentContext.GetVariable("@return");
+                return null;
             }
             Parse();
             return ExecuteFunction(_function, _params);
@@ -136,7 +136,7 @@ namespace Tbasic.Runtime
         public static object Evaluate(string expression, Executer exec)
         {
             if (Executer.ExitRequest) {
-                return exec.Context.GetVariable("@return");
+                return null;
             }
             Function expr = new Function(expression, exec);
             return expr.Evaluate();
@@ -235,7 +235,7 @@ namespace Tbasic.Runtime
         private object ExecuteFunction(string name, IList<object> l_params)
         {
             if (Executer.ExitRequest) {
-                return CurrentContext.GetVariable("@return");
+                return null;
             }
             name = name.Trim();
             object[] a_evaluated = null;

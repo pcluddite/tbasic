@@ -44,7 +44,7 @@ Function GetString(amnt$)
     While 1
         str$ = Input("Enter some text that is at least " + amnt$ + " character(s) long:", "SubString")
 
-        If @err = -1 Then
+        If @err = 204 Then
             Exit
         End If
 
