@@ -29,7 +29,7 @@ namespace Tbasic
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class Parameters : IList<object>, ICloneable
+    public class StackFrame : IList<object>, ICloneable
     {
         private List<object> _params = new List<object>();
 
@@ -119,7 +119,7 @@ namespace Tbasic
         /// Constructs a StackFrame object
         /// </summary>
         /// <param name="exec">the execution that called the function</param>
-        public Parameters(Executer exec)
+        public StackFrame(Executer exec)
         {
             StackExecuter = exec;
         }
@@ -129,7 +129,7 @@ namespace Tbasic
         /// </summary>
         /// <param name="text">the text to be processed (formatted as a shell command)</param>
         /// <param name="exec">the execution that called the function</param>
-        public Parameters(Executer exec, string text)
+        public StackFrame(Executer exec, string text)
             : this(exec)
         {
             SetAll(text);
@@ -328,9 +328,9 @@ namespace Tbasic
         /// Clones this StackFrame
         /// </summary>
         /// <returns>A new StackFrame object with the same data</returns>
-        public Parameters Clone()
+        public StackFrame Clone()
         {
-            Parameters clone = new Parameters(StackExecuter);
+            StackFrame clone = new StackFrame(StackExecuter);
             clone.Text = Text;
             if (_params == null) {
                 clone._params = new List<object>();
@@ -338,7 +338,23 @@ namespace Tbasic
             else {
                 clone._params.AddRange(_params);
             }
+            clone.Status = Status;
+            clone.Data = Data;
             return clone;
+        }
+
+        /// <summary>
+        /// Copies all properties of another StackFrame into this one
+        /// </summary>
+        /// <param name="other"></param>
+        public void CopyFrom(StackFrame other)
+        {
+            StackFrame clone = other.Clone();
+            StackExecuter = clone.StackExecuter;
+            Text = clone.Text;
+            _params = clone._params;
+            Status = clone.Status;
+            Data = clone.Data;
         }
 
         object ICloneable.Clone()
@@ -406,13 +422,8 @@ namespace Tbasic
         {
             get { return false; }
         }
-
-        /// <summary>
-        /// Copies the values of this collection into an array
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        public void CopyTo(object[] array, int index)
+        
+        void ICollection<object>.CopyTo(object[] array, int index)
         {
             _params.CopyTo(array, index);
         }

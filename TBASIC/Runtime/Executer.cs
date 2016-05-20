@@ -123,9 +123,9 @@ namespace Tbasic.Runtime
             }*/
         }
 
-        internal Parameters Execute(LineCollection lines)
+        internal StackFrame Execute(LineCollection lines)
         {
-            Parameters stackFrame = new Parameters(this);
+            StackFrame stackFrame = new StackFrame(this);
             for (int index = 0; index < lines.Count; index++) {
                 if (BreakRequest) {
                     break;
@@ -152,7 +152,7 @@ namespace Tbasic.Runtime
             return stackFrame;
         }
 
-        private void HandleError(Line current, Parameters stackFrame, Exception ex)
+        private void HandleError(Line current, StackFrame stackFrame, Exception ex)
         {
             CustomException cEx = CustomException.WrapException(ex) as CustomException;
             if (cEx != null) {
@@ -172,7 +172,7 @@ namespace Tbasic.Runtime
             }
         }
 
-        internal static void Execute(Parameters stackFrame, Line codeLine)
+        internal static void Execute(StackFrame stackFrame, Line codeLine)
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {

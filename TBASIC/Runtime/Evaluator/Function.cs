@@ -254,7 +254,7 @@ namespace Tbasic.Runtime
                 throw ScriptException.UndefinedObject(name);
             }
             else {
-                Parameters _sframe = new Parameters(CurrentExecution);
+                StackFrame _sframe = new StackFrame(CurrentExecution);
                 _sframe.SetAll(a_evaluated);
                 _sframe.Name = name;
                 context.GetFunction(name).Invoke(_sframe);

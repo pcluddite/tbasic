@@ -43,7 +43,7 @@ namespace Tbasic.Errors
         /// <param name="name">the function or command that caused the error</param>
         /// <param name="e">the exception that occoured</param>
         public ScriptException(int line, string name, Exception e)
-            : base(string.Format("An error occoured at '{0}' on line {1}", name, line) + GetMessage(e), e)
+            : base(string.Format("An error occoured at '{0}' on line {1}\n", name, line) + GetMessage(e), e)
         {
             Line = line;
             Name = name;

@@ -83,7 +83,7 @@
     <Compile Include="Components\Win32\UnmanagedTypes.cs" />
     <Compile Include="Components\Win32\User32.cs" />
     <Compile Include="Components\Win32\WindowEnums.cs" />
-    <Compile Include="Runtime\StackFrame\Parameters.cs" />
+    <Compile Include="Runtime\StackFrame\StackFrame.cs" />
     <Compile Include="Components\Win32\Windows.cs" />
     <Compile Include="Libraries\WindowLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

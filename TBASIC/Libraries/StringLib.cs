@@ -43,7 +43,7 @@ namespace Tbasic.Libraries
             Add("Substring", Substring);
         }
 
-        private void CharsToString(Parameters stackFrame)
+        private void CharsToString(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             StringBuilder hanz = new StringBuilder();
@@ -53,49 +53,49 @@ namespace Tbasic.Libraries
             stackFrame.Data = hanz.ToString();
         }
 
-        private void ToCharArray(Parameters stackFrame)
+        private void ToCharArray(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToCharArray();
         }
 
-        private void StringSplit(Parameters stackFrame)
+        private void StringSplit(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = Regex.Split(stackFrame.Get(1).ToString(), stackFrame.Get(2).ToString());
         }
 
-        private void Trim(Parameters stackFrame)
+        private void Trim(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().Trim();
         }
 
-        private void TrimStart(Parameters stackFrame)
+        private void TrimStart(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().TrimStart();
         }
 
-        private void TrimEnd(Parameters stackFrame)
+        private void TrimEnd(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().TrimEnd();
         }
 
-        private void StringContains(Parameters stackFrame)
+        private void StringContains(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Contains(stackFrame.Get<string>(2));
         }
 
-        private void StringCompare(Parameters stackFrame)
+        private void StringCompare(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).CompareTo(stackFrame.Get<string>(2));
         }
 
-        private void StringIndexOf(Parameters stackFrame)
+        private void StringIndexOf(StackFrame stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);
@@ -113,7 +113,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void StringLastIndexOf(Parameters stackFrame)
+        private void StringLastIndexOf(StackFrame stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);
@@ -131,31 +131,31 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void StringUpper(Parameters stackFrame)
+        private void StringUpper(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToUpper();
         }
 
-        private void StringLower(Parameters stackFrame)
+        private void StringLower(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToLower();
         }
 
-        private void StringLeft(Parameters stackFrame)
+        private void StringLeft(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Substring(stackFrame.Get<int>(2));
         }
 
-        private void StringRight(Parameters stackFrame)
+        private void StringRight(StackFrame stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Remove(stackFrame.Get<int>(2));
         }
 
-        private void Substring(Parameters stackFrame)
+        private void Substring(StackFrame stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Data = stackFrame.Get<string>(1).Substring(
