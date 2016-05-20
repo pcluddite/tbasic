@@ -20,6 +20,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using Tbasic.Runtime;
+using Tbasic.Errors;
 
 namespace texecute
 {
@@ -51,8 +52,8 @@ namespace texecute
                 exec.Global.LoadStandardLibrary();
                 exec.Execute(File.ReadAllLines(file));
             }
-            catch (Exception ex) {
-                MessageBox.Show("An error occoured\n" + ex.Message, "Tbasic Script Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            catch (ScriptException ex) {
+                MessageBox.Show(ex.Message, "Tbasic Script Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

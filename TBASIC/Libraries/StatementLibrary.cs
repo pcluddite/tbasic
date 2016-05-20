@@ -20,6 +20,7 @@
 using System;
 using Tbasic.Runtime;
 using System.IO;
+using Tbasic.Errors;
 
 namespace Tbasic.Libraries
 {

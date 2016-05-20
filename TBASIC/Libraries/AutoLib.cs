@@ -55,11 +55,11 @@ namespace Tbasic.Libraries
             /// <summary>
             /// The left mouse button
             /// </summary>
-            Left = User32.MOUSEEVENTF_LEFTDOWN | User32.MOUSEEVENTF_LEFTUP,
+            Left = User32.MouseEvents.MOUSEEVENTF_LEFTDOWN | User32.MouseEvents.MOUSEEVENTF_LEFTUP,
             /// <summary>
             /// The right mouse button
             /// </summary>
-            Right = User32.MOUSEEVENTF_RIGHTDOWN | User32.MOUSEEVENTF_RIGHTUP
+            Right = User32.MouseEvents.MOUSEEVENTF_RIGHTDOWN | User32.MouseEvents.MOUSEEVENTF_RIGHTUP
         }
 
         /// <summary>

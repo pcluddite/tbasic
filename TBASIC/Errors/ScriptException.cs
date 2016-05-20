@@ -20,7 +20,7 @@
 using System;
 using System.Text;
 
-namespace Tbasic
+namespace Tbasic.Errors
 {
     /// <summary>
     /// Represents a generic scripting error
