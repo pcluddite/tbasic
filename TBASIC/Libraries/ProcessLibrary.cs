@@ -47,7 +47,7 @@ namespace Tbasic.Libraries
             Add("ProcList", ProcessList);
         }
 
-        private void ProcessExists(StackFrame _sframe)
+        private void ProcessExists(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             _sframe.Data = false;
@@ -59,7 +59,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ProcessList(StackFrame _sframe)
+        private void ProcessList(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             Process[] procs = Process.GetProcesses();
@@ -75,7 +75,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ProcessKill(StackFrame _sframe)
+        private void ProcessKill(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
@@ -87,7 +87,7 @@ namespace Tbasic.Libraries
             _sframe.Status = ErrorClient.NotFound;
         }
 
-        private void ProcessClose(StackFrame _sframe)
+        private void ProcessClose(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             foreach (Process p in Process.GetProcesses()) {
@@ -99,7 +99,7 @@ namespace Tbasic.Libraries
             _sframe.Status = ErrorClient.NotFound;
         }
 
-        private void BlockedList(StackFrame _sframe)
+        private void BlockedList(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             var list = BlockedList(); // dicts currently are not supported 2/24/15
@@ -133,7 +133,7 @@ namespace Tbasic.Libraries
 
         private const string REG_EXEC_PATH = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\";
 
-        private void ProcessBlock(StackFrame _sframe)
+        private void ProcessBlock(TFunctionData _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.Add(16);
@@ -151,7 +151,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ProcessRedirect(StackFrame _sframe)
+        private void ProcessRedirect(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
@@ -167,7 +167,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ProcessSetDebugger(StackFrame _sframe)
+        private void ProcessSetDebugger(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             string name = _sframe.Get<string>(1);
@@ -183,7 +183,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void Unblock(StackFrame _sframe)
+        private void Unblock(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             string name = _sframe.Get<string>(1);
@@ -201,7 +201,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void Run(StackFrame _sframe)
+        private void Run(TFunctionData _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.Add("");

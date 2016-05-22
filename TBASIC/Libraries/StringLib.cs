@@ -43,7 +43,7 @@ namespace Tbasic.Libraries
             Add("Substring", Substring);
         }
 
-        private void CharsToString(StackFrame stackFrame)
+        private void CharsToString(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             StringBuilder hanz = new StringBuilder();
@@ -53,49 +53,49 @@ namespace Tbasic.Libraries
             stackFrame.Data = hanz.ToString();
         }
 
-        private void ToCharArray(StackFrame stackFrame)
+        private void ToCharArray(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToCharArray();
         }
 
-        private void StringSplit(StackFrame stackFrame)
+        private void StringSplit(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = Regex.Split(stackFrame.Get(1).ToString(), stackFrame.Get(2).ToString());
         }
 
-        private void Trim(StackFrame stackFrame)
+        private void Trim(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().Trim();
         }
 
-        private void TrimStart(StackFrame stackFrame)
+        private void TrimStart(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().TrimStart();
         }
 
-        private void TrimEnd(StackFrame stackFrame)
+        private void TrimEnd(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1).ToString().TrimEnd();
         }
 
-        private void StringContains(StackFrame stackFrame)
+        private void StringContains(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Contains(stackFrame.Get<string>(2));
         }
 
-        private void StringCompare(StackFrame stackFrame)
+        private void StringCompare(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).CompareTo(stackFrame.Get<string>(2));
         }
 
-        private void StringIndexOf(StackFrame stackFrame)
+        private void StringIndexOf(TFunctionData stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);
@@ -113,7 +113,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void StringLastIndexOf(StackFrame stackFrame)
+        private void StringLastIndexOf(TFunctionData stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Add(0);
@@ -131,31 +131,31 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void StringUpper(StackFrame stackFrame)
+        private void StringUpper(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToUpper();
         }
 
-        private void StringLower(StackFrame stackFrame)
+        private void StringLower(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<string>(1).ToLower();
         }
 
-        private void StringLeft(StackFrame stackFrame)
+        private void StringLeft(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Substring(stackFrame.Get<int>(2));
         }
 
-        private void StringRight(StackFrame stackFrame)
+        private void StringRight(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(3);
             stackFrame.Data = stackFrame.Get<string>(1).Remove(stackFrame.Get<int>(2));
         }
 
-        private void Substring(StackFrame stackFrame)
+        private void Substring(TFunctionData stackFrame)
         {
             if (stackFrame.Count == 3) {
                 stackFrame.Data = stackFrame.Get<string>(1).Substring(

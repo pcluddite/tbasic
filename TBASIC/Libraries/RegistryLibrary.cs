@@ -74,7 +74,7 @@ namespace Tbasic.Libraries
             return ret;
         }
 
-        private void RegValueKind(StackFrame _sframe)
+        private void RegValueKind(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), false)) {
@@ -91,7 +91,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegRead(StackFrame _sframe)
+        private void RegRead(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
 
@@ -110,7 +110,7 @@ namespace Tbasic.Libraries
             return RegistryUtilities.Read(GetRootKey(key), RemoveKeyRoot(key), value, null);
         }
 
-        private void RegDelete(StackFrame _sframe)
+        private void RegDelete(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             RegistryKey key = GetRootKey(_sframe.Get<string>(1));
@@ -119,7 +119,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegRename(StackFrame _sframe)
+        private void RegRename(TFunctionData _sframe)
         {
             _sframe.AssertArgs(4);
             RegistryKey key = GetRootKey(_sframe.Get<string>(1));
@@ -129,7 +129,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegDeleteKey(StackFrame _sframe)
+        private void RegDeleteKey(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             using (RegistryKey key = GetRootKey(_sframe.Get<string>(1))) {
@@ -137,7 +137,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegRenameKey(StackFrame _sframe)
+        private void RegRenameKey(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             using (RegistryKey key = OpenParentKey(_sframe.Get<string>(1), true)) {
@@ -145,7 +145,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegCreateKey(StackFrame _sframe)
+        private void RegCreateKey(TFunctionData _sframe)
         {
             _sframe.AssertArgs(3);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), true)) {
@@ -154,7 +154,7 @@ namespace Tbasic.Libraries
             }
         }
         
-        private void RegEnumValues(StackFrame _sframe)
+        private void RegEnumValues(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
 
@@ -189,7 +189,7 @@ namespace Tbasic.Libraries
             return OpenKey(path, write);
         }
 
-        private static void RegEnumKeys(StackFrame _sframe)
+        private static void RegEnumKeys(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             using (RegistryKey key = OpenKey(_sframe.Get<string>(1), false)) {
@@ -197,7 +197,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void RegWrite(StackFrame _sframe)
+        private void RegWrite(TFunctionData _sframe)
         {
             _sframe.AssertArgs(5);
 

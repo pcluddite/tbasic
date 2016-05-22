@@ -29,7 +29,7 @@ namespace Tbasic
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class StackFrame : IList<object>, ICloneable
+    public class TFunctionData : IList<object>, ICloneable
     {
         private List<object> _params = new List<object>();
 
@@ -119,7 +119,7 @@ namespace Tbasic
         /// Constructs a StackFrame object
         /// </summary>
         /// <param name="exec">the execution that called the function</param>
-        public StackFrame(Executer exec)
+        public TFunctionData(Executer exec)
         {
             StackExecuter = exec;
         }
@@ -129,7 +129,7 @@ namespace Tbasic
         /// </summary>
         /// <param name="text">the text to be processed (formatted as a shell command)</param>
         /// <param name="exec">the execution that called the function</param>
-        public StackFrame(Executer exec, string text)
+        public TFunctionData(Executer exec, string text)
             : this(exec)
         {
             SetAll(text);
@@ -328,9 +328,9 @@ namespace Tbasic
         /// Clones this StackFrame
         /// </summary>
         /// <returns>A new StackFrame object with the same data</returns>
-        public StackFrame Clone()
+        public TFunctionData Clone()
         {
-            StackFrame clone = new StackFrame(StackExecuter);
+            TFunctionData clone = new TFunctionData(StackExecuter);
             clone.Text = Text;
             if (_params == null) {
                 clone._params = new List<object>();
@@ -347,9 +347,9 @@ namespace Tbasic
         /// Copies all properties of another StackFrame into this one
         /// </summary>
         /// <param name="other"></param>
-        public void CopyFrom(StackFrame other)
+        public void CopyFrom(TFunctionData other)
         {
-            StackFrame clone = other.Clone();
+            TFunctionData clone = other.Clone();
             StackExecuter = clone.StackExecuter;
             Text = clone.Text;
             _params = clone._params;

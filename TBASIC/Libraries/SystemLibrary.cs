@@ -35,49 +35,49 @@ namespace Tbasic.Libraries
             Add("GetMillisecond", GetMillisecond);
         }
 
-        private void GetMonth(StackFrame _sframe)
+        private void GetMonth(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Month;
         }
 
-        private void GetDay(StackFrame _sframe)
+        private void GetDay(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Day;
         }
 
-        private void GetDayOfWeek(StackFrame _sframe)
+        private void GetDayOfWeek(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = (int)DateTime.Now.DayOfWeek;
         }
 
-        private void GetYear(StackFrame _sframe)
+        private void GetYear(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Year;
         }
 
-        private void GetHour(StackFrame _sframe)
+        private void GetHour(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Hour;
         }
 
-        private void GetMinute(StackFrame _sframe)
+        private void GetMinute(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Minute;
         }
 
-        private void GetSecond(StackFrame _sframe)
+        private void GetSecond(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Second;
         }
 
-        private void GetMillisecond(StackFrame _sframe)
+        private void GetMillisecond(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = DateTime.Now.Millisecond;

@@ -31,13 +31,13 @@ namespace Tbasic.Libraries
             //Add("ArrayResize", ArrayResize);
         }
 
-        private void ArrayContains(StackFrame stackFrame)
+        private void ArrayContains(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get<object[]>(1).Contains(stackFrame.Get(2));
         }
 
-        private void ArrayIndexOf(StackFrame stackFrame)
+        private void ArrayIndexOf(TFunctionData stackFrame)
         {
             object[] arr = stackFrame.Get<object[]>(1);
             if (stackFrame.Count == 3) {
@@ -59,7 +59,7 @@ namespace Tbasic.Libraries
             stackFrame.Data = -1;
         }
 
-        private void ArrayLastIndexOf(StackFrame stackFrame)
+        private void ArrayLastIndexOf(TFunctionData stackFrame)
         {
             object[] arr = stackFrame.Get<object[]>(1);
             if (stackFrame.Count == 3) {

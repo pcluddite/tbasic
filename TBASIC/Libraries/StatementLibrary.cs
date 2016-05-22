@@ -39,7 +39,7 @@ namespace Tbasic.Libraries
             Add("WEND", UhOh);
         }
 
-        private void Include(StackFrame stackFrame)
+        private void Include(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             string path = Path.GetFullPath(stackFrame.Get<string>(1));
@@ -55,38 +55,38 @@ namespace Tbasic.Libraries
             NULL(stackFrame);
         }
 
-        private void Sleep(StackFrame stackFrame)
+        private void Sleep(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
             NULL(stackFrame);
         }
 
-        private void Break(StackFrame stackFrame)
+        private void Break(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestBreak();
             NULL(stackFrame);
         }
 
-        internal void Exit(StackFrame stackFrame)
+        internal void Exit(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(1);
             stackFrame.StackExecuter.RequestExit();
             NULL(stackFrame);
         }
 
-        internal static void NULL(StackFrame stackFrame)
+        internal static void NULL(TFunctionData stackFrame)
         {
             stackFrame.Context.PersistReturns(stackFrame);
         }
 
-        internal void UhOh(StackFrame stackFrame)
+        internal void UhOh(TFunctionData stackFrame)
         {
             throw ScriptException.NoOpeningStatement(stackFrame.Text);
         }
 
-        internal void Const(StackFrame stackFrame)
+        internal void Const(TFunctionData stackFrame)
         {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);
@@ -109,7 +109,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        internal void DIM(StackFrame stackFrame)
+        internal void DIM(TFunctionData stackFrame)
         {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(2);
@@ -169,7 +169,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        internal void LET(StackFrame stackFrame)
+        internal void LET(TFunctionData stackFrame)
         {
             if (stackFrame.Count < 4) {
                 stackFrame.AssertArgs(4);

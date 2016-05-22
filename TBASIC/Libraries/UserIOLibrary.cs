@@ -48,37 +48,37 @@ namespace Tbasic.Libraries
             Add("StdPause", ConsolePause);
         }
 
-        private void ConsoleWriteline(StackFrame _sframe)
+        private void ConsoleWriteline(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             Console.WriteLine(_sframe.Get(1));
         }
 
-        private void ConsoleWrite(StackFrame _sframe)
+        private void ConsoleWrite(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             Console.Write(_sframe.Get(1));
         }
 
-        private void ConsoleRead(StackFrame _sframe)
+        private void ConsoleRead(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.Read();
         }
 
-        private void ConsoleReadLine(StackFrame _sframe)
+        private void ConsoleReadLine(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadLine();
         }
 
-        private void ConsoleReadKey(StackFrame _sframe)
+        private void ConsoleReadKey(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadKey().KeyChar;
         }
 
-        private void ConsolePause(StackFrame _sframe)
+        private void ConsolePause(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             _sframe.Data = Console.ReadKey(true).KeyChar;
@@ -98,7 +98,7 @@ namespace Tbasic.Libraries
             return Interaction.InputBox(prompt, title, defaultResponse, x, y);
         }
 
-        private void Input(StackFrame _sframe)
+        private void Input(TFunctionData _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.SetAll(
@@ -144,7 +144,7 @@ namespace Tbasic.Libraries
             t.Start(new object[] { timeout, icon, text, title });
         }
 
-        private void TrayTip(StackFrame _sframe)
+        private void TrayTip(TFunctionData _sframe)
         {
             if (_sframe.Count == 2) {
                 _sframe.Add(""); // title
@@ -198,7 +198,7 @@ namespace Tbasic.Libraries
             return Interaction.MsgBox(prompt, (MsgBoxStyle)buttons, title).ToString();
         }
 
-        private void MsgBox(StackFrame _sframe)
+        private void MsgBox(TFunctionData _sframe)
         {
             if (_sframe.Count == 3) {
                 _sframe.Add("");
@@ -222,7 +222,7 @@ namespace Tbasic.Libraries
             t.Start(text);
         }
 
-        private void Say(StackFrame _sframe)
+        private void Say(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             Say(_sframe.Get<string>(1));

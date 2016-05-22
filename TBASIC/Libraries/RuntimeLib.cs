@@ -48,7 +48,7 @@ namespace Tbasic.Libraries
             AddLibrary(new ArrayLib());
         }
 
-        private void ToChar(StackFrame stackFrame)
+        private void ToChar(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -59,7 +59,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ToString(StackFrame stackFrame)
+        private void ToString(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -70,7 +70,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ToBool(StackFrame stackFrame)
+        private void ToBool(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -81,7 +81,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ToDouble(StackFrame stackFrame)
+        private void ToDouble(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -92,7 +92,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ToInt(StackFrame stackFrame)
+        private void ToInt(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -103,7 +103,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void ToByte(StackFrame stackFrame)
+        private void ToByte(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             try {
@@ -114,7 +114,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void SizeOf(StackFrame stackFrame)
+        private void SizeOf(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             object obj = stackFrame.Get(1);
@@ -143,31 +143,31 @@ namespace Tbasic.Libraries
             stackFrame.Data = len;
         }
 
-        private void IsInt(StackFrame stackFrame)
+        private void IsInt(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is int;
         }
 
-        private void IsString(StackFrame stackFrame)
+        private void IsString(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is string;
         }
 
-        private void IsBool(StackFrame stackFrame)
+        private void IsBool(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is bool;
         }
 
-        private void IsDouble(StackFrame stackFrame)
+        private void IsDouble(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is byte;
         }
 
-        private void IsDefined(StackFrame stackFrame)
+        private void IsDefined(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             string name = stackFrame.Get<string>(1);
@@ -175,7 +175,7 @@ namespace Tbasic.Libraries
             stackFrame.Data = context != null;
         }
 
-        private void IsByte(StackFrame stackFrame)
+        private void IsByte(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(2);
             stackFrame.Data = stackFrame.Get(1) is byte;

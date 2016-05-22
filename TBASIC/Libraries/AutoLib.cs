@@ -79,7 +79,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void MouseClick(StackFrame _sframe)
+        private void MouseClick(TFunctionData _sframe)
         {
             if (_sframe.Count == 4) {
                 _sframe.Add(1);
@@ -105,7 +105,7 @@ namespace Tbasic.Libraries
             MouseClick(button, x, y, clicks, speed);
         }
 
-        private void MouseMove(StackFrame _sframe)
+        private void MouseMove(TFunctionData _sframe)
         {
             if (_sframe.Count == 3) {
                 _sframe.Add(1);
@@ -167,7 +167,7 @@ namespace Tbasic.Libraries
             return User32.BlockInput(blocked);
         }
 
-        private void BlockInput(StackFrame _sframe)
+        private void BlockInput(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             _sframe.SetAll(_sframe.Get(0), _sframe.Get(1).ToString().Replace("1", "true").Replace("0", "false"));
@@ -185,7 +185,7 @@ namespace Tbasic.Libraries
             SendKeys.SendWait(keys);
         }
 
-        private void Send(StackFrame _sframe)
+        private void Send(TFunctionData _sframe)
         {
             _sframe.AssertArgs(2);
             Send(_sframe.Get<string>(1));
@@ -202,7 +202,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void VolumeUp(StackFrame _sframe)
+        private void VolumeUp(TFunctionData _sframe)
         {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
@@ -222,7 +222,7 @@ namespace Tbasic.Libraries
             }
         }
 
-        private void VolumeDown(StackFrame _sframe)
+        private void VolumeDown(TFunctionData _sframe)
         {
             if (_sframe.Count == 1) {
                 _sframe.SetAll(_sframe.Get(0), "1");
@@ -239,7 +239,7 @@ namespace Tbasic.Libraries
             User32.keybd_event((byte)Forms.Keys.VolumeMute, 0, 0, 0);
         }
 
-        private void VolumeMute(StackFrame _sframe)
+        private void VolumeMute(TFunctionData _sframe)
         {
             _sframe.AssertArgs(1);
             VolumeMute();

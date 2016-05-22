@@ -37,7 +37,7 @@ namespace Tbasic
 
         public override void Execute(Executer exec)
         {
-            StackFrame parameters = new StackFrame(exec, Header.Text);
+            TFunctionData parameters = new TFunctionData(exec, Header.Text);
 
             if (parameters.Count < 3) {
                 throw ScriptException.NoCondition();
