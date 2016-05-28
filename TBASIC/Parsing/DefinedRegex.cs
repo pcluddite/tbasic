@@ -19,7 +19,7 @@
  **/
 using System.Text.RegularExpressions;
 
-namespace Tbasic.Runtime
+namespace Tbasic.Parsing
 {
     /// <summary>
     /// This class is internal to the library, houses different regular expression objects

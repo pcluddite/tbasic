@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Tbasic.Errors;
+using Tbasic.Parsing;
 
 namespace Tbasic.Runtime
 {
