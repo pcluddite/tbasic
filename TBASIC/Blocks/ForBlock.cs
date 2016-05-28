@@ -19,6 +19,7 @@
  **/
 using System;
 using Tbasic.Runtime;
+using Tbasic.Parsing;
 
 namespace Tbasic
 {

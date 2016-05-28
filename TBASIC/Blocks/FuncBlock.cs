@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using Tbasic.Runtime;
 using Tbasic.Libraries;
+using Tbasic.Parsing;
 
 namespace Tbasic
 {

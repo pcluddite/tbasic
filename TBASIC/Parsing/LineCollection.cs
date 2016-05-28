@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Collections;
 using Tbasic.Errors;
 
-namespace Tbasic
+namespace Tbasic.Parsing
 {
     /// <summary>
     /// A collection of Tbasic.Line objects sorted by line number

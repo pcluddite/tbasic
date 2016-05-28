@@ -19,7 +19,7 @@
  **/
 using System;
 
-namespace Tbasic
+namespace Tbasic.Parsing
 {
     /// <summary>
     /// Defines a set of methods and properties for a line of Tbasic code

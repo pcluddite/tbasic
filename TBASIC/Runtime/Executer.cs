@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using Tbasic.Errors;
 using Tbasic.Libraries;
+using Tbasic.Parsing;
 
 namespace Tbasic.Runtime
 {
@@ -152,6 +153,22 @@ namespace Tbasic.Runtime
             return stackFrame;
         }
 
+        internal static void Execute(TFunctionData stackFrame, Line codeLine)
+        {
+            ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
+            if (context == null) {
+                Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
+                object result = eval.Evaluate();
+                stackFrame.Context.PersistReturns(stackFrame);
+                stackFrame.Data = result;
+            }
+            else {
+                stackFrame.SetAll(codeLine.Text);
+                context.GetCommand(codeLine.Name).Invoke(stackFrame);
+            }
+            stackFrame.Context.SetReturns(stackFrame);
+        }
+
         private void HandleError(Line current, TFunctionData stackFrame, Exception ex)
         {
             CustomException cEx = CustomException.WrapException(ex) as CustomException;
@@ -171,22 +188,6 @@ namespace Tbasic.Runtime
             else {
                 throw new ScriptException(current.LineNumber, current.VisibleName, ex);
             }
-        }
-
-        internal static void Execute(TFunctionData stackFrame, Line codeLine)
-        {
-            ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
-            if (context == null) {
-                Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
-                object result = eval.Evaluate();
-                stackFrame.Context.PersistReturns(stackFrame);
-                stackFrame.Data = result;
-            }
-            else {
-                stackFrame.SetAll(codeLine.Text);
-                context.GetCommand(codeLine.Name).Invoke(stackFrame);
-            }
-            stackFrame.Context.SetReturns(stackFrame);
         }
 
         internal static LineCollection ScanLines(string[] lines, out CodeBlock[] userFunctions)
