@@ -265,6 +265,15 @@ namespace Tbasic.Runtime
                 val = str_parsed;
             }
 
+            //Check Unary Operator
+            if (mRet == null || mRet.Index > nIdx) {
+                m = DefinedRegex.UnaryOp.Match(Expression, nIdx);
+                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                    mRet = m;
+                    val = new UnaryOperator(m.Value);
+                }
+            }
+
             //Check Function
             if (mRet == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Function.Match(Expression, nIdx);
@@ -296,15 +305,6 @@ namespace Tbasic.Runtime
                     Variable v = new Variable(m.Value, CurrentExecution);
                     mRet.Value = v.Expression;
                     val = v;
-                }
-            }
-
-            //Check Unary Operator
-            if (mRet == null || mRet.Index > nIdx) {
-                m = DefinedRegex.UnaryOp.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = new UnaryOperator(m.Value);
                 }
             }
 
