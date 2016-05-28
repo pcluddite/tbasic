@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using Tbasic.Win32;
 using Tbasic.Errors;
 using Forms = System.Windows.Forms;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {

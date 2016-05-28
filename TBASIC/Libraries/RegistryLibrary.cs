@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using Tbasic.Borrowed;
 using Tbasic.Errors;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {

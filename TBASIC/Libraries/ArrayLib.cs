@@ -18,6 +18,7 @@
  *  USA
  **/
 using System.Linq;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {

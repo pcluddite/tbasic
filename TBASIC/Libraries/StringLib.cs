@@ -19,6 +19,7 @@
  **/
 using System.Text;
 using System.Text.RegularExpressions;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {

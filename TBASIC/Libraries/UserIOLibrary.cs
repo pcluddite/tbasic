@@ -23,6 +23,7 @@ using System.Speech.Synthesis;
 using System.Threading;
 using System.Windows.Forms;
 using Tbasic.Errors;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {

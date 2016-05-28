@@ -21,10 +21,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Tbasic.Runtime;
 using Tbasic.Errors;
 
-namespace Tbasic
+namespace Tbasic.Runtime
 {
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
