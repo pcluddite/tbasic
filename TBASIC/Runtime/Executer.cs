@@ -153,6 +153,18 @@ namespace Tbasic.Runtime
             return stackFrame;
         }
 
+        /// <summary>
+        /// Executes a single line of code
+        /// </summary>
+        /// <param name="codeLine"></param>
+        /// <returns></returns>
+        public TFunctionData Execute(Line codeLine)
+        {
+            TFunctionData data = new TFunctionData(this);
+            Execute(data, codeLine);
+            return data;
+        }
+
         internal static void Execute(TFunctionData stackFrame, Line codeLine)
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
