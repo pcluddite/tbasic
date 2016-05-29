@@ -227,7 +227,7 @@ namespace Tbasic.Libraries
                 }
             }
             catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
-                throw new CustomException(ErrorClient.NotFound, path, ex);
+                throw new TbasicException(ErrorClient.NotFound, path, ex);
             }
         }
 
@@ -246,7 +246,7 @@ namespace Tbasic.Libraries
                 }
             }
             catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
-                throw new CustomException(ErrorClient.NotFound, path, ex);
+                throw new TbasicException(ErrorClient.NotFound, path, ex);
             }
         }
 
@@ -265,7 +265,7 @@ namespace Tbasic.Libraries
                 }
             }
             catch(Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException) {
-                throw new CustomException(ErrorClient.NotFound, path, ex);
+                throw new TbasicException(ErrorClient.NotFound, path, ex);
             }
         }
 

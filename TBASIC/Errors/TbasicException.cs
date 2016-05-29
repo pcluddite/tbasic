@@ -18,9 +18,6 @@
  *  USA
  **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Security;
 
@@ -115,7 +112,7 @@ namespace Tbasic.Errors
     /// <summary>
     /// An exception that has been associated with a status code
     /// </summary>
-    public class CustomException : Exception
+    public class TbasicException : Exception
     {
         /// <summary>
         /// Gets the status code for this exception
@@ -127,7 +124,7 @@ namespace Tbasic.Errors
         /// </summary>
         /// <param name="status">the status code for this exception</param>
         /// <param name="innerException">the inner exception</param>
-        public CustomException(int status, Exception innerException = null)
+        public TbasicException(int status, Exception innerException = null)
             : this(status, GetGenericMessage(status), innerException)
         {
         }
@@ -138,7 +135,7 @@ namespace Tbasic.Errors
         /// <param name="status">the status code for this exception</param>
         /// <param name="msg">the message for this exception</param>
         /// /// <param name="innerException">the inner exception</param>
-        public CustomException(int status, string msg, Exception innerException = null)
+        public TbasicException(int status, string msg, Exception innerException = null)
             : this(status, msg, true)
         {
         }
@@ -150,7 +147,7 @@ namespace Tbasic.Errors
         /// <param name="msg">the message for this exception</param>
         /// <param name="prependGeneric">true to add the generic message, false otherwise</param>
         /// <param name="innerException">the inner exception</param>
-        public CustomException(int status, string msg, bool prependGeneric, Exception innerException = null)
+        public TbasicException(int status, string msg, bool prependGeneric, Exception innerException = null)
             : base(prependGeneric ? GetGenericMessage(status) + ": " + msg : msg, innerException)
         {
             Status = status;
@@ -206,16 +203,16 @@ namespace Tbasic.Errors
         internal static Exception WrapException(Exception ex)
         {
             if (ex is ArgumentException || ex is FormatException) {
-                return new CustomException(ErrorClient.BadRequest, ex.Message, ex);
+                return new TbasicException(ErrorClient.BadRequest, ex.Message, ex);
             }
             else if (ex is FileNotFoundException || ex is DirectoryNotFoundException || ex is DriveNotFoundException) {
-                return new CustomException(ErrorClient.NotFound, ex);
+                return new TbasicException(ErrorClient.NotFound, ex);
             }
             else if (ex is UnauthorizedAccessException || ex is SecurityException) {
-                return new CustomException(ErrorClient.Forbidden, ex.Message, ex);
+                return new TbasicException(ErrorClient.Forbidden, ex.Message, ex);
             }
             else if (ex is IOException) {
-                return new CustomException(ErrorClient.Locked, ex.Message, ex);
+                return new TbasicException(ErrorClient.Locked, ex.Message, ex);
             }
             return ex;
         }

@@ -217,7 +217,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = Eval(stackFrame.Get<string>(1));
             }
             catch(Exception ex) {
-                throw CustomException.WrapException(ex);
+                throw TbasicException.WrapException(ex);
             }
         }
 

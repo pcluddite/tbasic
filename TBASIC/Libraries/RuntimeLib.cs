@@ -55,7 +55,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<char>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be char");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be char");
             }
         }
 
@@ -66,7 +66,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<string>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be string");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be string");
             }
         }
 
@@ -77,7 +77,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<bool>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be bool");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be bool");
             }
         }
 
@@ -88,7 +88,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<double>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be double");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be double");
             }
         }
 
@@ -99,7 +99,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<int>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be int");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be int");
             }
         }
 
@@ -110,7 +110,7 @@ namespace Tbasic.Libraries
                 stackFrame.Data = stackFrame.Get<byte>(1);
             }
             catch (InvalidCastException) {
-                throw new CustomException(ErrorClient.BadRequest, "Parameter cannot be byte");
+                throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be byte");
             }
         }
 
@@ -138,7 +138,7 @@ namespace Tbasic.Libraries
                 len = ((object[])obj).Length;
             }
             else {
-                throw new CustomException(ErrorClient.BadRequest, "Object size cannot be determined");
+                throw new TbasicException(ErrorClient.BadRequest, "Object size cannot be determined");
             }
             stackFrame.Data = len;
         }

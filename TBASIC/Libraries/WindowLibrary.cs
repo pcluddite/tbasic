@@ -92,7 +92,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(3);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!User32.SetWindowText(hwnd, parameters.Get<string>(2))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to set window title");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to set window title");
             }
         }
 
@@ -122,7 +122,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(3);
             uint flag = parameters.Get<uint>(2);
             if (!WinSetState(new IntPtr(parameters.Get<long>(1)), flag)) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to set window state");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to set window state");
             }
         }
 
@@ -135,7 +135,7 @@ namespace Tbasic.Libraries
         {
             parameters.AssertArgs(2);
             if (!WinActivate(new IntPtr(parameters.Get<long>(1)))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to activate window");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to activate window");
             }
         }
 
@@ -160,7 +160,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(4);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinMove(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to move window");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to move window");
             }
         }
 
@@ -187,7 +187,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(4);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSize(hwnd, parameters.Get<int>(2), parameters.Get<int>(3))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to resize window");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to resize window");
             }
         }
 
@@ -201,7 +201,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(2);
             long hwnd = parameters.Get<long>(1);
             if (!WinKill(new IntPtr(hwnd))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to kill window");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to kill window");
             }
         }
 
@@ -227,7 +227,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(3);
             IntPtr hwnd = new IntPtr(parameters.Get<long>(1));
             if (!WinSetTrans(hwnd, parameters.Get<byte>(2))) {
-                throw new CustomException(ErrorServer.GenericError, "Unable to set window transparency");
+                throw new TbasicException(ErrorServer.GenericError, "Unable to set window transparency");
             }
         }
 
