@@ -53,6 +53,16 @@ namespace Tbasic.Errors
         /// The function completed with warnings, or its task was only partially completed
         /// </summary>
         public const int Warnings = 206;
+
+        /// <summary>
+        /// Determines whether the given code is a success code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static bool IsSuccess(int code)
+        {
+            return code >= 200 && code < 300;
+        }
     }
 
     /// <summary>
@@ -84,6 +94,16 @@ namespace Tbasic.Errors
         /// The resource may currently be in use
         /// </summary>
         public const int Locked = 423;
+
+        /// <summary>
+        /// Determines whether the given code is an ErrorClient code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static bool IsError(int code)
+        {
+            return code >= 400 && code < 500;
+        }
     }
 
     /// <summary>
@@ -107,6 +127,16 @@ namespace Tbasic.Errors
         /// There is no memory to perform the requested task
         /// </summary>
         public const int NoMemory = 507;
+
+        /// <summary>
+        /// Determines whether the given code is an ErrorServer code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static bool IsError(int code)
+        {
+            return code >= 500 && code < 600;
+        }
     }
 
     /// <summary>
