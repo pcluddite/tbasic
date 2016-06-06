@@ -30,7 +30,7 @@ namespace Tbasic.Errors
         /// <summary>
         /// The line at which the error occoured
         /// </summary>
-        public int Line { get; private set; }
+        public uint Line { get; private set; }
         /// <summary>
         /// The function or command that caused the error
         /// </summary>
@@ -42,7 +42,7 @@ namespace Tbasic.Errors
         /// <param name="line">the line number at which the error occoured</param>
         /// <param name="name">the function or command that caused the error</param>
         /// <param name="innerException">the exception that occoured</param>
-        public LineException(int line, string name, Exception innerException)
+        public LineException(uint line, string name, Exception innerException)
             : base(string.Format("An error occoured at '{0}' on line {1}\n", name, line) + GetMessage(innerException), innerException)
         {
             Line = line;

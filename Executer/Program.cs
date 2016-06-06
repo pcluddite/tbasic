@@ -52,7 +52,7 @@ namespace texecute
                 exec.Global.LoadStandardLibrary();
                 exec.Execute(File.ReadAllLines(file));
             }
-            catch (ScriptException ex) {
+            catch (ScriptParsingException ex) {
                 MessageBox.Show(ex.Message, "Tbasic Script Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

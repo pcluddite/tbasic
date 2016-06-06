@@ -31,7 +31,7 @@ namespace Tbasic.Parsing
         /// </summary>
         /// <param name="id">The id of the line. This should be the line number.</param>
         /// <param name="line">The text of the line</param>
-        public Line(int id, string line)
+        public Line(uint id, string line)
         {
             LineNumber = id;
             Text = line.Trim(); // Ignore leading and trailing whitespace.
@@ -52,7 +52,7 @@ namespace Tbasic.Parsing
         /// <summary>
         /// Gets or sets the line number
         /// </summary>
-        public int LineNumber { get; set; }
+        public uint LineNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the text of this line

@@ -58,7 +58,7 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Gets the current line in the script that the executer is processing
         /// </summary>
-        public int CurrentLine { get; internal set; }
+        public uint CurrentLine { get; internal set; }
 
         /// <summary>
         /// Gets or sets the ObjectContext in which the code is executed
@@ -124,6 +124,18 @@ namespace Tbasic.Runtime
             }*/
         }
 
+        /// <summary>
+        /// Executes a single line of code
+        /// </summary>
+        /// <param name="codeLine"></param>
+        /// <returns></returns>
+        public TFunctionData Execute(Line codeLine)
+        {
+            TFunctionData data = new TFunctionData(this);
+            Execute(data, codeLine);
+            return data;
+        }
+
         internal TFunctionData Execute(LineCollection lines)
         {
             TFunctionData stackFrame = new TFunctionData(this);
@@ -151,18 +163,6 @@ namespace Tbasic.Runtime
                 }
             }
             return stackFrame;
-        }
-
-        /// <summary>
-        /// Executes a single line of code
-        /// </summary>
-        /// <param name="codeLine"></param>
-        /// <returns></returns>
-        public TFunctionData Execute(Line codeLine)
-        {
-            TFunctionData data = new TFunctionData(this);
-            Execute(data, codeLine);
-            return data;
         }
 
         internal static void Execute(TFunctionData stackFrame, Line codeLine)
@@ -205,9 +205,9 @@ namespace Tbasic.Runtime
         internal static LineCollection ScanLines(string[] lines, out CodeBlock[] userFunctions)
         {
             LineCollection allLines = new LineCollection();
-            List<int> funLines = new List<int>();
+            List<uint> funLines = new List<uint>();
 
-            for (int lineNumber = 0; lineNumber < lines.Length; lineNumber++) {
+            for (uint lineNumber = 0; lineNumber < lines.Length; ++lineNumber) {
                 Line current = new Line(lineNumber + 1, lines[lineNumber]); // Tag all lines with its line number (index + 1)
 
                 if (current.Text.StartsWith(";") || string.IsNullOrEmpty(current.Text)) {
@@ -236,7 +236,7 @@ namespace Tbasic.Runtime
             }
 
             List<CodeBlock> userFuncs = new List<CodeBlock>();
-            foreach (int funcLine in funLines) {
+            foreach (uint funcLine in funLines) {
                 FuncBlock func = new FuncBlock(allLines.IndexOf(funcLine), allLines);
                 userFuncs.Add(func);
                 allLines.Remove(func.Header);

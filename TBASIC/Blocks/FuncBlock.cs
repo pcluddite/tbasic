@@ -90,7 +90,7 @@ namespace Tbasic
 
         private object[] ParseFunction(string text)
         {
-            Line codeLine = new Line(-1, text);
+            Line codeLine = new Line(0, text);
             text = codeLine.Text; // it's trimmed
             List<object> result = new List<object>();
             result.Add(codeLine.Name);
