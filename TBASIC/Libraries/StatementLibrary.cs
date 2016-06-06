@@ -84,7 +84,7 @@ namespace Tbasic.Libraries
 
         internal void UhOh(TFunctionData stackFrame)
         {
-            throw ScriptException.NoOpeningStatement(stackFrame.Text);
+            throw ThrowHelper.NoOpeningStatement(stackFrame.Text);
         }
 
         internal void Const(TFunctionData stackFrame)
@@ -93,11 +93,11 @@ namespace Tbasic.Libraries
                 stackFrame.AssertArgs(4);
             }
             if (!stackFrame.Get(2).Equals("=")) {
-                throw ScriptException.InvalidOperatorDeclaration(stackFrame.Get(2));
+                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.Get(2));
             }
             Variable var = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
             if (!var.IsValid) {
-                throw ScriptException.InvalidVariableName(var.Name);
+                throw ThrowHelper.InvalidVariableName(var.Name);
             }
             if (var.Indices == null) {
                 Evaluator e = new Evaluator(stackFrame.Text.Substring(stackFrame.Text.IndexOf('=')), stackFrame.StackExecuter);
@@ -106,7 +106,7 @@ namespace Tbasic.Libraries
                 NULL(stackFrame);
             }
             else {
-                throw new ArgumentException("arrays cannot be defined as constants");
+                throw ThrowHelper.ArraysCannotBeConstant();
             }
         }
 
@@ -176,7 +176,7 @@ namespace Tbasic.Libraries
                 stackFrame.AssertArgs(4);
             }
             if (!stackFrame.Get(2).Equals("=")) {
-                throw ScriptException.InvalidOperatorDeclaration(stackFrame.Get(2));
+                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.Get(2));
             }
 
             Evaluator e = new Evaluator(

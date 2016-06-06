@@ -41,7 +41,7 @@ namespace Tbasic
         {
             TFunctionData parms = new TFunctionData(exec, Header.Text);
             if (parms.Count < 2) {
-                throw ScriptException.NoCondition();
+                throw ThrowHelper.NoCondition();
             }
             object obj = Evaluator.Evaluate(Header.Text.Substring(Header.Name.Length), exec);
             CodeBlock _default;
@@ -72,7 +72,7 @@ namespace Tbasic
                        );
                 }
                 else {
-                    throw ScriptException.InvalidExpression(Body[0].Text, "CASE");
+                    throw ThrowHelper.InvalidExpression(Body[0].Text, "CASE");
                 }
 
             }
@@ -108,7 +108,7 @@ namespace Tbasic
                     Condition = "default";
                 }
                 else if (parms.Count < 2) {
-                    throw ScriptException.NoCondition();
+                    throw ThrowHelper.NoCondition();
                 }
                 else {
                     Condition = Header.Text.Substring(Header.Text.IndexOf(' ') + 1);

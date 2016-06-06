@@ -74,7 +74,7 @@ namespace Tbasic.Runtime
                         int last = Evaluator.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
                         _expression = value.Remove(last) + ']';
                         if (indices.Count == 0) {
-                            throw ScriptException.NoIndexSpecified();
+                            throw ThrowHelper.NoIndexSpecified();
                         }
                         Indices = new int[indices.Count];
                         for (int i = 0; i < Indices.Length; i++) {
@@ -82,7 +82,7 @@ namespace Tbasic.Runtime
                                 Indices[i] = (int)indices[i];
                             }
                             else {
-                                throw ScriptException.InvalidExpression(indices[i].GetType().Name, typeof(int).Name);
+                                throw ThrowHelper.InvalidExpression(indices[i].GetType().Name, typeof(int).Name);
                             }
                         }
                     }
@@ -151,11 +151,11 @@ namespace Tbasic.Runtime
                             obj = _aObj[Indices[n]];
                         }
                         else {
-                            throw ScriptException.IndexOutOfRange(BuildName(n - 1), Indices[n]);
+                            throw ThrowHelper.IndexOutOfRange(BuildName(n - 1), Indices[n]);
                         }
                     }
                     else {
-                        throw ScriptException.IndexUnavailable(BuildName(n));
+                        throw ThrowHelper.IndexUnavailable(BuildName(n));
                     }
                 }
             }

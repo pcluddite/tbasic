@@ -43,7 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Extensions.cs" />
+    <Compile Include="Errors\ErrorCodes.cs" />
+    <Compile Include="Errors\ScriptParsingException.cs" />
     <Compile Include="Errors\TbasicException.cs" />
+    <Compile Include="Errors\ThrowHelper.cs" />
     <Compile Include="Libraries\ArrayLib.cs" />
     <Compile Include="Libraries\StringLib.cs" />
     <Compile Include="Libraries\SystemLibrary.cs" />
@@ -71,10 +74,8 @@
     <Compile Include="Blocks\FuncBlock.cs" />
     <Compile Include="Blocks\SelectBlock.cs" />
     <Compile Include="Blocks\WhileBlock.cs" />
-    <Compile Include="Errors\EndOfCodeException.cs" />
     <Compile Include="Blocks\IfBlock.cs" />
     <Compile Include="Blocks\CodeBlock.cs" />
-    <Compile Include="Errors\CodeException.cs" />
     <Compile Include="Parsing\Line.cs" />
     <Compile Include="Components\ImageCompression.cs" />
     <Compile Include="Components\RegistryUtilities.cs" />
@@ -92,7 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Errors\ScriptException.cs" />
+    <Compile Include="Errors\LineException.cs" />
     <Compile Include="Runtime\Types\Number.cs" />
   </ItemGroup>
   <ItemGroup>

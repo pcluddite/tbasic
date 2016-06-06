@@ -350,12 +350,12 @@ namespace Tbasic.Runtime
             }
 
             if (mRet == null) {
-                throw new ArgumentException("invalid expression: '" + Expression + "'");
+                throw new ArgumentException("Invalid expression: '" + Expression + "'");
             }
 
             if (mRet.Index != nIdx) {
                 throw new ArgumentException(
-                    "invalid token in expression: '" + Expression.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
+                    "Invalid token in expression: '" + Expression.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
                 );
             }
 
@@ -414,13 +414,13 @@ namespace Tbasic.Runtime
                 else {
                     if (x.Next == null) {
                         throw new ArgumentException(
-                            "expression cannot end in a binary operation: [" + x.Value + "]"
+                            "Expression cannot end in a binary operation: [" + x.Value + "]"
                         );
                     }
                 }
             }
             if (sb.Length > 0) {
-                throw new ArgumentException("missing binary operator: " + sb);
+                throw new ArgumentException("Missing binary operator: " + sb);
             }
 
             var nodePair = opqueue.Dequeue();
@@ -549,7 +549,7 @@ namespace Tbasic.Runtime
                     return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) |
                             Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
             }
-            throw new ArgumentException("binary operator " + op.OperatorString + " not defined.");
+            throw new ArgumentException("Binary operator " + op.OperatorString + " not defined.");
         }
 
         private static object DoSpecialOperator(BinaryOperator op, object v1, object v2)
@@ -599,7 +599,7 @@ namespace Tbasic.Runtime
             }
             throw new FormatException(
                 string.Format(
-                "operator '{0}' cannot be applied to objects of type '{1}' and '{2}'",
+                "Operator '{0}' cannot be applied to objects of type '{1}' and '{2}'",
                 op.OperatorString, GetTypeName(v1.GetType()), GetTypeName(v2.GetType())
                 ));
         }
@@ -684,7 +684,7 @@ namespace Tbasic.Runtime
                 case "NOT ": return (!Convert.ToBoolean(v, CultureInfo.CurrentCulture));
                 case "~": return (~Convert.ToUInt64(v, CultureInfo.CurrentCulture));
             }
-            throw new ArgumentException("unary operator '" + op.OperatorString + "' not defined.");
+            throw new ArgumentException("Unary operator '" + op.OperatorString + "' not defined.");
         }
 
         /// <summary>
@@ -704,12 +704,12 @@ namespace Tbasic.Runtime
                 switch (cur) {
                     case '\n':
                     case '\r':
-                        throw new FormatException("unterminated string");
+                        throw new FormatException("Unterminated string");
                     case '\\':
                         index++;
                         cur = str_full[index];
                         if (index >= str_full.Length) {
-                            throw new FormatException("unterminated escape sequence");
+                            throw new FormatException("Unterminated escape sequence");
                         }
                         switch (cur) {
                             case 'b':
@@ -727,7 +727,7 @@ namespace Tbasic.Runtime
                                 }
                                 break;
                             default:
-                                throw new FormatException("unknown escape sequence: \\" + cur);
+                                throw new FormatException("Unknown escape sequence: \\" + cur);
                         }
                         break;
                     default:
@@ -737,7 +737,7 @@ namespace Tbasic.Runtime
                         break;
                 }
             }
-            throw new FormatException("unterminated string");
+            throw new FormatException("Unterminated string");
         }
 
         /// <summary>
@@ -759,11 +759,11 @@ namespace Tbasic.Runtime
                 switch (cur) {
                     case '\n':
                     case '\r':
-                        throw new FormatException("unterminated string");
+                        throw new FormatException("Unterminated string");
                     case '\\':
                         index++;
                         if (index >= str_full.Length) {
-                            throw new FormatException("unterminated escape sequence");
+                            throw new FormatException("Unterminated escape sequence");
                         }
                         cur = str_full[index];
                         switch (cur) {
@@ -783,7 +783,7 @@ namespace Tbasic.Runtime
                                 sb.Append((char)ushort.Parse(str_full.Substring(index - 3, 4), NumberStyles.HexNumber));
                                 break;
                             default:
-                                throw new FormatException("unknown escape sequence: \\" + cur);
+                                throw new FormatException("Unknown escape sequence: \\" + cur);
                         }
                         break;
                     default:
@@ -797,7 +797,7 @@ namespace Tbasic.Runtime
                         break;
                 }
             }
-            throw new FormatException("unterminated string");
+            throw new FormatException("Unterminated string");
         }
 
         /// <summary>
@@ -843,7 +843,7 @@ namespace Tbasic.Runtime
                 }
             }
 
-            throw new FormatException("unterminated group");
+            throw new FormatException("Unterminated group");
         }
 
         internal static int ReadGroup(string s_full, int c_index, Executer _curExec, out IList<object> _oParams)
@@ -895,7 +895,7 @@ namespace Tbasic.Runtime
                 }
             }
 
-            throw new FormatException("unterminated group");
+            throw new FormatException("Unterminated group");
         }
 
         internal static bool TryParse<T>(object input, out T result)

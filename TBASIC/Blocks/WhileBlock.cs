@@ -40,7 +40,7 @@ namespace Tbasic
             TFunctionData parameters = new TFunctionData(exec, Header.Text);
 
             if (parameters.Count < 2) {
-                throw ScriptException.NoCondition();
+                throw ThrowHelper.NoCondition();
             }
 
             string condition = Header.Text.Substring(Header.Text.IndexOf(' '));

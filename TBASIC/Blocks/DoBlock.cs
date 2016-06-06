@@ -41,7 +41,7 @@ namespace Tbasic
             TFunctionData parameters = new TFunctionData(exec, Header.Text);
 
             if (parameters.Count < 3) {
-                throw ScriptException.NoCondition();
+                throw ThrowHelper.NoCondition();
             }
 
             string condition = Header.Text.Substring(Header.Text.Substring(3).IndexOf(' ') + 3);
@@ -53,7 +53,7 @@ namespace Tbasic
                 // don't do anything, you're golden
             }
             else {
-                throw new FormatException("expected 'UNTIL' or 'WHILE'");
+                throw ThrowHelper.ExpectedToken("UNTIL' or 'WHILE");
             }
 
             Evaluator eval = new Evaluator(condition, exec);

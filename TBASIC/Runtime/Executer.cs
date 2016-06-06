@@ -194,11 +194,11 @@ namespace Tbasic.Runtime
                 stackFrame.Data = msg;
                 stackFrame.Context.SetReturns(stackFrame);
                 if (ThrowError) {
-                    throw new ScriptException(current.LineNumber, current.VisibleName, cEx);
+                    throw new LineException(current.LineNumber, current.VisibleName, cEx);
                 }
             }
             else {
-                throw new ScriptException(current.LineNumber, current.VisibleName, ex);
+                throw new LineException(current.LineNumber, current.VisibleName, ex);
             }
         }
 
@@ -227,7 +227,7 @@ namespace Tbasic.Runtime
                 while (current.Text.EndsWith("_")) { // line continuation
                     lineNumber++;
                     if (lineNumber >= lines.Length) {
-                        throw new EndOfCodeException(lineNumber, "line continuation character '_' cannot end script");
+                        throw new EndOfCodeException("line continuation character '_' cannot end script");
                     }
                     current = new Line(current.LineNumber, current.Text.Remove(current.Text.LastIndexOf('_')) + lines[lineNumber].Trim());
                 }

@@ -51,9 +51,9 @@ namespace Tbasic.Win32 {
         public Win32Window(string class_name) {
 
             if (class_name == null) {
-                throw new ArgumentNullException("class_name");
+                throw new ArgumentNullException(nameof(class_name));
             }
-            if (class_name == String.Empty) {
+            if (class_name == string.Empty) {
                 throw new ArgumentException("class name is empty string", "class_name");
             }
 

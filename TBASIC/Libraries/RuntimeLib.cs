@@ -138,7 +138,7 @@ namespace Tbasic.Libraries
                 len = ((object[])obj).Length;
             }
             else {
-                throw new TbasicException(ErrorClient.BadRequest, "Object size cannot be determined");
+                throw new TbasicException(ErrorClient.Forbidden, "Object size cannot be determined");
             }
             stackFrame.Data = len;
         }

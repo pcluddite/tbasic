@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using Tbasic.Runtime;
 using Tbasic.Libraries;
 using Tbasic.Parsing;
+using Tbasic.Errors;
 
 namespace Tbasic
 {
@@ -128,7 +129,7 @@ namespace Tbasic
                     }
                 }
             }
-            throw new FormatException("unterminated function");
+            throw ThrowHelper.UnterminatedBlock("FUNC");
         }
     }
 }

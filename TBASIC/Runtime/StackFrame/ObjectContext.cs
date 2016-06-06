@@ -113,7 +113,7 @@ namespace Tbasic.Runtime
         public ObjectContext CreateSubContext()
         {
             if (_bCollected) {
-                throw ScriptException.ContextCleared();
+                throw ThrowHelper.ContextCleared();
             }
             return new ObjectContext(this); // They're not allowed to do this themselves so it won't be null
         }
@@ -130,7 +130,7 @@ namespace Tbasic.Runtime
         public ObjectContext Collect()
         {
             if (_bCollected) {
-                throw ScriptException.ContextCleared();
+                throw ThrowHelper.ContextCleared();
             }
             else if (_super == null) {
                 return this; // You won't ever get rid of me
@@ -289,7 +289,7 @@ namespace Tbasic.Runtime
                 return _blocks[name];
             }
             else if (_super == null) {
-                throw ScriptException.UndefinedObject(name);
+                throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 return _super.GetBlock(name);
@@ -310,7 +310,7 @@ namespace Tbasic.Runtime
                 return _variables[name];
             }
             else if (_super == null) {
-                throw ScriptException.UndefinedObject(name);
+                throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 return _super.GetVariable(name);
@@ -328,7 +328,7 @@ namespace Tbasic.Runtime
                 return _functions[name];
             }
             else if (_super == null) {
-                throw ScriptException.UndefinedObject(name);
+                throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 return _super.GetFunction(name);
@@ -346,7 +346,7 @@ namespace Tbasic.Runtime
                 return _commands[name];
             }
             else if (_super == null) {
-                throw ScriptException.UndefinedObject(name);
+                throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 return _super.GetCommand(name);
@@ -409,11 +409,11 @@ namespace Tbasic.Runtime
                     _constants.Add(name, obj); // since you can set constants only once, we don't need to use the context in which a constant was set
                 }
                 else {
-                    throw ScriptException.ConstantChange();
+                    throw ThrowHelper.ConstantChange();
                 }
             }
             else {
-                throw ScriptException.AlreadyDefined(name, "variable", "constant");
+                throw ThrowHelper.AlreadyDefined(name, "variable", "constant");
             }
         }
 
@@ -427,7 +427,7 @@ namespace Tbasic.Runtime
         {
             ObjectContext c = FindConstantContext(name);
             if (c != null) {
-                throw ScriptException.ConstantChange();
+                throw ThrowHelper.ConstantChange();
             }
             c = FindVariableContext(name);
             if (c == null) {

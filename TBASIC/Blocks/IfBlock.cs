@@ -95,13 +95,13 @@ namespace Tbasic
                 }
             }
 
-            throw ScriptException.UnterminatedBlock(fullCode[index].LineNumber, Header.VisibleName);
+            throw ThrowHelper.UnterminatedBlock(Header.VisibleName);
         }
 
         public override void Execute(Executer exec)
         {
             if (!Header.Text.EndsWithIgnoreCase(" then")) {
-                throw new ArgumentException("expected 'THEN'");
+                throw ThrowHelper.ExpectedToken("THEN");
             }
 
             Evaluator eval = new Evaluator(Header.Text

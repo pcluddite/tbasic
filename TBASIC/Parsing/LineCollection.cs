@@ -77,7 +77,7 @@ namespace Tbasic.Parsing
                 }
             }
 
-            throw ScriptException.UnterminatedBlock(this[this.Count - 1].LineNumber, blockLines[0].VisibleName);
+            throw ThrowHelper.UnterminatedBlock(blockLines[0].VisibleName);
         }
 
         /// <summary>

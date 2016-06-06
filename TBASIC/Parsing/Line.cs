@@ -85,7 +85,7 @@ namespace Tbasic.Parsing
         private string name = null;
 
         /// <summary>
-        /// Retrieves the name that is retreived from the Tbasic.ObjectContext libraries
+        /// Retrieves the name that is retreived from the ObjectContext libraries
         /// </summary>
         public string Name
         {

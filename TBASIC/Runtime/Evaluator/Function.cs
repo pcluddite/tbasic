@@ -252,7 +252,7 @@ namespace Tbasic.Runtime
             }
             ObjectContext context = CurrentContext.FindFunctionContext(name);
             if (context == null) {
-                throw ScriptException.UndefinedObject(name);
+                throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 TFunctionData _sframe = new TFunctionData(CurrentExecution);
