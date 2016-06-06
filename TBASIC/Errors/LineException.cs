@@ -41,24 +41,25 @@ namespace Tbasic.Errors
         /// </summary>
         /// <param name="line">the line number at which the error occoured</param>
         /// <param name="name">the function or command that caused the error</param>
-        /// <param name="e">the exception that occoured</param>
-        public LineException(int line, string name, Exception e)
-            : base(string.Format("An error occoured at '{0}' on line {1}\n", name, line) + GetMessage(e), e)
+        /// <param name="innerException">the exception that occoured</param>
+        public LineException(int line, string name, Exception innerException)
+            : base(string.Format("An error occoured at '{0}' on line {1}\n", name, line) + GetMessage(innerException), innerException)
         {
             Line = line;
             Name = name;
         }
         
-        private static string GetMessage(Exception e)
+        private static string GetMessage(Exception ex)
         {
             StringBuilder msg = new StringBuilder();
-            while (e is LineException) {
-                LineException ex = (LineException)e;
-                msg.AppendFormat("\tat '{0}' on line {1}\n", ex.Name, ex.Line);
-                e = ex.InnerException;
+
+            LineException current = ex as LineException;
+            while (current != null) { // traverse the exception until we find the actual error
+                msg.AppendFormat("\tat '{0}' on line {1}\n", current.Name, current.Line);
+                current = current.InnerException as LineException;
             }
             msg.Append("\nDetail:\n");
-            msg.AppendFormat("{0}", e.Message);
+            msg.AppendFormat("{0}", ex.Message);
             return msg.ToString();
         }
     }
