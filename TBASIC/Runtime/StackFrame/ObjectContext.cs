@@ -94,12 +94,21 @@ namespace Tbasic.Runtime
         }
 
         /// <summary>
-        /// Adds the functions of a library to this one
+        /// Adds a library that should be parsed as functions to this context
         /// </summary>
         /// <param name="lib">the library to add</param>
         public void AddLibrary(Library lib)
         {
             _functions.AddLibrary(lib);
+        }
+
+        /// <summary>
+        /// Adds a library that should be parsed as commands to this context
+        /// </summary>
+        /// <param name="lib">the library to add</param>
+        public void AddCommandLibrary(Library lib)
+        {
+            _commands.AddLibrary(lib);
         }
 
         #endregion
