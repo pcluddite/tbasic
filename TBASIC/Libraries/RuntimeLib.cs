@@ -28,7 +28,7 @@ namespace Tbasic.Libraries
 {
     internal class RuntimeLib : Library
     {
-        public RuntimeLib()
+        public RuntimeLib(ObjectContext context)
         {
             Add("Size", SizeOf);
             Add("Len", SizeOf);
@@ -46,6 +46,8 @@ namespace Tbasic.Libraries
             Add("Char", ToChar);
             AddLibrary(new StringLib());
             AddLibrary(new ArrayLib());
+            context.SetConstant("@version", Executer.VERSION);
+            context.SetConstant("@osversion", Environment.OSVersion.VersionString);
         }
 
         private void ToChar(TFunctionData stackFrame)

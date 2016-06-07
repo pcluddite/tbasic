@@ -72,7 +72,7 @@ namespace Tbasic.Runtime
             _functions = new Library(
                 new Library[] { 
                     new MathLib(this),
-                    new RuntimeLib(),
+                    new RuntimeLib(this),
                     new UserIOLibrary(),
                     new AutoLib(),
                     new FileIOLib(),
