@@ -33,13 +33,34 @@ namespace Tbasic.Errors
         /// </summary>
         public int Status { get; private set; }
 
+        private bool? genericPrepended;
+
+        /// <summary>
+        /// Gets whether a generic message was prepended to the server message
+        /// </summary>
+        public bool GenericPrepended {
+            get {
+                if (InnerException == null || genericPrepended != null)
+                    return genericPrepended.Value;
+
+                TbasicException innerEx = InnerException as TbasicException;
+                if (innerEx != null)
+                    return innerEx.GenericPrepended; // find out if one of the inner exceptions is a tbasic exception that already had the generic message appended
+
+                return (genericPrepended = false).Value;
+            }
+            private set {
+                genericPrepended = value;
+            }
+        }
+
         /// <summary>
         /// Constructs a new CustomException with a given status code
         /// </summary>
         /// <param name="status">the status code for this exception</param>
         /// <param name="innerException">the inner exception</param>
         public TbasicException(int status, Exception innerException = null)
-            : this(status, GetGenericMessage(status), innerException)
+            : this(status, GetGenericMessage(status), false, innerException)
         {
         }
 
@@ -50,7 +71,18 @@ namespace Tbasic.Errors
         /// <param name="msg">the message for this exception</param>
         /// /// <param name="innerException">the inner exception</param>
         public TbasicException(int status, string msg, Exception innerException = null)
-            : this(status, msg, true)
+            : this(status, msg, true, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new CustomException with a given status code and message
+        /// </summary>
+        /// <param name="status">the status code for this exception</param>
+        /// <param name="msg">the message for this exception</param>
+        /// /// <param name="innerException">the inner exception</param>
+        public TbasicException(int status, string msg, TbasicException innerException)
+            : this(status, msg, !innerException.GenericPrepended, innerException)
         {
         }
 
@@ -65,6 +97,7 @@ namespace Tbasic.Errors
             : base(prependGeneric ? GetGenericMessage(status) + ": " + msg : msg, innerException)
         {
             Status = status;
+            GenericPrepended = prependGeneric;
         }
 
         /// <summary>
