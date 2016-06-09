@@ -222,9 +222,7 @@ namespace Tbasic.Runtime
         /// <param name="col_params">the new parameters to add</param>
         public void AddRange(ICollection<object> col_params)
         {
-            object[] a_newObj = new object[_params.Count + col_params.Count];
-            _params.CopyTo(a_newObj, 0);
-            col_params.CopyTo(a_newObj, _params.Count);
+            _params.AddRange(col_params);
         }
 
         /// <summary>

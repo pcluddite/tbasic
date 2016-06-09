@@ -286,8 +286,9 @@ namespace Tbasic.Libraries
         /// </summary>
         /// <param name="cmd">the command to execute</param>
         /// <param name="output">the data from the output stream</param>
+        /// <param name="workingDir">the working directory of the command</param>
         /// <returns>command exit code</returns>
-        public static int Shell(string cmd, out string output)
+        public static int Shell(string cmd, string workingDir, out string output)
         {
             using (System.Diagnostics.Process console = new System.Diagnostics.Process()) {
                 console.StartInfo.FileName = "cmd.exe";
@@ -296,11 +297,23 @@ namespace Tbasic.Libraries
                 console.StartInfo.RedirectStandardError = true;
                 console.StartInfo.UseShellExecute = false;
                 console.StartInfo.CreateNoWindow = true;
+                console.StartInfo.WorkingDirectory = workingDir;
                 console.Start();
                 output = console.StandardOutput.ReadToEnd();
                 console.WaitForExit();
                 return console.ExitCode;
             }
+        }
+
+        /// <summary>
+        /// Executes a command in a hidden command prompt window and returns the exit code and output stream
+        /// </summary>
+        /// <param name="cmd">the command to execute</param>
+        /// <param name="output">the data from the output stream</param>
+        /// <returns>command exit code</returns>
+        public static int Shell(string cmd, out string output)
+        {
+            return Shell(cmd, Directory.GetCurrentDirectory(), out output);
         }
 
         private void Shell(TFunctionData _sframe)
