@@ -33,26 +33,10 @@ namespace Tbasic.Errors
         /// </summary>
         public int Status { get; private set; }
 
-        private bool? genericPrepended;
-
         /// <summary>
         /// Gets whether a generic message was prepended to the server message
         /// </summary>
-        public bool GenericPrepended {
-            get {
-                if (InnerException == null || genericPrepended != null)
-                    return genericPrepended.Value;
-
-                TbasicException innerEx = InnerException as TbasicException;
-                if (innerEx != null)
-                    return innerEx.GenericPrepended; // find out if one of the inner exceptions is a tbasic exception that already had the generic message appended
-
-                return (genericPrepended = false).Value;
-            }
-            private set {
-                genericPrepended = value;
-            }
-        }
+        public bool GenericPrepended { get; private set; }
 
         /// <summary>
         /// Constructs a new CustomException with a given status code
