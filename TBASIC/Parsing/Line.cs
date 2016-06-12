@@ -118,6 +118,7 @@ namespace Tbasic.Parsing
             }
             else if (space < 0 && paren > 0) { // no space, but there's a paren
                 name = Text.Remove(paren);
+                isFunc = true;
             }
             else if (space < paren) { // the space is before the paren, so that's where the name is
                 name = Text.Remove(space);

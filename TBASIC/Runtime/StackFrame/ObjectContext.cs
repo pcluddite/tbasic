@@ -422,7 +422,7 @@ namespace Tbasic.Runtime
                 }
             }
             else {
-                throw ThrowHelper.AlreadyDefined(name, "variable", "constant");
+                throw ThrowHelper.AlreadyDefinedAsType(name, "variable", "constant");
             }
         }
 

@@ -28,8 +28,17 @@ namespace Tbasic.Errors
         {
             return new KeyNotFoundException("'" + name + "' does not exist in the current context");
         }
+        public static Exception UndefinedFunctionOrCommand(string name)
+        {
+            return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a command or function");
+        }
 
-        public static Exception AlreadyDefined(string name, string type, string newType)
+        public static Exception UndefinedFunction(string name)
+        {
+            return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a function");
+        }
+
+        public static Exception AlreadyDefinedAsType(string name, string type, string newType)
         {
             return new InvalidCastException(string.Format("An object '{0}' has been defined as a {1} and cannot be redefined as a {2}", name, type, newType));
         }
