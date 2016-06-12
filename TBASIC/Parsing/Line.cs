@@ -26,6 +26,62 @@ namespace Tbasic.Parsing
     /// </summary>
     public class Line : IComparable<Line>, IEquatable<Line>
     {
+        private bool? isFunc;
+        private string visibleName;
+        private string name;
+
+        /// <summary>
+        /// Gets a value indicating whether this line is formatted like a function
+        /// </summary>
+        public bool IsFunction
+        {
+            get {
+                if (isFunc == null) {
+                    FindAndSetName();
+                }
+                return isFunc.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the line number
+        /// </summary>
+        public uint LineNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text of this line
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the line displayed in exceptions
+        /// </summary>
+        public string VisibleName
+        {
+            get {
+                if (visibleName == null) {
+                    return Name;
+                }
+                return visibleName;
+            }
+            set {
+                visibleName = value;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the name that is retreived from the ObjectContext libraries
+        /// </summary>
+        public string Name
+        {
+            get {
+                if (name == null) { // This way we don't have to do this every time
+                    FindAndSetName();
+                }
+                return name;
+            }
+        }
+
         /// <summary>
         /// Initializes a line of Tbasic code
         /// </summary>
@@ -49,67 +105,26 @@ namespace Tbasic.Parsing
             VisibleName = line.Name;
         }
 
-        /// <summary>
-        /// Gets or sets the line number
-        /// </summary>
-        public uint LineNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the text of this line
-        /// </summary>
-        public virtual string Text { get; set; }
-
-        /// <summary>
-        /// Gets or sets the block in which this line is nested
-        /// </summary>
-        public CodeBlock CurrentBlock { get; set; }
-
-        private string visibleName = null;
-
-        /// <summary>
-        /// Gets or sets the name of the line displayed in exceptions
-        /// </summary>
-        public string VisibleName
+        private void FindAndSetName()
         {
-            get {
-                if (visibleName == null) {
-                    return Name;
-                }
-                return visibleName;
+            int paren = Text.IndexOf('(');
+            int space = Text.IndexOf(' ');
+            isFunc = false;
+            if (paren < 0 && space < 0) { // no paren or space, the name is the who line
+                name = Text;
             }
-            set {
-                visibleName = value;
+            else if (paren < 0 && space > 0) { // no paren, but there's a space
+                name = Text.Remove(space);
             }
-        }
-
-        private string name = null;
-
-        /// <summary>
-        /// Retrieves the name that is retreived from the ObjectContext libraries
-        /// </summary>
-        public string Name
-        {
-            get {
-                if (name == null) { // This way we don't have to do this every time
-                    int bracket = Text.IndexOf('(');
-                    int space = Text.IndexOf(' ');
-                    if (bracket < 0 && space < 0) {
-                        name = Text;
-                    }
-                    else if (bracket < 0 && space > 0) {
-                        name = Text.Remove(space);
-                    }
-                    else if (space < 0 && bracket > 0) {
-                        name = Text.Remove(bracket);
-                    }
-                    else if (space < bracket) {
-                        name = Text.Remove(space);
-                    }
-                    else {
-                        name = Text.Remove(bracket);
-                    }
-                }
-                return name;
+            else if (space < 0 && paren > 0) { // no space, but there's a paren
+                name = Text.Remove(paren);
+            }
+            else if (space < paren) { // the space is before the paren, so that's where the name is
+                name = Text.Remove(space);
+            }
+            else {
+                name = Text.Remove(paren);
+                isFunc = true; // it's formatted like a function
             }
         }
 

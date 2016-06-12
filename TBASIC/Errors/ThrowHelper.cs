@@ -108,5 +108,10 @@ namespace Tbasic.Errors
         {
             return new ScriptParsingException("Invalid expression: '" + expr + "'");
         }
+
+        public static Exception ExpectedSpaceAfterCommand()
+        {
+            return new FormatException("Expected space after command name");
+        }
     }
 }

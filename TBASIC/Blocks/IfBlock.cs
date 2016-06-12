@@ -62,7 +62,6 @@ namespace Tbasic
 
             for (; index < fullCode.Count; index++) {
                 Line cur = fullCode[index];
-                cur.CurrentBlock = this;
                 if (cur.Name.EqualsIgnoreCase("IF")) {
                     expected_endif++;
                 }

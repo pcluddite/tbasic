@@ -174,6 +174,9 @@ namespace Tbasic.Runtime
                 stackFrame.Context.PersistReturns(stackFrame);
                 stackFrame.Data = result;
             }
+            else if (codeLine.IsFunction) {
+                throw ThrowHelper.ExpectedSpaceAfterCommand();
+            }
             else {
                 stackFrame.SetAll(codeLine.Text);
                 context.GetCommand(codeLine.Name).Invoke(stackFrame);
