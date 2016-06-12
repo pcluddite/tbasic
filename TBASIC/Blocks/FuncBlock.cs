@@ -106,7 +106,7 @@ namespace Tbasic
                         continue;
                     case '\'':
                     case '\"': {
-                            c_index = Evaluator.IndexString(text, c_index);
+                            c_index = GroupParser.IndexString(text, c_index);
                         }
                         break;
                     case '(':

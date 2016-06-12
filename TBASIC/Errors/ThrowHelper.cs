@@ -28,6 +28,7 @@ namespace Tbasic.Errors
         {
             return new KeyNotFoundException("'" + name + "' does not exist in the current context");
         }
+
         public static Exception UndefinedFunctionOrCommand(string name)
         {
             return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a command or function");
@@ -36,6 +37,31 @@ namespace Tbasic.Errors
         public static Exception UndefinedFunction(string name)
         {
             return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a function");
+        }
+
+        public static Exception UnterminatedGroup()
+        {
+            return new FormatException("Unterminated group");
+        }
+
+        public static Exception UnterminatedString()
+        {
+            return new FormatException("Unterminated string");
+        }
+
+        public static Exception UnterminatedEscapeSequence()
+        {
+            return new FormatException("Unterminated escape sequence");
+        }
+
+        public static Exception UnknownEscapeSequence(char escape)
+        {
+            return new FormatException("Unknown escape sequence \\" + escape);
+        }
+
+        public static Exception UnterminatedUnicodeEscape()
+        {
+            return new FormatException("Unterminated escape sequence. Expected four digit hex to follow '\\u'.");
         }
 
         public static Exception AlreadyDefinedAsType(string name, string type, string newType)

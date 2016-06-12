@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Tbasic.Errors;
+using Tbasic.Parsing;
 
 namespace Tbasic.Runtime
 {
@@ -71,7 +72,7 @@ namespace Tbasic.Runtime
                     string index = _expression.Substring(Name.Length);
                     if (index.Trim().StartsWith("[")) {
                         IList<object> indices;
-                        int last = Evaluator.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
+                        int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
                         _expression = value.Remove(last) + ']';
                         if (indices.Count == 0) {
                             throw ThrowHelper.NoIndexSpecified();

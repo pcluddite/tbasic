@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Tbasic.Errors;
+using Tbasic.Parsing;
 
 namespace Tbasic.Runtime
 {
@@ -187,7 +188,7 @@ namespace Tbasic.Runtime
                     case '\'':
                     case '"':
                         string parsed;
-                        index = Evaluator.ReadString(commandLine, index, out parsed);
+                        index = GroupParser.ReadString(commandLine, index, out parsed);
                         if (parsed.Length == 0) {
                             args.Add(parsed);
                         }
