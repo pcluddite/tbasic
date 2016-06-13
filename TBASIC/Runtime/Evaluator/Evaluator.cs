@@ -66,7 +66,7 @@ namespace Tbasic.Runtime
         #region Properties
 
         /// <summary>
-        /// Gets or sets the expression to be evaluated.
+        /// Gets or sets the expression to be evaluated. This value is trimmed.
         /// </summary>
         public string Expression
         {
@@ -350,7 +350,7 @@ namespace Tbasic.Runtime
             }
 
             if (mRet == null) {
-                if (CurrentExecution.Context.FindFunctionContext(Expression.Trim()) == null) {
+                if (CurrentExecution.Context.FindFunctionContext(Expression) == null) {
                     throw new ArgumentException("Invalid expression '" + Expression + "'");
                 }
                 else {
