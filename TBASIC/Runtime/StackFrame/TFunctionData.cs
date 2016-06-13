@@ -242,6 +242,7 @@ namespace Tbasic.Runtime
         /// Throws an ArgumentException if the number of parameters does not match a specified count
         /// </summary>
         /// <param name="count">the number of parameters expected</param>
+        /// <exception cref="ArgumentException">thrown if argument count is not the same as the parameter</exception>
         public void AssertArgs(int count)
         {
             if (_params.Count != count) {
@@ -251,26 +252,19 @@ namespace Tbasic.Runtime
         }
 
         /// <summary>
-        /// Returns the parameter at an index. Throws a IndexOutOfRangeException if the argument is out of bounds
+        /// Returns the parameter at an index
         /// </summary>
         /// <param name="index">The index of the argument</param>
+        /// <exception cref="IndexOutOfRangeException">thrown if the argument is out of range</exception>
         /// <returns></returns>
         public object Get(int index)
         {
-            if (index < _params.Count && index >= 0) {
+            try {
                 return _params[index];
             }
-            throw new IndexOutOfRangeException();
-        }
-
-        /// <summary>
-        /// Returns the object type at a given index
-        /// </summary>
-        /// <param name="index">index of the argument</param>
-        /// <returns></returns>
-        public Type GetTypeAt(int index)
-        {
-            return Get(index).GetType();
+            catch(ArgumentOutOfRangeException ex) {
+                throw new IndexOutOfRangeException(ex.Message);
+            }
         }
 
         /// <summary>
@@ -279,41 +273,44 @@ namespace Tbasic.Runtime
         /// <param name="index">the index of the argument</param>
         /// <param name="lower">the inclusive lower bound</param>
         /// <param name="upper">the inclusive upper bound</param>
+        /// <exception cref="ArgumentOutOfRangeException">thrown if the paramater is out of range</exception>
         /// <returns></returns>
         public int GetIntRange(int index, int lower, int upper)
         {
             int n = Get<int>(index);
             if (n < lower || n > upper) {
-                throw new FormatException(string.Format("parameter {0} expected to be integer between {1} and {2}", index, lower, upper));
+                throw new ArgumentOutOfRangeException(string.Format("Parameter {0} expected to be integer between {1} and {2}", index, lower, upper));
             }
             return n;
         }
 
         /// <summary>
-        /// Gets a parameter at a given index as a specified type. Throws an InvalidCastException if the object cannot be converted to the specified type
+        /// Gets a parameter at a given index as a specified type
         /// </summary>
         /// <typeparam name="T">the type to convert the object</typeparam>
         /// <param name="index">the zero-based index of the parameter</param>
+        /// <exception cref="InvalidCastException">object was not able to be converted to given type</exception>
         /// <returns></returns>
         public T Get<T>(int index)
         {
             T ret;
-            if (Evaluator.TryParse<T>(Get(index), out ret)) {
+            if (Evaluator.TryParse(Get(index), out ret)) {
                 return ret;
             }
-            throw new InvalidCastException(string.Format("expected parameter {0} to be of type {1}", index, typeof(T).Name));
+            throw new InvalidCastException(string.Format("Expected parameter {0} to be of type {1}", index, typeof(T).Name));
         }
 
         /// <summary>
-        /// Gets an argument as a string. Throws a TException if the argument is out of bounds or is not listed as an exceptable string value
+        /// Gets an argument from a set of predefined values
         /// </summary>
         /// <param name="index">The index of the argument</param>
         /// <param name="typeName">The type the argument represents</param>
         /// <param name="values">Acceptable string values</param>
+        /// <exception cref="ArgumentException">thrown if the argument is not in the acceptable list of values</exception>
         /// <returns></returns>
-        internal string Get(int index, string typeName, params string[] values)
+        public string GetFromEnum(int index, string typeName, params string[] values)
         {
-            string arg = Get(index).ToString();
+            string arg = Get<string>(index);
             foreach (string val in values) {
                 if (val.EqualsIgnoreCase(arg)) {
                     return arg;

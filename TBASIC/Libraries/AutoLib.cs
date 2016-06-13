@@ -97,7 +97,7 @@ namespace Tbasic.Libraries
                 speed = _sframe.Get<int>(5);
 
             MouseButton button;
-            if (_sframe.Get(1, "button", "LEFT", "RIGHT").EqualsIgnoreCase("LEFT")) {
+            if (_sframe.GetFromEnum(1, "button", "LEFT", "RIGHT").EqualsIgnoreCase("LEFT")) {
                 button = MouseButton.Left;
             }
             else {

@@ -350,12 +350,17 @@ namespace Tbasic.Runtime
             }
 
             if (mRet == null) {
-                throw new ArgumentException("Invalid expression: '" + Expression + "'");
+                if (CurrentExecution.Context.FindFunctionContext(Expression.Trim()) == null) {
+                    throw new ArgumentException("Invalid expression '" + Expression + "'");
+                }
+                else {
+                    throw new FormatException("Poorly formed function call");
+                }
             }
 
             if (mRet.Index != nIdx) {
                 throw new ArgumentException(
-                    "Invalid token in expression: '" + Expression.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
+                    "Invalid token in expression '" + Expression.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
                 );
             }
 
@@ -694,20 +699,20 @@ namespace Tbasic.Runtime
                 return true;
             }
             catch (InvalidCastException) {
-            }
-            IConvertible convertible = input as IConvertible;
-            if (convertible == null) {
-                result = default(T);
-                return false;
-            }
-            else {
-                try {
-                    result = (T)convertible.ToType(typeof(T), CultureInfo.CurrentCulture);
-                    return true;
-                }
-                catch {
+                IConvertible convertible = input as IConvertible;
+                if (convertible == null) {
                     result = default(T);
                     return false;
+                }
+                else {
+                    try {
+                        result = (T)convertible.ToType(typeof(T), CultureInfo.CurrentCulture);
+                        return true;
+                    }
+                    catch {
+                        result = default(T);
+                        return false;
+                    }
                 }
             }
         }
