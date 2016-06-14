@@ -38,6 +38,7 @@ namespace Tbasic.Win32 {
 
     [Flags]
     internal enum WindowFlag {
+        None = 0x00,
         Existing = 0x01,
         Visible = 0x02,
         Enable = 0x04,

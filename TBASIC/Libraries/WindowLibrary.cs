@@ -110,10 +110,10 @@ namespace Tbasic.Libraries
 
         public static int WinGetState(long hwnd)
         {
-            return WinGetState(new IntPtr(hwnd));
+            return (int)WinGetState(new IntPtr(hwnd));
         }
 
-        public static int WinGetState(IntPtr hwnd)
+        public static WindowFlag WinGetState(IntPtr hwnd)
         {
             return Windows.GetState(hwnd);
         }
@@ -232,13 +232,13 @@ namespace Tbasic.Libraries
             }
         }
 
-        public static IEnumerable<IntPtr> WinList(int flag = 0)
+        public static IEnumerable<IntPtr> WinList(WindowFlag flag = WindowFlag.None)
         {
             if (flag == 0) {
-                return Windows.List().ToArray();
+                return Windows.List();
             }
             else {
-                return Windows.List(flag).ToArray();
+                return Windows.List(flag);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(2);
             int state = parameters.Get<int>(1);
 
-            IntPtr[] hwnds = WinList(state).ToArray();
+            IntPtr[] hwnds = WinList((WindowFlag)state).ToArray();
 
             if (hwnds.Length > 0) {
                 object[][] windows = new object[hwnds.Length][];

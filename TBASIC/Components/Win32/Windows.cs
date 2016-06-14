@@ -34,18 +34,18 @@ namespace Tbasic.Win32
             return User32.GetWindowRect(hwnd, out rect);
         }
 
-        public static int GetState(IntPtr hwnd)
+        public static WindowFlag GetState(IntPtr hwnd)
         {
             IntPtr exists = User32.GetWindow(hwnd, 0);
-            int state = 1;
+            WindowFlag state = WindowFlag.Existing;
             if (exists.ToInt32() == 0) { return 0; }
-            if (User32.IsWindowVisible(hwnd)) { state += 2; }
-            if (User32.IsWindowEnabled(hwnd)) { state += 4; }
-            if (User32.GetForegroundWindow() == hwnd) { state += 8; }
+            if (User32.IsWindowVisible(hwnd)) { state |= WindowFlag.Visible; }
+            if (User32.IsWindowEnabled(hwnd)) { state |= WindowFlag.Enable; }
+            if (User32.GetForegroundWindow() == hwnd) { state |= WindowFlag.Active; }
             WINDOWPLACEMENT plac;
             User32.GetWindowPlacement(hwnd, out plac);
-            if (plac.showCmd == 2) { state += 16; }
-            if (plac.showCmd == 3) { state += 32; }
+            if (plac.showCmd == 2) { state |= WindowFlag.Minimized; }
+            if (plac.showCmd == 3) { state |= WindowFlag.Maximized; }
             return state;
         }
 
@@ -54,7 +54,7 @@ namespace Tbasic.Win32
             return (new WinLister()).List();
         }
 
-        public static IEnumerable<IntPtr> List(int flag)
+        public static IEnumerable<IntPtr> List(WindowFlag flag)
         {
             var results =
                 from hwnd in List()
