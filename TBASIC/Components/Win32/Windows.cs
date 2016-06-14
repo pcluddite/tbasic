@@ -20,23 +20,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Tbasic.Win32
 {
-    internal class Windows {
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern System.IntPtr DefWindowProcW(
-            IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam
-        );
-
-        public static bool WindowExists(IntPtr hwnd) {
+    /// <summary>
+    /// A managed wrapper for common win32 window functions
+    /// </summary>
+    internal class Windows
+    {
+        public static bool WinExists(IntPtr hwnd)
+        {
             RECT rect;
             return User32.GetWindowRect(hwnd, out rect);
         }
 
-        public static int GetState(IntPtr hwnd) {
+        public static int GetState(IntPtr hwnd)
+        {
             IntPtr exists = User32.GetWindow(hwnd, 0);
             int state = 1;
             if (exists.ToInt32() == 0) { return 0; }
@@ -50,42 +49,42 @@ namespace Tbasic.Win32
             return state;
         }
 
-        public static IntPtr[] Enum() {
-            return (new WinLister()).List().ToArray();
+        public static IEnumerable<IntPtr> List()
+        {
+            return (new WinLister()).List();
         }
 
-        public static IntPtr[] Enum(int flag) {
-
+        public static IEnumerable<IntPtr> List(int flag)
+        {
             var results =
-                from hwnd in Enum()
+                from hwnd in List()
                 where (GetState(hwnd) & flag) == flag
                 select hwnd;
 
-            return results.ToArray();
+            return results;
         }
 
-        internal class WinLister {
-            [DllImport("user32.dll")]
-            private static extern int EnumWindows(CallBackPtr callPtr, int lPar);
-
-            delegate bool CallBackPtr(IntPtr hwnd, int lParam);
-
+        private class WinLister
+        {
             private Stack<IntPtr> list;
             private static CallBackPtr callBackPtr;
 
-            public WinLister() {
+            public WinLister()
+            {
                 list = new Stack<IntPtr>();
             }
 
-            private bool Report(IntPtr hwnd, int lParam) {
+            private bool Report(IntPtr hwnd, int lParam)
+            {
                 list.Push(hwnd);
                 return true;
             }
 
-            public Stack<IntPtr> List() {
+            public IEnumerable<IntPtr> List()
+            {
                 list.Clear();
                 callBackPtr = new CallBackPtr(Report);
-                EnumWindows(callBackPtr, 0);
+                User32.EnumWindows(callBackPtr, 0);
                 return list;
             }
         }

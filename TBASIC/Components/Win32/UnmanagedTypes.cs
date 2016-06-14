@@ -21,10 +21,11 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace Tbasic.Win32 {
-
+namespace Tbasic.Win32
+{
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct WNDCLASS {
+    internal struct WNDCLASS
+    {
         public uint style;
         public IntPtr lpfnWndProc;
         public int cbClsExtra;
@@ -39,7 +40,8 @@ namespace Tbasic.Win32 {
         public string lpszClassName;
     }
 
-    internal struct WINDOWPLACEMENT {
+    internal struct WINDOWPLACEMENT
+    {
         public int length;
         public int flags;
         public int showCmd;
@@ -49,14 +51,16 @@ namespace Tbasic.Win32 {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT {
+    internal struct RECT
+    {
         public int Left;        // x position of upper-left corner
         public int Top;         // y position of upper-left corner
         public int Right;       // x position of lower-right corner
         public int Bottom;      // y position of lower-right corner
     }
 
-    internal class HWND {
+    internal class HWND
+    {
         public static IntPtr
         NoTopMost = new IntPtr(-2),
         TopMost = new IntPtr(-1),
@@ -64,7 +68,8 @@ namespace Tbasic.Win32 {
         Bottom = new IntPtr(1);
     }
 
-    internal class SWP {
+    internal class SWP
+    {
         public static readonly int
         NOSIZE = 0x0001,
         NOMOVE = 0x0002,
@@ -82,4 +87,19 @@ namespace Tbasic.Win32 {
         DEFERERASE = 0x2000,
         ASYNCWINDOWPOS = 0x4000;
     }
+
+    internal struct MouseEvents
+    {
+        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        public const int MOUSEEVENTF_LEFTUP = 0x04;
+        public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        public const int MOUSEEVENTF_RIGHTUP = 0x10;
+    }
+
+    internal struct SendMessages
+    {
+        public const uint WM_CLOSE = 0x010;
+    }
+
+    internal delegate bool CallBackPtr(IntPtr hwnd, int lParam);
 }

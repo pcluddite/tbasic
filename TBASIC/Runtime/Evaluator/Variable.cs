@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using System;
 
 namespace Tbasic.Runtime
 {
@@ -200,7 +201,22 @@ namespace Tbasic.Runtime
                     return n.ToInt();
             }
 
+            IntPtr? _pObj = _oObj as IntPtr?;
+            if (_pObj != null) {
+                return ConvertToObject(_pObj.Value);
+            }
+
             return _oObj;
+        }
+
+        public static object ConvertToObject(IntPtr ptr)
+        {
+            if (IntPtr.Size == sizeof(long)) { // 64-bit
+                return ptr.ToInt64();
+            }
+            else { // 32-bit
+                return ptr.ToInt32();
+            }
         }
     }
 }

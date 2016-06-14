@@ -30,13 +30,8 @@ namespace Tbasic.Win32
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
 
-        public struct MouseEvents
-        {
-            public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-            public const int MOUSEEVENTF_LEFTUP = 0x04;
-            public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-            public const int MOUSEEVENTF_RIGHTUP = 0x10;
-        }
+        [DllImport("user32.dll")]
+        public static extern int EnumWindows(CallBackPtr callPtr, int lPar);
 
         [DllImport("user32.dll")]
         public static extern bool BlockInput(bool fBlockIt);
@@ -45,26 +40,26 @@ namespace Tbasic.Win32
         public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern System.UInt16 RegisterClassW(
+        public static extern ushort RegisterClassW(
             [In] ref WNDCLASS lpWndClass
         );
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr CreateWindowExW(
-           UInt32 dwExStyle,
-           [MarshalAs(UnmanagedType.LPWStr)]
-       string lpClassName,
-           [MarshalAs(UnmanagedType.LPWStr)]
-       string lpWindowName,
-           UInt32 dwStyle,
-           Int32 x,
-           Int32 y,
-           Int32 nWidth,
-           Int32 nHeight,
-           IntPtr hWndParent,
-           IntPtr hMenu,
-           IntPtr hInstance,
-           IntPtr lpParam
+            uint dwExStyle,
+            [MarshalAs(UnmanagedType.LPWStr)]
+            string lpClassName,
+            [MarshalAs(UnmanagedType.LPWStr)]
+            string lpWindowName,
+            uint dwStyle,
+            int x,
+            int y,
+            int nWidth,
+            int nHeight,
+            IntPtr hWndParent,
+            IntPtr hMenu,
+            IntPtr hInstance,
+            IntPtr lpParam
         );
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -132,7 +127,7 @@ namespace Tbasic.Win32
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("User32")]
         public static extern int RemoveMenu(IntPtr hMenu, int nPosition, int wFlags);
@@ -144,13 +139,8 @@ namespace Tbasic.Win32
         public static extern int GetMenuItemCount(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern System.IntPtr DefWindowProcW(
+        public static extern IntPtr DefWindowProcW(
             IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam
         );
-
-        public struct SendMessages
-        {
-            public const uint WM_CLOSE = 0x010;
-        }
     }
 }

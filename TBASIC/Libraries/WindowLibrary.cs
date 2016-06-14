@@ -20,12 +20,13 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Tbasic.Borrowed;
 using Tbasic.Runtime;
 using Tbasic.Win32;
 using Tbasic.Errors;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Tbasic.Libraries
 {
@@ -207,7 +208,7 @@ namespace Tbasic.Libraries
 
         public static IntPtr WinClose(IntPtr hwnd)
         {
-            return User32.SendMessage(hwnd, User32.SendMessages.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+            return User32.SendMessage(hwnd, SendMessages.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
         }
 
         private void WinClose(TFunctionData parameters)
@@ -231,9 +232,14 @@ namespace Tbasic.Libraries
             }
         }
 
-        public static IntPtr[] WinList(int flag = 0)
+        public static IEnumerable<IntPtr> WinList(int flag = 0)
         {
-            return flag == 0 ? Windows.Enum() : Windows.Enum(flag);
+            if (flag == 0) {
+                return Windows.List().ToArray();
+            }
+            else {
+                return Windows.List(flag).ToArray();
+            }
         }
 
         private void WinList(TFunctionData parameters)
@@ -244,12 +250,15 @@ namespace Tbasic.Libraries
             parameters.AssertArgs(2);
             int state = parameters.Get<int>(1);
 
-            IntPtr[] hwnds = Windows.Enum(state);
+            IntPtr[] hwnds = WinList(state).ToArray();
 
             if (hwnds.Length > 0) {
                 object[][] windows = new object[hwnds.Length][];
                 for (int index = 0; index < windows.Length; index++) {
-                    windows[index] = new object[] { hwnds[index], WinGetTitle(hwnds[index]) };
+                    windows[index] = new object[] {
+                        Variable.ConvertToObject(hwnds[index]),
+                        WinGetTitle(hwnds[index])
+                   };
                 }
                 parameters.Data = windows;
             }
@@ -293,13 +302,13 @@ namespace Tbasic.Libraries
 
         public static bool WindowExists(IntPtr hwnd)
         {
-            return Windows.WindowExists(hwnd);
+            return Windows.WinExists(hwnd);
         }
 
         private void WinExists(TFunctionData parameters)
         {
             parameters.AssertArgs(2);
-            parameters.Data = Windows.WindowExists(new IntPtr(parameters.Get<long>(1)));
+            parameters.Data = Windows.WinExists(new IntPtr(parameters.Get<long>(1)));
         }
     }
 }
