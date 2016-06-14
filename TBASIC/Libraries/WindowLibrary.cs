@@ -245,12 +245,12 @@ namespace Tbasic.Libraries
         private void WinList(TFunctionData parameters)
         {
             if (parameters.Count == 1) {
-                parameters.Add((int)WindowFlag.Existing);
+                parameters.Add(WindowFlag.Existing);
             }
             parameters.AssertArgs(2);
-            int state = parameters.Get<int>(1);
+            WindowFlag state = parameters.Get<WindowFlag>(1);
 
-            IntPtr[] hwnds = WinList((WindowFlag)state).ToArray();
+            IntPtr[] hwnds = WinList(state).ToArray();
 
             if (hwnds.Length > 0) {
                 object[][] windows = new object[hwnds.Length][];
@@ -258,7 +258,7 @@ namespace Tbasic.Libraries
                     windows[index] = new object[] {
                         Variable.ConvertToObject(hwnds[index]),
                         WinGetTitle(hwnds[index])
-                   };
+                    };
                 }
                 parameters.Data = windows;
             }
@@ -279,7 +279,7 @@ namespace Tbasic.Libraries
             ScreenCapture sc = new ScreenCapture();
             Image img = sc.CaptureScreen();
             using (MemoryStream ms = Compress.DoIt(img, compression)) {
-                return AutoLib.ReadToEnd(ms);
+                return ms.ToArray();
             }
         }
 
@@ -288,7 +288,7 @@ namespace Tbasic.Libraries
             ScreenCapture sc = new ScreenCapture();
             Image pic = sc.CaptureWindow(hwnd);
             using (MemoryStream ms = Compress.DoIt(pic, compression)) {
-                return AutoLib.ReadToEnd(ms);
+                return ms.ToArray();
             }
         }
 
