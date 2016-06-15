@@ -335,7 +335,7 @@ namespace Tbasic.Runtime
                     }
                     if (m.Success) {
                         mRet = m;
-                        val = Variable.DuckType(double.Parse(m.Value, CultureInfo.CurrentCulture));
+                        val = Variable.ConvertToObject(double.Parse(m.Value, CultureInfo.CurrentCulture));
                     }
                 }
             }

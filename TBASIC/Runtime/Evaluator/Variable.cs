@@ -162,7 +162,7 @@ namespace Tbasic.Runtime
                     }
                 }
             }
-            return DuckType(obj);
+            return ConvertToObject(obj);
         }
 
         private string BuildName(int n)
@@ -179,7 +179,7 @@ namespace Tbasic.Runtime
             return sb.ToString();
         }
 
-        public static object DuckType(object _oObj)
+        public static object ConvertToObject(object _oObj)
         {
             if (_oObj == null) {
                 return 0;
