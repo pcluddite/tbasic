@@ -119,9 +119,9 @@ namespace Tbasic.Errors
             return new EndOfCodeException("Unterminated '" + name + "' block");
         }
 
-        public static Exception InvalidExpression(string expr, string expected)
+        public static Exception InvalidTypeInExpression(string expr, string expected)
         {
-            return new ScriptParsingException(string.Format("Invalid expression '{0}': '{1}' expected", expr, expected));
+            return new ScriptParsingException(string.Format("Invalid type in expression '{0}', expected '{1}'", expr, expected));
         }
 
         public static Exception NoIndexSpecified()

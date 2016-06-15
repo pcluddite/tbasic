@@ -70,8 +70,8 @@ namespace Tbasic.Runtime
             set {
                 _expression = value.Trim();
                 if (_expression.Length > Name.Length) {
-                    string index = _expression.Substring(Name.Length);
-                    if (index.Trim().StartsWith("[")) {
+                    string indicesString = _expression.Substring(Name.Length).Trim();
+                    if (indicesString.StartsWith("[")) {
                         IList<object> indices;
                         int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
                         _expression = value.Remove(last) + ']';
@@ -79,12 +79,13 @@ namespace Tbasic.Runtime
                             throw ThrowHelper.NoIndexSpecified();
                         }
                         Indices = new int[indices.Count];
-                        for (int i = 0; i < Indices.Length; i++) {
-                            if (indices[i] is int) {
-                                Indices[i] = (int)indices[i];
+                        for (int i = 0; i < Indices.Length; ++i) {
+                            int? index = indices[i] as int?;
+                            if (index == null) {
+                                throw ThrowHelper.InvalidTypeInExpression(indices[i].GetType().Name, typeof(int).Name);
                             }
                             else {
-                                throw ThrowHelper.InvalidExpression(indices[i].GetType().Name, typeof(int).Name);
+                                Indices[i] = index.Value;
                             }
                         }
                     }

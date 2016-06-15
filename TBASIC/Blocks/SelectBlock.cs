@@ -72,7 +72,7 @@ namespace Tbasic
                        );
                 }
                 else {
-                    throw ThrowHelper.InvalidExpression(Body[0].Text, "CASE");
+                    throw ThrowHelper.InvalidTypeInExpression(Body[0].Text, "CASE");
                 }
 
             }
