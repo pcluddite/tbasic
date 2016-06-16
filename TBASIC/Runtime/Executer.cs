@@ -213,18 +213,14 @@ namespace Tbasic.Runtime
             for (uint lineNumber = 0; lineNumber < lines.Length; ++lineNumber) {
                 Line current = new Line(lineNumber + 1, lines[lineNumber]); // Tag all lines with its line number (index + 1)
 
-                if (current.Text.StartsWith(";") || string.IsNullOrEmpty(current.Text)) {
+                if (string.IsNullOrEmpty(current.Text) || current.Text[0] == ';') {
                     continue;
                 }
                 if (current.Name.EndsWith("$") || current.Name.EndsWith("]")) {
-                    current = new Line(current);
-                    current.Text = "LET " + current.Text; // add the word LET if it's an equality
+                    current = new Line(current.LineNumber, "LET " + current.Text, current.Name); // add the word LET if it's an equality, but use the original name as visible name
                 }
                 else if (current.Name.EqualsIgnoreCase("FUNCTION")) {
                     funLines.Add(current.LineNumber);
-                }
-                else {
-                    current.VisibleName = current.VisibleName.ToUpper(); // name shown to the user
                 }
 
                 while (current.Text.EndsWith("_")) { // line continuation
@@ -280,9 +276,7 @@ namespace Tbasic.Runtime
 
         private void OnUserExit(EventArgs e)
         {
-            if (OnUserExitRequest != null) {
-                OnUserExitRequest(this, e);
-            }
+            OnUserExitRequest?.Invoke(this, e);
         }
     }
 }

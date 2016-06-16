@@ -21,6 +21,7 @@ using System;
 using Tbasic.Runtime;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic
 {
@@ -44,7 +45,7 @@ namespace Tbasic
                 throw ThrowHelper.NoCondition();
             }
 
-            string condition = Header.Text.Substring(Header.Text.Substring(3).IndexOf(' ') + 3);
+            string condition = Header.Text.Substring(Header.Text.IndexOf(' ', 3));
 
             if (parameters.Get<string>(1).EqualsIgnoreCase("UNTIL")) {
                 condition = string.Format("NOT ({0})", condition); // Until means inverted
