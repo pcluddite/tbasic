@@ -76,9 +76,6 @@ namespace Tbasic.Runtime
                         IList<object> indices;
                         int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
                         _expression = _expression.Remove(last) + ']';
-                        /*if (_expression.Length - 1 > last) {
-                            throw ThrowHelper.InvalidExpression(indicesString.Substring(1, indicesString.Length - 2));
-                        }*/
                         if (indices.Count == 0) {
                             throw ThrowHelper.NoIndexSpecified();
                         }

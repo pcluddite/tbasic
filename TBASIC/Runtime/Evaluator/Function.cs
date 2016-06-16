@@ -62,7 +62,7 @@ namespace Tbasic.Runtime
         public string Name
         {
             get {
-                if (_function == null || _function.Equals("")) {
+                if (string.IsNullOrEmpty(_function)) {
                     int index = _expression.IndexOf('(');
                     if (index < 1) {
                         throw new FormatException("string is not a function");
@@ -163,7 +163,7 @@ namespace Tbasic.Runtime
         /// <returns>filtered string</returns>
         public string ReplaceEx(string input)
         {
-            if ("" + input == "")
+            if (string.IsNullOrEmpty(input))
                 return "";
             Expression = input;
             return Replace();

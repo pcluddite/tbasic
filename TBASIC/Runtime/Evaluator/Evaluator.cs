@@ -178,7 +178,7 @@ namespace Tbasic.Runtime
         /// <returns>object of the expression return value</returns>
         public object Evaluate()
         {
-            if ("" + Expression == "") {
+            if (string.IsNullOrEmpty(Expression)) {
                 return 0;
             }
 
