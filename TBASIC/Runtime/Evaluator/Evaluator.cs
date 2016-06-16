@@ -107,11 +107,11 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Value and index of a Regex Match.
         /// </summary>
-        internal class MatchInfo
+        internal struct MatchInfo // This is a crazy hack that I hope to remove the day we don't use regex 6/15/16
         {
-            public int Index { get; set; }
-            public string Value { get; set; }
-            public bool Success { get; set; }
+            public int Index { get; private set; }
+            public string Value { get; private set; }
+            public bool Success { get; private set; }
 
             public int Length
             {
@@ -120,23 +120,34 @@ namespace Tbasic.Runtime
                 }
             }
 
-            private Match match;
+            public Match RealMatch { get; private set; }
 
-            public MatchInfo()
+            public MatchInfo(Match m, int idx, string val, bool success = true)
             {
+                Index = idx;
+                Value = val;
+                Success = success;
+                RealMatch = m;
             }
 
             public MatchInfo(Match m)
             {
-                match = m;
-                Index = m.Index;
-                Value = m.Value;
-                Success = m.Success;
+                RealMatch = m;
+                if (m == null) {
+                    Index = -1;
+                    Value = null;
+                    Success = false;
+                }
+                else {
+                    Index = m.Index;
+                    Value = m.Value;
+                    Success = m.Success;
+                }
             }
 
             public Match NextMatch()
             {
-                return match.NextMatch();
+                return RealMatch.NextMatch();
             }
 
             public static implicit operator MatchInfo(Match m)
@@ -262,7 +273,7 @@ namespace Tbasic.Runtime
 
             //Check String
             m = DefinedRegex.String.Match(Expression, nIdx);
-            if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+            if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                 mRet = m;
                 string str_parsed;
                 GroupParser.ReadString(m.Value, 0, out str_parsed);
@@ -270,70 +281,70 @@ namespace Tbasic.Runtime
             }
 
             //Check Unary Operator
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.UnaryOp.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = new UnaryOperator(m.Value);
                 }
             }
 
             //Check Function
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Function.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     Function func = new Function(
                         Expression.Substring(mRet.Index, mRet.Length),
                         CurrentExecution // share the wealth
                     );
                     func.Parse();
-                    mRet.Value = func.Expression;
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression);
                     val = func;
                 }
             }
 
             //Check null
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = MatchInfo.FromIndexOf(Expression, "null", nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                 }
             }
 
             //Check Variable
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Variable.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     Variable v = new Variable(Expression.Substring(mRet.Index, mRet.Length), CurrentExecution);
-                    mRet.Value = v.Expression;
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression);
                     val = v;
                 }
             }
 
             //Check Hexadecimal
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Hexadecimal.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = Convert.ToInt32(m.Value, 16);
                 }
             }
 
             //Check Boolean
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Boolean.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = bool.Parse(m.Value);
                 }
             }
 
             //Check Numeric
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.Numeric.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     while (m.Success && ("" + m.Value == "")) {
                         m = m.NextMatch();
                     }
@@ -345,15 +356,15 @@ namespace Tbasic.Runtime
             }
 
             //Check Binary Operator
-            if (mRet == null || mRet.Index > nIdx) {
+            if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 m = DefinedRegex.BinaryOp.Match(Expression, nIdx);
-                if (m.Success && (mRet == null || m.Index < mRet.Index)) {
+                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = new BinaryOperator(m.Value);
                 }
             }
 
-            if (mRet == null) {
+            if (mRet.RealMatch == null) {
                 if (CurrentExecution.Context.FindFunctionContext(Expression) == null) {
                     throw new ArgumentException("Invalid expression '" + Expression + "'");
                 }
