@@ -70,7 +70,6 @@ namespace Tbasic.Runtime
                     }
                     _function = _expression.Remove(index);
                 }
-                string func = _function.ToString();
                 return _function;
             }
         }

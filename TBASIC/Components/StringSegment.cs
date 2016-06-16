@@ -101,30 +101,17 @@ namespace Tbasic.Components
 
         public int IndexOf(char value)
         {
-            int index = full.IndexOf(value, start) - start;
-            if (index < len) {
-                return index;
-            }
-            else {
-                return -1; // not found
-            }
+            return full.IndexOf(value, start, len) - start;
         }
 
         public int IndexOf(char value, int startIndex)
         {
-            int index = full.IndexOf(value, start + startIndex) - start;
-            if (index < len) {
-                return index;
-            }
-            else {
-                return -1; // not found
-            }
+            return full.IndexOf(value, start + startIndex, len) - start;
         }
 
         public StringSegment Remove(int index)
         {
-            StringSegment seg = new StringSegment(full, start, index);
-            return seg;
+            return new StringSegment(full, start, index);
         }
 
         public StringSegment Trim()
