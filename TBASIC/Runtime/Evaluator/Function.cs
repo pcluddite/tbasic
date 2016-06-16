@@ -68,11 +68,10 @@ namespace Tbasic.Runtime
                     if (index < 1) {
                         throw new FormatException("string is not a function");
                     }
-                    return _function = _expression.Remove(index);
+                    _function = _expression.Remove(index);
                 }
-                else {
-                    return _function;
-                }
+                string func = _function.ToString();
+                return _function;
             }
         }
 

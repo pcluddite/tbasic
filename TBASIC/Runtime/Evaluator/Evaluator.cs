@@ -36,7 +36,7 @@ namespace Tbasic.Runtime
         #region Private Members
 
         private LinkedList<object> _expressionlist = new LinkedList<object>();
-        private StringSegment _expression = "";
+        private StringSegment _expression = StringSegment.Empty;
         private bool _bParsed;
 
         #endregion
@@ -298,7 +298,7 @@ namespace Tbasic.Runtime
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     Function func = new Function(
-                        expr.Substring(mRet.Index, mRet.Length),
+                        Expression.Subsegment(mRet.Index, mRet.Length),
                         CurrentExecution // share the wealth
                     );
                     func.Parse();
@@ -320,7 +320,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.Variable.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    Variable v = new Variable(expr.Substring(mRet.Index, mRet.Length), CurrentExecution);
+                    Variable v = new Variable(Expression.Subsegment(mRet.Index, mRet.Length), CurrentExecution);
                     mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression.ToString());
                     val = v;
                 }
@@ -478,7 +478,7 @@ namespace Tbasic.Runtime
         /// <returns></returns>
         public static object Evaluate(string expressionString, Executer exec)
         {
-            Evaluator expression = new Evaluator(expressionString, exec);
+            Evaluator expression = new Evaluator(new StringSegment(expressionString), exec);
             return expression.Evaluate();
         }
 

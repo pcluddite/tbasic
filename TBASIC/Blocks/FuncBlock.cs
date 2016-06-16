@@ -19,10 +19,11 @@
  **/
 using System;
 using System.Collections.Generic;
-using Tbasic.Runtime;
+using Tbasic.Components;
+using Tbasic.Errors;
 using Tbasic.Libraries;
 using Tbasic.Parsing;
-using Tbasic.Errors;
+using Tbasic.Runtime;
 
 namespace Tbasic
 {
@@ -71,7 +72,7 @@ namespace Tbasic
                 stackFrame.AssertArgs(2);
             }
             Evaluator e = new Evaluator(
-                stackFrame.Text.Substring(stackFrame.Name.Length),
+                new StringSegment(stackFrame.Text, stackFrame.Name.Length),
                 stackFrame.StackExecuter);
             stackFrame.Data = e.Evaluate();
             stackFrame.StackExecuter.RequestBreak();

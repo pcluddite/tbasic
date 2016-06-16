@@ -18,9 +18,10 @@
  *  USA
  **/
 using System;
-using Tbasic.Runtime;
+using Tbasic.Components;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Runtime;
 
 namespace Tbasic
 {
@@ -103,9 +104,10 @@ namespace Tbasic
                 throw ThrowHelper.ExpectedToken("THEN");
             }
 
-            Evaluator eval = new Evaluator(Header.Text
-                .Substring(Header.Text.IndexOf(' ') + 1) // Get rid of the IF
-                .Remove(Header.Text.LastIndexOf(' ') - 2), // Get rid of the THEN
+            Evaluator eval = new Evaluator(
+                new StringSegment(Header.Text,
+                Header.Text.IndexOf(' ') + 1, // Get rid of the IF
+                Header.Text.LastIndexOf(' ') - 2), // Get rid of the THEN
                 exec
             );
 

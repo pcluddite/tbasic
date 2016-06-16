@@ -20,6 +20,7 @@
 using Tbasic.Runtime;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic
 {
@@ -43,7 +44,7 @@ namespace Tbasic
                 throw ThrowHelper.NoCondition();
             }
 
-            string condition = Header.Text.Substring(Header.Text.IndexOf(' '));
+            StringSegment condition = new StringSegment(Header.Text, Header.Text.IndexOf(' '));
 
             Evaluator eval = new Evaluator(condition, exec);
 

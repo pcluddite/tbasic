@@ -19,10 +19,8 @@
  **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Tbasic.Components;
 using Tbasic.Errors;
-using Tbasic.Libraries;
 using Tbasic.Parsing;
 
 namespace Tbasic.Runtime
@@ -169,7 +167,7 @@ namespace Tbasic.Runtime
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {
-                Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
+                Evaluator eval = new Evaluator(new StringSegment(codeLine.Text), stackFrame.StackExecuter);
                 object result = eval.Evaluate();
                 stackFrame.Context.PersistReturns(stackFrame);
                 stackFrame.Data = result;

@@ -45,10 +45,10 @@ namespace Tbasic
                 throw ThrowHelper.NoCondition();
             }
 
-            string condition = Header.Text.Substring(Header.Text.IndexOf(' ', 3));
+            StringSegment condition = new StringSegment(Header.Text, Header.Text.IndexOf(' ', 3));
 
             if (parameters.Get<string>(1).EqualsIgnoreCase("UNTIL")) {
-                condition = string.Format("NOT ({0})", condition); // Until means inverted
+                condition = new StringSegment(string.Format("NOT ({0})", condition)); // Until means inverted
             }
             else if (parameters.Get<string>(1).EqualsIgnoreCase("WHILE")) {
                 // don't do anything, you're golden

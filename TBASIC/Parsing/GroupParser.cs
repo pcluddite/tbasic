@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using Tbasic.Errors;
 using Tbasic.Runtime;
+using Tbasic.Components;
 
 namespace Tbasic.Parsing
 {
@@ -206,7 +207,8 @@ namespace Tbasic.Parsing
 
                 if ((expected == 1 && cur == ',') // The commas in between other parentheses are not ours.
                     || expected == 0) {
-                    string _param = s_full.Substring(last + 1, c_index - last - 1).Trim();
+                    StringSegment _param = new StringSegment(s_full, last + 1, c_index - last - 1).Trim();
+                    string __parm = _param.ToString();
                     if (!_param.Equals("")) {
                         Evaluator expr = new Evaluator(_param, _curExec);
                         result.Add(expr.Evaluate());

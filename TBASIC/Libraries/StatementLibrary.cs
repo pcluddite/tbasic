@@ -22,6 +22,7 @@ using Tbasic.Runtime;
 using System.IO;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic.Libraries
 {
@@ -95,12 +96,12 @@ namespace Tbasic.Libraries
             if (!stackFrame.Get(2).Equals("=")) {
                 throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.Get(2));
             }
-            Variable var = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
+            Variable var = new Variable(new StringSegment(stackFrame.Get<string>(1)), stackFrame.StackExecuter);
             if (!var.IsValid) {
                 throw ThrowHelper.InvalidVariableName(var.Name.ToString());
             }
             if (var.Indices == null) {
-                Evaluator e = new Evaluator(stackFrame.Text.Substring(stackFrame.Text.IndexOf('=')), stackFrame.StackExecuter);
+                Evaluator e = new Evaluator(new StringSegment(stackFrame.Text, stackFrame.Text.IndexOf('=') + 1), stackFrame.StackExecuter);
                 stackFrame.StackExecuter.Context.SetConstant(stackFrame.Get<string>(1), e.Evaluate());
 
                 NULL(stackFrame);
@@ -119,7 +120,7 @@ namespace Tbasic.Libraries
                 LET(stackFrame);
             }
             else {
-                Variable v = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
+                Variable v = new Variable(new StringSegment(stackFrame.Get<string>(1)), stackFrame.StackExecuter);
                 string name = v.Name.ToString();
                 ObjectContext context = stackFrame.StackExecuter.Context.FindVariableContext(name);
                 if (context == null) {
@@ -181,7 +182,7 @@ namespace Tbasic.Libraries
             }
 
             Evaluator e = new Evaluator(
-                stackFrame.Text.Substring(stackFrame.Text.IndexOf('=') + 1),
+                new StringSegment(stackFrame.Text, stackFrame.Text.IndexOf('=') + 1),
                 stackFrame.StackExecuter);
 
             object data = e.Evaluate();

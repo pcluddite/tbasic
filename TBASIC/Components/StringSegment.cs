@@ -18,15 +18,15 @@
  *  USA
  **/
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Tbasic.Components
 {
-    internal sealed class StringSegment
+    internal sealed class StringSegment : IEnumerable<char>, IEquatable<StringSegment>, IEquatable<string>
     {
-        public static readonly StringSegment Empty = new StringSegment("", 0);
+        public static readonly StringSegment Empty = new StringSegment(string.Empty);
 
         private string full;
         private int start;
@@ -53,11 +53,14 @@ namespace Tbasic.Components
             }
         }
 
-        public StringSegment(string fullStr, int offset)
+        public StringSegment(string fullStr)
+            : this(fullStr, 0)
         {
-            full = fullStr;
-            start = offset;
-            len = fullStr.Length - start;
+        }
+
+        public StringSegment(string fullStr, int offset)
+            : this(fullStr, offset, fullStr.Length - offset)
+        {
         }
 
         public StringSegment(string fullStr, int offset, int count)
@@ -70,6 +73,8 @@ namespace Tbasic.Components
         public char this[int index]
         {
             get {
+                if (index >= len)
+                    throw new IndexOutOfRangeException();
                 return full[start + index];
             }
         }
@@ -96,12 +101,12 @@ namespace Tbasic.Components
 
         public int IndexOf(char value)
         {
-            return full.IndexOf(value, start);
+            return full.IndexOf(value, start) - start;
         }
 
         public int IndexOf(char value, int startIndex)
         {
-            return full.IndexOf(value, start + startIndex);
+            return full.IndexOf(value, start + startIndex) - start;
         }
 
         public StringSegment Remove(int index)
@@ -111,22 +116,20 @@ namespace Tbasic.Components
 
         public StringSegment Trim()
         {
+            string first = this.ToString();
             int new_start = full.SkipWhiteSpace(start);
-            int new_end = len - 1;
+            int new_end = len - (new_start - start) - 1;
             while (char.IsWhiteSpace(this[new_end])) {
                 --new_end;
             }
-            return new StringSegment(full, new_start, new_end - new_start + 1);
+            StringSegment test = new StringSegment(full, new_start, new_end + 1);
+            string fart = test.ToString();
+            return test;
         }
 
         public override string ToString()
         {
             return full.Substring(start, len);
-        }
-        
-        public static implicit operator StringSegment(string str)
-        {
-            return new StringSegment(str, 0);
         }
 
         public static bool IsNullOrEmpty(StringSegment segment)
@@ -142,6 +145,117 @@ namespace Tbasic.Components
                 }
             }
             return -1;
+        }
+
+        public bool Equals(StringSegment other)
+        {
+            if (other == null) {
+                return false;
+            }
+            return Enumerable.SequenceEqual(this, other);
+        }
+
+        public bool Equals(string other)
+        {
+            if (other == null) {
+                return false;
+            }
+            return Enumerable.SequenceEqual(this, other);
+        }
+
+        public override bool Equals(object obj)
+        {
+            StringSegment seg = obj as StringSegment;
+            if (seg != null) {
+                return Equals(seg);
+            }
+            string str = obj as string;
+            if (str != null) {
+                return Equals(str);
+            }
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return full.GetHashCode() ^ len ^ start; // TODO: Optimize this so there aren't many collisions 6/16/16
+        }
+
+        public static bool operator==(StringSegment first, StringSegment second)
+        {
+            if (ReferenceEquals(first, second)) {
+                return true;
+            }
+            bool? val = first?.Equals(second);
+            if (val == null) {
+                return false;
+            }
+            else {
+                return val.Value;
+            }
+        }
+
+        public static bool operator !=(StringSegment first, StringSegment second)
+        {
+            if (ReferenceEquals(first, second)) {
+                return false;
+            }
+            bool? val = first?.Equals(second);
+            if (val == null) {
+                return true;
+            }
+            else {
+                return !val.Value;
+            }
+        }
+
+        public IEnumerator<char> GetEnumerator()
+        {
+            return new StringSegEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private class StringSegEnumerator : IEnumerator<char>
+        {
+            private StringSegment segment;
+            int curr = -1;
+
+            public StringSegEnumerator(StringSegment seg)
+            {
+                segment = seg;
+            }
+
+            public char Current
+            {
+                get {
+                    return segment[curr];
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get {
+                    return Current;
+                }
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                return ++curr < segment.Length;
+            }
+
+            public void Reset()
+            {
+                curr = -1;
+            }
         }
     }
 }
