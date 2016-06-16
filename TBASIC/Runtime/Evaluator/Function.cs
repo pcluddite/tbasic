@@ -142,72 +142,7 @@ namespace Tbasic.Runtime
             Function expr = new Function(expression, exec);
             return expr.Evaluate();
         }
-
-        /// <summary>
-        /// This routine will replace functions existing in a input string with thier respective values
-        /// </summary>
-        /// <param name="input">input string</param>
-        /// <param name="exec">the current context</param>
-        /// <returns>input string with all found functions replaced with returned values</returns>
-        public static string Replace(string input, Executer exec)
-        {
-            Function expr = new Function(input, exec);
-            return expr.Replace();
-        }
-
-        /// <summary>
-        /// Since the static replace will not allow a second Replace(string), Replace(ex) will do so with
-        /// this instance (so that variables will work)
-        /// </summary>
-        /// <param name="input">input string</param>
-        /// <returns>filtered string</returns>
-        public string ReplaceEx(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return "";
-            Expression = input;
-            return Replace();
-        }
-
-        /// <summary>
-        /// This routine will replace functions existing in the Expression property with thier respective values
-        /// </summary>
-        /// <returns>Expression string with all found functions replaced with returned values</returns>
-        public string Replace()
-        {
-            StringBuilder strbRet = new StringBuilder(Expression);
-            Match m = DefinedRegex.Function.Match(Expression);
-
-            while (m.Success) {
-                int nDepth = 1;
-                int nIdx = m.Index + m.Length;
-                //Get the parameter string
-                while (nDepth > 0) {
-                    if (nIdx >= strbRet.Length) {
-                        throw new ArgumentException("Missing ')' in Expression");
-                    }
-                    if (strbRet[nIdx] == ')')
-                        nDepth--;
-                    if (strbRet[nIdx] == '(')
-                        nDepth++;
-                    nIdx++;
-                }
-                string expression = strbRet.ToString(m.Index, nIdx - m.Index);
-                Function eval = new Function(expression, CurrentExecution);
-                strbRet.Replace(expression, "" + eval.Evaluate());
-                m = DefinedRegex.Function.Match(strbRet.ToString());
-            }
-
-            //Replace Variable in the path!
-            m = DefinedRegex.Variable.Match(strbRet.ToString());
-            while (m.Success) {
-                strbRet.Replace(m.Value, "" + CurrentContext.GetVariable(m.Value));
-                m = DefinedRegex.Variable.Match(strbRet.ToString());
-            }
-
-            return strbRet.ToString();
-        }
-
+        
         /// <summary>
         /// string override, return Expression property
         /// </summary>
