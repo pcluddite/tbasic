@@ -23,6 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic.Runtime
 {
@@ -33,8 +34,8 @@ namespace Tbasic.Runtime
     {
         #region Private Members
 
-        private string _expression = "";
-        private string _function = "";
+        private StringSegment _expression;
+        private StringSegment _function;
         private bool _bParsed;
         private IList<object> _params;
 
@@ -46,12 +47,12 @@ namespace Tbasic.Runtime
         /// Gets or sets the expression to be evaluated
         /// </summary>
         /// <value></value>
-        public string Expression
+        public StringSegment Expression
         {
             get { return _expression; }
             set {
                 _expression = value;
-                _function = "";
+                _function = StringSegment.Empty;
                 _bParsed = false;
                 _params = null;
             }
@@ -59,10 +60,10 @@ namespace Tbasic.Runtime
 
         public int LastIndex { get; private set; }
 
-        public string Name
+        public StringSegment Name
         {
             get {
-                if (string.IsNullOrEmpty(_function)) {
+                if (StringSegment.IsNullOrEmpty(_function)) {
                     int index = _expression.IndexOf('(');
                     if (index < 1) {
                         throw new FormatException("string is not a function");
@@ -96,7 +97,7 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="expression">Expression to evaluate</param>
         /// <param name="exec">the current context</param>
-        public Function(string expression, Executer exec)
+        public Function(StringSegment expression, Executer exec)
         {
             CurrentExecution = exec;
             Expression = expression;
@@ -111,7 +112,9 @@ namespace Tbasic.Runtime
             if (!_bParsed) {
                 _params = GetParameters();
                 _bParsed = true;
-                _expression = _expression.Remove(LastIndex) + ')';
+                if (LastIndex < _expression.Length - 1) {
+                    _expression = _expression.Remove(LastIndex + 1);
+                }
             }
         }
 
@@ -134,7 +137,7 @@ namespace Tbasic.Runtime
         /// <param name="expression"></param>
         /// <param name="exec">the current execution</param>
         /// <returns>evauluated value</returns>
-        public static object Evaluate(string expression, Executer exec)
+        public static object Evaluate(StringSegment expression, Executer exec)
         {
             if (Executer.ExitRequest) {
                 return null;
@@ -147,7 +150,7 @@ namespace Tbasic.Runtime
         /// string override, return Expression property
         /// </summary>
         /// <returns>returns Expression property</returns>
-        public override string ToString() { return Expression; }
+        public override string ToString() { return Expression.ToString(); }
 
         /// <summary>
         /// returns the parameters of a function
@@ -156,7 +159,7 @@ namespace Tbasic.Runtime
         public IList<object> GetParameters()
         {
             IList<object> result;
-            LastIndex = GroupParser.ReadGroup(_expression,
+            LastIndex = GroupParser.ReadGroup(_expression.ToString(),
                                             Name.Length, // Start at the end of the name
                                             CurrentExecution, out result);
             return result;
@@ -165,15 +168,15 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Executes the function based upon the name of the function
         /// </summary>
-        /// <param name="name">name of the function to execute</param>
+        /// <param name="_name">name of the function to execute</param>
         /// <param name="l_params">parameter list</param>
         /// <returns>returned value of executed function</returns>
-        private object ExecuteFunction(string name, IList<object> l_params)
+        private object ExecuteFunction(StringSegment _name, IList<object> l_params)
         {
             if (Executer.ExitRequest) {
                 return null;
             }
-            name = name.Trim();
+            string name = _name.Trim().ToString();
             object[] a_evaluated = null;
             if (l_params != null) {
                 a_evaluated = new object[l_params.Count];

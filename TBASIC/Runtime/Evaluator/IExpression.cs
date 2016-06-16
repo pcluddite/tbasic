@@ -17,6 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *  USA
  **/
+using Tbasic.Components;
+
 namespace Tbasic.Runtime
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace Tbasic.Runtime
     /// </summary>
     internal interface IExpression
     {
-        string Expression { get; set; }
+        StringSegment Expression { get; set; }
         object Evaluate();
         Executer CurrentExecution { get; set; }
     }

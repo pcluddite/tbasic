@@ -31,8 +31,8 @@ namespace Tbasic.Runtime
 
         #region Private Members
 
-        private string _expression;
-        private string _variable = null;
+        private StringSegment _expression = null;
+        private StringSegment _variable = null;
 
         #endregion
 
@@ -43,14 +43,14 @@ namespace Tbasic.Runtime
         public bool IsMacro
         {
             get {
-                return Name.StartsWith("@");
+                return Name[0] == '@';
             }
         }
 
         public bool IsValid
         {
             get {
-                return Name.EndsWith("$");
+                return Name[Name.Length - 1] == '$';
             }
         }
 
@@ -63,7 +63,7 @@ namespace Tbasic.Runtime
 
         public Executer CurrentExecution { get; set; }
 
-        public string Expression
+        public StringSegment Expression
         {
             get {
                 return _expression;
@@ -71,11 +71,13 @@ namespace Tbasic.Runtime
             set {
                 _expression = value.Trim();
                 if (_expression.Length > Name.Length) {
-                    StringSegment indicesString = new StringSegment(_expression, _expression.SkipWhiteSpace(Name.Length));
+                    StringSegment indicesString = _expression.Subsegment(_expression.SkipWhiteSpace(Name.Length));
                     if (indicesString.Offset > -1 && indicesString[0] == '[') {
                         IList<object> indices;
-                        int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
-                        _expression = _expression.Remove(last) + ']';
+                        int last = GroupParser.ReadGroup(_expression.ToString(), _expression.IndexOf('['), CurrentExecution, out indices);
+                        if (last < _expression.Length - 1) {
+                            _expression = _expression.Remove(last + 1);
+                        }
                         if (indices.Count == 0) {
                             throw ThrowHelper.NoIndexSpecified();
                         }
@@ -100,7 +102,7 @@ namespace Tbasic.Runtime
             }
         }
 
-        public string Name
+        public StringSegment Name
         {
             get {
                 if (_variable == null) {
@@ -112,13 +114,13 @@ namespace Tbasic.Runtime
 
         #endregion
 
-        public Variable(string full, Executer exec)
+        public Variable(StringSegment full, Executer exec)
         {
             CurrentExecution = exec;
             Expression = full;
         }
 
-        private string GetName(string str)
+        private StringSegment GetName(StringSegment str)
         {
             int bracket = str.IndexOf('[');
             int space = str.IndexOf(' ');
@@ -141,12 +143,12 @@ namespace Tbasic.Runtime
 
         public override string ToString()
         {
-            return _expression;
+            return _expression.ToString();
         }
 
         public object Evaluate()
         {
-            object obj = CurrentContext.GetVariable(Name);
+            object obj = CurrentContext.GetVariable(Name.ToString());
             if (Indices != null) {
                 for (int n = 0; n < Indices.Length; n++) {
                     if (obj.GetType().IsArray) {
@@ -168,7 +170,7 @@ namespace Tbasic.Runtime
 
         private string BuildName(int n)
         {
-            StringBuilder sb = new StringBuilder(Name);
+            StringBuilder sb = new StringBuilder(Name.ToString());
             if (n > 0) {
                 sb.Append("[");
                 while (n > 0) {

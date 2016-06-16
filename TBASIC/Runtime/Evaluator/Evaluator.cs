@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic.Runtime
 {
@@ -35,7 +36,7 @@ namespace Tbasic.Runtime
         #region Private Members
 
         private LinkedList<object> _expressionlist = new LinkedList<object>();
-        private string _expression = "";
+        private StringSegment _expression = "";
         private bool _bParsed;
 
         #endregion
@@ -55,7 +56,7 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="expression">string of the Expression to evaluate</param>
         /// <param name="exec">the current context</param>
-        public Evaluator(string expression, Executer exec)
+        public Evaluator(StringSegment expression, Executer exec)
         {
             CurrentExecution = exec;
             Expression = expression;
@@ -68,7 +69,7 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Gets or sets the expression to be evaluated. This value is trimmed.
         /// </summary>
-        public string Expression
+        public StringSegment Expression
         {
             get { return _expression; }
             set {
@@ -178,7 +179,7 @@ namespace Tbasic.Runtime
         /// <returns>object of the expression return value</returns>
         public object Evaluate()
         {
-            if (string.IsNullOrEmpty(Expression)) {
+            if (StringSegment.IsNullOrEmpty(Expression)) {
                 return 0;
             }
 
@@ -227,7 +228,7 @@ namespace Tbasic.Runtime
         /// gets a string representation of this expression
         /// </summary>
         /// <returns></returns>
-        public override string ToString() { return Expression; }
+        public override string ToString() { return Expression.ToString(); }
 
         /// <summary>
         /// Sorts the mathmatical operations to be executed
@@ -236,7 +237,8 @@ namespace Tbasic.Runtime
         {
             //Break Expression Apart into List
             if (!_bParsed) {
-                for (int x = 0; x < Expression.Length; x = NextToken(x)) ;
+                string expr = Expression.ToString(); // convert it to a string
+                for (int x = 0; x < Expression.Length; x = NextToken(x, expr)) ;
             }
             _bParsed = true;
 
@@ -248,31 +250,32 @@ namespace Tbasic.Runtime
         /// This will search the expression for the next token (operand, operator, etc)
         /// </summary>
         /// <param name="nIdx">Start Position of Search</param>
+        /// <param name="expr">the expression as a string</param>
         /// <returns>First character index after token.</returns>
         //[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private int NextToken(int nIdx)
+        private int NextToken(int nIdx, string expr)
         {
             MatchInfo mRet = null;
             int nRet = nIdx;
             object val = null;
 
             //Check for preceeding white space from last token index
-            if (char.IsWhiteSpace(Expression[nIdx])) {
+            if (char.IsWhiteSpace(expr[nIdx])) {
                 do {
                     ++nIdx;
                 }
-                while (char.IsWhiteSpace(Expression[nIdx]));
+                while (char.IsWhiteSpace(expr[nIdx]));
                 return nIdx;
             }
 
             //Check Parenthesis
-            MatchInfo m = MatchInfo.FromIndexOf(Expression, "(", nIdx);
+            MatchInfo m = MatchInfo.FromIndexOf(expr, "(", nIdx);
             if (m.Success) {
                 mRet = m;
             }
 
             //Check String
-            m = DefinedRegex.String.Match(Expression, nIdx);
+            m = DefinedRegex.String.Match(expr, nIdx);
             if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                 mRet = m;
                 string str_parsed;
@@ -282,7 +285,7 @@ namespace Tbasic.Runtime
 
             //Check Unary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.UnaryOp.Match(Expression, nIdx);
+                m = DefinedRegex.UnaryOp.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = new UnaryOperator(m.Value);
@@ -291,22 +294,22 @@ namespace Tbasic.Runtime
 
             //Check Function
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Function.Match(Expression, nIdx);
+                m = DefinedRegex.Function.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     Function func = new Function(
-                        Expression.Substring(mRet.Index, mRet.Length),
+                        expr.Substring(mRet.Index, mRet.Length),
                         CurrentExecution // share the wealth
                     );
                     func.Parse();
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression);
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression.ToString());
                     val = func;
                 }
             }
 
             //Check null
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchInfo.FromIndexOf(Expression, "null", nIdx);
+                m = MatchInfo.FromIndexOf(expr, "null", nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                 }
@@ -314,18 +317,18 @@ namespace Tbasic.Runtime
 
             //Check Variable
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Variable.Match(Expression, nIdx);
+                m = DefinedRegex.Variable.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    Variable v = new Variable(Expression.Substring(mRet.Index, mRet.Length), CurrentExecution);
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression);
+                    Variable v = new Variable(expr.Substring(mRet.Index, mRet.Length), CurrentExecution);
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression.ToString());
                     val = v;
                 }
             }
 
             //Check Hexadecimal
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Hexadecimal.Match(Expression, nIdx);
+                m = DefinedRegex.Hexadecimal.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = Convert.ToInt32(m.Value, 16);
@@ -334,7 +337,7 @@ namespace Tbasic.Runtime
 
             //Check Boolean
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Boolean.Match(Expression, nIdx);
+                m = DefinedRegex.Boolean.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = bool.Parse(m.Value);
@@ -343,7 +346,7 @@ namespace Tbasic.Runtime
 
             //Check Numeric
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Numeric.Match(Expression, nIdx);
+                m = DefinedRegex.Numeric.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     while (m.Success && ("" + m.Value == "")) {
                         m = m.NextMatch();
@@ -357,7 +360,7 @@ namespace Tbasic.Runtime
 
             //Check Binary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.BinaryOp.Match(Expression, nIdx);
+                m = DefinedRegex.BinaryOp.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = new BinaryOperator(m.Value);
@@ -365,8 +368,8 @@ namespace Tbasic.Runtime
             }
 
             if (mRet.RealMatch == null) {
-                if (CurrentExecution.Context.FindFunctionContext(Expression) == null) {
-                    throw new ArgumentException("Invalid expression '" + Expression + "'");
+                if (CurrentExecution.Context.FindFunctionContext(expr) == null) {
+                    throw new ArgumentException("Invalid expression '" + expr + "'");
                 }
                 else {
                     throw new FormatException("Poorly formed function call");
@@ -375,19 +378,19 @@ namespace Tbasic.Runtime
 
             if (mRet.Index != nIdx) {
                 throw new ArgumentException(
-                    "Invalid token in expression '" + Expression.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
+                    "Invalid token in expression '" + expr.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
                 );
             }
 
             if (mRet.Value == "(") {
 
-                nRet = GroupParser.IndexGroup(Expression, mRet.Index) + 1;
+                nRet = GroupParser.IndexGroup(expr, mRet.Index) + 1;
 
-                Evaluator expr = new Evaluator(
-                    Expression.Substring(mRet.Index + 1, nRet - mRet.Index - 2),
+                Evaluator eval = new Evaluator(
+                    Expression.Subsegment(mRet.Index + 1, nRet - mRet.Index - 2),
                     CurrentExecution // share the wealth
                 );
-                _expressionlist.AddLast(expr);
+                _expressionlist.AddLast(eval);
             }
             else {
                 nRet = mRet.Index + mRet.Length;

@@ -20,6 +20,7 @@
 using System;
 using Tbasic.Runtime;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic
 {

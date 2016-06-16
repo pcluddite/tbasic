@@ -97,7 +97,7 @@ namespace Tbasic.Libraries
             }
             Variable var = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
             if (!var.IsValid) {
-                throw ThrowHelper.InvalidVariableName(var.Name);
+                throw ThrowHelper.InvalidVariableName(var.Name.ToString());
             }
             if (var.Indices == null) {
                 Evaluator e = new Evaluator(stackFrame.Text.Substring(stackFrame.Text.IndexOf('=')), stackFrame.StackExecuter);
@@ -120,16 +120,17 @@ namespace Tbasic.Libraries
             }
             else {
                 Variable v = new Variable(stackFrame.Get<string>(1), stackFrame.StackExecuter);
-                ObjectContext context = stackFrame.StackExecuter.Context.FindVariableContext(v.Name);
+                string name = v.Name.ToString();
+                ObjectContext context = stackFrame.StackExecuter.Context.FindVariableContext(name);
                 if (context == null) {
                     stackFrame.StackExecuter.Context.SetVariable(
-                        v.Name,
+                        name,
                         array_alloc(v.Indices, 0));
                 }
                 else {
-                    object obj = context.GetVariable(v.Name);
+                    object obj = context.GetVariable(name);
                     array_realloc(ref obj, v.Indices, 0);
-                    context.SetVariable(v.Name, obj);
+                    context.SetVariable(name, obj);
                 }
                 NULL(stackFrame);
             }

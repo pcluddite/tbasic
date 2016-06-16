@@ -24,8 +24,10 @@ using System.Text;
 
 namespace Tbasic.Components
 {
-    internal struct StringSegment
+    internal sealed class StringSegment
     {
+        public static readonly StringSegment Empty = new StringSegment("", 0);
+
         private string full;
         private int start;
         private int len;
@@ -82,6 +84,31 @@ namespace Tbasic.Components
             return full.Substring(startIndex + start, length);
         }
 
+        public StringSegment Subsegment(int startIndex)
+        {
+            return new StringSegment(full, start + startIndex);
+        }
+
+        public StringSegment Subsegment(int startIndex, int length)
+        {
+            return new StringSegment(full, start + startIndex, length);
+        }
+
+        public int IndexOf(char value)
+        {
+            return full.IndexOf(value, start);
+        }
+
+        public int IndexOf(char value, int startIndex)
+        {
+            return full.IndexOf(value, start + startIndex);
+        }
+
+        public StringSegment Remove(int index)
+        {
+            return new StringSegment(full, start, index);
+        }
+
         public StringSegment Trim()
         {
             int new_start = full.SkipWhiteSpace(start);
@@ -89,7 +116,7 @@ namespace Tbasic.Components
             while (char.IsWhiteSpace(this[new_end])) {
                 --new_end;
             }
-            return new StringSegment(full, new_start, new_end - new_start);
+            return new StringSegment(full, new_start, new_end - new_start + 1);
         }
 
         public override string ToString()
@@ -100,6 +127,21 @@ namespace Tbasic.Components
         public static implicit operator StringSegment(string str)
         {
             return new StringSegment(str, 0);
+        }
+
+        public static bool IsNullOrEmpty(StringSegment segment)
+        {
+            return segment == null || segment.FullString == null || segment.Length == 0;
+        }
+
+        public int SkipWhiteSpace(int startIndex = 0)
+        {
+            for (int index = startIndex; index < Length; ++index) {
+                if (!char.IsWhiteSpace(this[index])) {
+                    return index;
+                }
+            }
+            return -1;
         }
     }
 }
