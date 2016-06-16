@@ -111,7 +111,7 @@ namespace Tbasic.Runtime
             if (!_bParsed) {
                 _params = GetParameters();
                 _bParsed = true;
-                _expression = _expression.Remove(LastIndex) + ")";
+                _expression = _expression.Remove(LastIndex) + ')';
             }
         }
 

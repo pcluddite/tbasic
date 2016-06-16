@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Extensions.cs" />
+    <Compile Include="Components\StringSegment.cs" />
     <Compile Include="Components\Win32\Impersonate.cs" />
     <Compile Include="Errors\ErrorCodes.cs" />
     <Compile Include="Errors\ScriptParsingException.cs" />

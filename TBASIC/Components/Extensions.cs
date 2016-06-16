@@ -20,5 +20,15 @@ namespace Tbasic
         {
             return initial.IndexOf(other, start, ComparisonType);
         }
+
+        public static int SkipWhiteSpace(this string str, int start = 0)
+        {
+            for(int index = start; index < str.Length; ++index) {
+                if (!char.IsWhiteSpace(str[index])) {
+                    return index;
+                }
+            }
+            return -1;
+        }
     }
 }

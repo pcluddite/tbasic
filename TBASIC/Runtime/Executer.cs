@@ -169,10 +169,6 @@ namespace Tbasic.Runtime
         {
             ObjectContext context = stackFrame.Context.FindCommandContext(codeLine.Name);
             if (context == null) {
-                context = stackFrame.Context.FindFunctionContext(codeLine.Name);
-                if (context == null) {
-                    throw ThrowHelper.UndefinedFunctionOrCommand(codeLine.Name);
-                }
                 Evaluator eval = new Evaluator(codeLine.Text, stackFrame.StackExecuter);
                 object result = eval.Evaluate();
                 stackFrame.Context.PersistReturns(stackFrame);

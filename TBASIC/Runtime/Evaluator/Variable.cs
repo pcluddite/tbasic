@@ -22,6 +22,7 @@ using System.Text;
 using Tbasic.Errors;
 using Tbasic.Parsing;
 using System;
+using Tbasic.Components;
 
 namespace Tbasic.Runtime
 {
@@ -70,11 +71,14 @@ namespace Tbasic.Runtime
             set {
                 _expression = value.Trim();
                 if (_expression.Length > Name.Length) {
-                    string indicesString = _expression.Substring(Name.Length).Trim();
-                    if (indicesString.StartsWith("[")) {
+                    StringSegment indicesString = new StringSegment(_expression, _expression.SkipWhiteSpace(Name.Length));
+                    if (indicesString.Offset > -1 && indicesString[0] == '[') {
                         IList<object> indices;
                         int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
-                        _expression = value.Remove(last) + ']';
+                        _expression = _expression.Remove(last) + ']';
+                        /*if (_expression.Length - 1 > last) {
+                            throw ThrowHelper.InvalidExpression(indicesString.Substring(1, indicesString.Length - 2));
+                        }*/
                         if (indices.Count == 0) {
                             throw ThrowHelper.NoIndexSpecified();
                         }

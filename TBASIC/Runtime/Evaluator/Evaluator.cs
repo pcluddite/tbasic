@@ -111,8 +111,14 @@ namespace Tbasic.Runtime
         {
             public int Index { get; set; }
             public string Value { get; set; }
-            public int Length { get; set; }
             public bool Success { get; set; }
+
+            public int Length
+            {
+                get {
+                    return Value.Length;
+                }
+            }
 
             private Match match;
 
@@ -125,7 +131,6 @@ namespace Tbasic.Runtime
                 match = m;
                 Index = m.Index;
                 Value = m.Value;
-                Length = m.Length;
                 Success = m.Success;
             }
 
@@ -146,7 +151,6 @@ namespace Tbasic.Runtime
                 if (m.Index > -1) {
                     m.Success = true;
                     m.Value = search;
-                    m.Length = 1;
                 }
                 return m;
             }
@@ -302,7 +306,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.Variable.Match(Expression, nIdx);
                 if (m.Success && (mRet == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    Variable v = new Variable(m.Value, CurrentExecution);
+                    Variable v = new Variable(Expression.Substring(mRet.Index, mRet.Length), CurrentExecution);
                     mRet.Value = v.Expression;
                     val = v;
                 }
