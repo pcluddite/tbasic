@@ -101,30 +101,40 @@ namespace Tbasic.Components
 
         public int IndexOf(char value)
         {
-            return full.IndexOf(value, start) - start;
+            int index = full.IndexOf(value, start) - start;
+            if (index < len) {
+                return index;
+            }
+            else {
+                return -1; // not found
+            }
         }
 
         public int IndexOf(char value, int startIndex)
         {
-            return full.IndexOf(value, start + startIndex) - start;
+            int index = full.IndexOf(value, start + startIndex) - start;
+            if (index < len) {
+                return index;
+            }
+            else {
+                return -1; // not found
+            }
         }
 
         public StringSegment Remove(int index)
         {
-            return new StringSegment(full, start, index);
+            StringSegment seg = new StringSegment(full, start, index);
+            return seg;
         }
 
         public StringSegment Trim()
         {
-            string first = this.ToString();
             int new_start = full.SkipWhiteSpace(start);
             int new_end = len - (new_start - start) - 1;
             while (char.IsWhiteSpace(this[new_end])) {
                 --new_end;
             }
-            StringSegment test = new StringSegment(full, new_start, new_end + 1);
-            string fart = test.ToString();
-            return test;
+            return new StringSegment(full, new_start, new_end + 1);
         }
 
         public override string ToString()
