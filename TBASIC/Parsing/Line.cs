@@ -24,32 +24,74 @@ namespace Tbasic.Parsing
     /// <summary>
     /// Defines a set of methods and properties for a line of Tbasic code
     /// </summary>
-    public struct Line : IComparable<Line>, IEquatable<Line>
+    public class Line : IComparable<Line>, IEquatable<Line>
     {
-        /// <summary>
-        /// Gets a value indicating whether this line is formatted like a function. This does not determine if the function is actually defined.
-        /// </summary>
-        public bool IsFunction { get; private set; }
+        private bool? isFunc;
+        private string visibleName;
+        private string name;
+        private string text;
 
         /// <summary>
-        /// Gets the line number
+        /// Gets a value indicating whether this line is formatted like a function
         /// </summary>
-        public uint LineNumber { get; private set; }
+        public bool IsFunction
+        {
+            get {
+                if (isFunc == null) {
+                    FindAndSetName();
+                }
+                return isFunc.Value;
+            }
+        }
 
         /// <summary>
-        /// Gets the text of this line
+        /// Gets or sets the line number
         /// </summary>
-        public string Text { get; private set; }
+        public uint LineNumber { get; set; }
 
         /// <summary>
-        /// Gets the name of the line displayed in exceptions
+        /// Gets or sets the text of this line
         /// </summary>
-        public string VisibleName { get; private set; }
+        public string Text
+        {
+            get {
+                return text;
+            }
+            set {
+                text = value;
+                name = null;
+                isFunc = null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the line displayed in exceptions
+        /// </summary>
+        public string VisibleName
+        {
+            get {
+                if (visibleName == null) {
+                    return Name;
+                }
+                return visibleName;
+            }
+            set {
+                visibleName = value;
+            }
+        }
 
         /// <summary>
         /// Retrieves the name that is retreived from the ObjectContext libraries
         /// </summary>
-        public string Name { get; private set; }
+        public string Name
+        {
+            get {
+                if (name == null) { // This way we don't have to do this every time
+                    FindAndSetName();
+                }
+                return name;
+            }
+        }
 
         /// <summary>
         /// Initializes a line of Tbasic code
@@ -60,27 +102,7 @@ namespace Tbasic.Parsing
         {
             LineNumber = id;
             Text = line.Trim(); // Ignore leading and trailing whitespace.
-
-            bool isFunc;
-            Name = FindAndSetName(Text, out isFunc);
             VisibleName = Name;
-            IsFunction = isFunc;
-        }
-
-        /// <summary>
-        /// Initializes a line of Tbasic code
-        /// </summary>
-        /// <param name="id">The id of the line. This should be the line number.</param>
-        /// <param name="line">The text of the line</param>
-        /// <param name="visibleName">The visible name of this line</param>
-        public Line(uint id, string line, string visibleName)
-        {
-            LineNumber = id;
-            Text = line.Trim();
-            bool isFunc;
-            Name = FindAndSetName(Text, out isFunc);
-            VisibleName = visibleName;
-            IsFunction = isFunc;
         }
 
         /// <summary>
@@ -91,32 +113,30 @@ namespace Tbasic.Parsing
         {
             LineNumber = line.LineNumber;
             Text = line.Text;
-            VisibleName = line.VisibleName;
-            IsFunction = line.IsFunction;
-            Name = line.Name;
+            VisibleName = line.Name;
         }
 
-        private static string FindAndSetName(string Text, out bool isFunc)
+        private void FindAndSetName()
         {
             int paren = Text.IndexOf('(');
             int space = Text.IndexOf(' ');
             isFunc = false;
             if (paren < 0 && space < 0) { // no paren or space, the name is the who line
-                return Text;
+                name = Text;
             }
             else if (paren < 0 && space > 0) { // no paren, but there's a space
-                return Text.Remove(space);
+                name = Text.Remove(space);
             }
             else if (space < 0 && paren > 0) { // no space, but there's a paren
+                name = Text.Remove(paren);
                 isFunc = true;
-                return Text.Remove(paren);
             }
             else if (space < paren) { // the space is before the paren, so that's where the name is
-                return Text.Remove(space);
+                name = Text.Remove(space);
             }
             else {
+                name = Text.Remove(paren);
                 isFunc = true; // it's formatted like a function
-                return Text.Remove(paren);
             }
         }
 

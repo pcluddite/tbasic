@@ -217,10 +217,13 @@ namespace Tbasic.Runtime
                     continue;
                 }
                 if (current.Name.EndsWith("$") || current.Name.EndsWith("]")) {
-                    current = new Line(current.LineNumber, "LET " + current.Text, current.Name); // add the word LET if it's an equality, but use the original name as visible name
+                    current.Text = "LET " + current.Text; // add the word LET if it's an equality, but use the original name as visible name
                 }
                 else if (current.Name.EqualsIgnoreCase("FUNCTION")) {
                     funLines.Add(current.LineNumber);
+                }
+                else {
+                    current.VisibleName = current.VisibleName.ToUpper();
                 }
 
                 while (current.Text.EndsWith("_")) { // line continuation
