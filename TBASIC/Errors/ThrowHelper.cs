@@ -31,12 +31,12 @@ namespace Tbasic.Errors
 
         public static Exception UndefinedFunctionOrCommand(string name)
         {
-            return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a command or function");
+            return new NotImplementedException("'" + name + "' is not defined as a command or function");
         }
 
         public static Exception UndefinedFunction(string name)
         {
-            return new TbasicException(ErrorServer.NotImplemented, "'" + name + "' is not defined as a function");
+            return new NotImplementedException("'" + name + "' is not defined as a function");
         }
 
         public static Exception UnterminatedGroup()

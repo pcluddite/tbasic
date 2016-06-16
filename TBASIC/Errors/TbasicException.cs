@@ -147,6 +147,9 @@ namespace Tbasic.Errors
             else if (ex is UnauthorizedAccessException || ex is SecurityException || ex is InvalidOperationException || ex is InvalidCastException) {
                 return new TbasicException(ErrorClient.Forbidden, ex.Message, ex);
             }
+            else if (ex is NotImplementedException) {
+                return new TbasicException(ErrorServer.NotImplemented, ex.Message, ex);
+            }
             else if (ex is IOException) {
                 return new TbasicException(ErrorClient.Locked, ex.Message, ex);
             }

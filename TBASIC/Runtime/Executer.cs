@@ -184,7 +184,7 @@ namespace Tbasic.Runtime
 
         private void HandleError(Line current, TFunctionData stackFrame, Exception ex)
         {
-            TbasicException cEx = TbasicException.WrapException(ex) as TbasicException;
+            TbasicException cEx = ex as TbasicException;
             if (cEx != null) {
                 int status = cEx.Status;
                 string msg = stackFrame.Data as string;

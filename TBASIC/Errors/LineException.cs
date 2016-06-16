@@ -35,6 +35,10 @@ namespace Tbasic.Errors
         /// The function or command that caused the error
         /// </summary>
         public string Name { get; private set; }
+        /// <summary>
+        /// Gets the detail message that is a part of the exception message
+        /// </summary>
+        public string DetailMessage { get; private set; }
 
         /// <summary>
         /// Constructs a new instance of this class
@@ -47,6 +51,8 @@ namespace Tbasic.Errors
         {
             Line = line;
             Name = name;
+            if (!(innerException is LineException))
+                DetailMessage = innerException.Message;
         }
         
         private static string GetMessage(Exception ex)
@@ -56,7 +62,7 @@ namespace Tbasic.Errors
             LineException current = ex as LineException;
             while (current != null) { // traverse the exception until we find the actual error
                 msg.AppendFormat("\tat '{0}' on line {1}\n", current.Name, current.Line);
-                current = current.InnerException as LineException;
+                current = (ex = current.InnerException) as LineException;
             }
             msg.Append("\nDetail:\n");
             msg.AppendFormat("{0}", ex.Message);
