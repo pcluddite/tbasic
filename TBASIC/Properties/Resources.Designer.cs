@@ -63,9 +63,9 @@ namespace Tbasic.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Danrabbit_Elementary_Button_info {
+        internal static System.Drawing.Icon blank {
             get {
-                object obj = ResourceManager.GetObject("Danrabbit_Elementary_Button_info", resourceCulture);
+                object obj = ResourceManager.GetObject("blank", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

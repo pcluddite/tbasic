@@ -137,9 +137,9 @@ namespace Tbasic.Libraries
         /// </summary>
         /// <param name="text">the text of the balloon</param>
         /// <param name="title">the title of the balloon</param>
-        /// <param name="icon">the balloon icon 0 = none, 1 = info, 2 = warn, 3 = error </param>
+        /// <param name="icon">the balloon icon</param>
         /// <param name="timeout">the length of time the balloon should be shown (this may not be honored by the OS)</param>
-        public static void TrayTip(string text, string title = "", int icon = 0, int timeout = 5000)
+        public static void TrayTip(string text, string title = "", ToolTipIcon icon = ToolTipIcon.None, int timeout = 5000)
         {
             Thread t = new Thread(MakeTrayTip);
             t.Start(new object[] { timeout, icon, text, title });
@@ -160,7 +160,7 @@ namespace Tbasic.Libraries
                 _sframe.Add(5000); // timeout
             }
             _sframe.AssertArgs(5);
-            TrayTip(text: _sframe.Get<string>(1), title: _sframe.Get<string>(2), icon: _sframe.GetIntRange(3, 0, 3), timeout: _sframe.Get<int>(4));
+            TrayTip(text: _sframe.Get<string>(1), title: _sframe.Get<string>(2), icon: _sframe.Get<ToolTipIcon>(3), timeout: _sframe.Get<int>(4));
         }
 
         private static void MakeTrayTip(object param)
@@ -168,7 +168,7 @@ namespace Tbasic.Libraries
             try {
                 object[] cmd = (object[])param;
                 using (NotifyIcon tray = new NotifyIcon()) {
-                    tray.Icon = Properties.Resources.Danrabbit_Elementary_Button_info;
+                    tray.Icon = Properties.Resources.blank;
                     tray.Visible = true;
                     int timeout = (int)cmd[0];
                     ToolTipIcon icon;
