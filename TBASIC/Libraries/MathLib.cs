@@ -59,8 +59,13 @@ namespace Tbasic.Libraries
 
         private void Log(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = Math.Log10(stackFrame.Get<double>(1));
+            stackFrame.AssertArgs(atLeast: 2, atMost: 3);
+            if (stackFrame.Count == 2) {
+                stackFrame.Data = Math.Log10(stackFrame.Get<double>(1));
+            }
+            else {
+                stackFrame.Data = Math.Log(stackFrame.Get<double>(1), stackFrame.Get<double>(2));
+            }
         }
 
         private void Ln(TFunctionData stackFrame)
@@ -138,10 +143,39 @@ namespace Tbasic.Libraries
             return rand.NextDouble();
         }
 
+        /// <summary>
+        /// Returns a pseudo-random double between 0 and a max value
+        /// </summary>
+        /// <param name="max">the exclusive upper bound</param>
+        /// <returns></returns>
+        public static double Rand(int max)
+        {
+            return Rand() * max;
+        }
+
+        /// <summary>
+        /// Returns a pseudo-random double between a specified upper and lower bound
+        /// </summary>
+        /// <param name="lowerBound">the inclusive lower bound</param>
+        /// <param name="upperBound">the exclusive upper bound</param>
+        /// <returns></returns>
+        public static double Rand(int lowerBound, int upperBound)
+        {
+            return Rand(upperBound) + lowerBound;
+        }
+
         private void Rand(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(1);
-            stackFrame.Data = Rand();
+            stackFrame.AssertArgs(atLeast: 1, atMost: 3);
+            if (stackFrame.Count == 1) {
+                stackFrame.Data = Rand();
+            }
+            else if (stackFrame.Count == 2) {
+                stackFrame.Data = Rand(stackFrame.Get<int>(1));
+            }
+            else {
+                stackFrame.Data = Rand(stackFrame.Get<int>(1), stackFrame.Get<int>(2));
+            }
         }
 
         /// <summary>

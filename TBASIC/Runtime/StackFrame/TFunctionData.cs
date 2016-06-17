@@ -252,6 +252,20 @@ namespace Tbasic.Runtime
         }
 
         /// <summary>
+        /// Throws an ArgumentException if the number of parameters does not match a count in a specified range
+        /// </summary>
+        /// <param name="atLeast">the least number of arguments this function takes</param>
+        /// <param name="atMost">the most number of arguments this function takes</param>
+        /// <exception cref="ArgumentException">thrown if argument count is not the same as the parameter</exception>
+        public void AssertArgs(int atLeast, int atMost)
+        {
+            if (_params.Count < atLeast || _params.Count > atMost) {
+                throw new ArgumentException(string.Format("{0} does not take {1} parameter{2}", Name.ToUpper(), _params.Count - 1,
+                _params.Count == 2 ? "" : "s"));
+            }
+        }
+
+        /// <summary>
         /// Returns the parameter at an index
         /// </summary>
         /// <param name="index">The index of the argument</param>
