@@ -1,8 +1,10 @@
 /**
+ * drdandle
  * The Code Project Open License 1.02
+ * http://www.codeproject.com/Articles/16343/Copy-and-Rename-Registry-Keys
  **/
 
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 
 // RenameRegistryKey © Copyright 2006 Active Computing
 namespace Tbasic.Components
