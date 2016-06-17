@@ -77,7 +77,7 @@ namespace Tbasic.Runtime
                     new AutoLib(),
                     new FileIOLib(),
                     new ProcessLibrary(),
-                    new WindowLibrary(),
+                    new WindowLibrary(this),
                     new RegistryLibrary(),
                     new SystemLibrary()
                 });
