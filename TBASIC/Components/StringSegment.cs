@@ -125,7 +125,7 @@ namespace Tbasic.Components
             if (new_start == -1)
                 return Empty;
             int new_end = len - 1;
-            while (char.IsWhiteSpace(this[new_end])) {
+            while (char.IsWhiteSpace(GetCharAt(new_end))) {
                 --new_end;
             }
             return Subsegment(new_start, new_end - new_start + 1);
@@ -156,7 +156,7 @@ namespace Tbasic.Components
             if (other == null) {
                 return false;
             }
-            return Enumerable.SequenceEqual(this, other);
+            return this.SequenceEqual(other);
         }
 
         public bool Equals(string other)
@@ -164,7 +164,7 @@ namespace Tbasic.Components
             if (other == null) {
                 return false;
             }
-            return Enumerable.SequenceEqual(this, other);
+            return this.SequenceEqual(other);
         }
 
         public override bool Equals(object obj)
@@ -215,7 +215,14 @@ namespace Tbasic.Components
 
         public IEnumerator<char> GetEnumerator()
         {
-            return new StringSegEnumerator(this);
+            unsafe
+            {
+                string full = FullString;
+                fixed(char* arr = full) // this may or may not provide an optimization, I just wanted to try some unsafe code 6/16/16
+                {
+                    return new StringSegEnumerator(arr + start, len);
+                }
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -223,20 +230,22 @@ namespace Tbasic.Components
             return GetEnumerator();
         }
 
-        private class StringSegEnumerator : IEnumerator<char>
+        private unsafe class StringSegEnumerator : IEnumerator<char>
         {
-            private StringSegment segment;
-            int curr = -1;
+            private char* arr;
+            private int len;
+            private int curr = -1;
 
-            public StringSegEnumerator(StringSegment seg)
+            public StringSegEnumerator(char* seg, int length)
             {
-                segment = seg;
+                arr = seg;
+                len = length;
             }
 
             public char Current
             {
                 get {
-                    return segment.GetCharAt(curr);
+                    return arr[curr];
                 }
             }
 
@@ -253,7 +262,7 @@ namespace Tbasic.Components
 
             public bool MoveNext()
             {
-                return ++curr < segment.Length;
+                return ++curr < len;
             }
 
             public void Reset()

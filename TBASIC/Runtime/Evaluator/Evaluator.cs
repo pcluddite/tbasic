@@ -111,7 +111,7 @@ namespace Tbasic.Runtime
         internal struct MatchInfo // This is a crazy hack that I hope to remove the day we don't use regex 6/15/16
         {
             public int Index { get; private set; }
-            public string Value { get; private set; }
+            public StringSegment Value { get; private set; }
             public bool Success { get; private set; }
 
             public int Length
@@ -123,7 +123,7 @@ namespace Tbasic.Runtime
 
             public Match RealMatch { get; private set; }
 
-            public MatchInfo(Match m, int idx, string val, bool success = true)
+            public MatchInfo(Match m, int idx, StringSegment val, bool success = true)
             {
                 Index = idx;
                 Value = val;
@@ -141,7 +141,7 @@ namespace Tbasic.Runtime
                 }
                 else {
                     Index = m.Index;
-                    Value = m.Value;
+                    Value = new StringSegment(m.Value);
                     Success = m.Success;
                 }
             }
@@ -162,7 +162,7 @@ namespace Tbasic.Runtime
                 m.Index = str.IndexOfIgnoreCase(search, start);
                 if (m.Index > -1) {
                     m.Success = true;
-                    m.Value = search;
+                    m.Value = new StringSegment(search);
                     m.RealMatch = Match.Empty;
                 }
                 return m;
@@ -280,7 +280,7 @@ namespace Tbasic.Runtime
             if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                 mRet = m;
                 string str_parsed;
-                GroupParser.ReadString(m.Value, 0, out str_parsed);
+                GroupParser.ReadString(m.Value.ToString(), 0, out str_parsed);
                 val = str_parsed;
             }
 
@@ -289,7 +289,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.UnaryOp.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = new UnaryOperator(m.Value);
+                    val = new UnaryOperator(m.Value.ToString());
                 }
             }
 
@@ -303,7 +303,7 @@ namespace Tbasic.Runtime
                         CurrentExecution // share the wealth
                     );
                     func.Parse();
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression.ToString());
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression);
                     val = func;
                 }
             }
@@ -322,7 +322,7 @@ namespace Tbasic.Runtime
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     Variable v = new Variable(Expression.Subsegment(mRet.Index, mRet.Length), CurrentExecution);
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression.ToString());
+                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression);
                     val = v;
                 }
             }
@@ -332,7 +332,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.Hexadecimal.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = Convert.ToInt32(m.Value, 16);
+                    val = Convert.ToInt32(m.Value.ToString(), 16);
                 }
             }
 
@@ -341,7 +341,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.Boolean.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = bool.Parse(m.Value);
+                    val = bool.Parse(m.Value.ToString());
                 }
             }
 
@@ -354,7 +354,7 @@ namespace Tbasic.Runtime
                     }
                     if (m.Success) {
                         mRet = m;
-                        val = Variable.ConvertToObject(double.Parse(m.Value, CultureInfo.CurrentCulture));
+                        val = Variable.ConvertToObject(double.Parse(m.Value.ToString(), CultureInfo.CurrentCulture));
                     }
                 }
             }
@@ -364,7 +364,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.BinaryOp.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = new BinaryOperator(m.Value);
+                    val = new BinaryOperator(m.Value.ToString());
                 }
             }
 
@@ -383,7 +383,7 @@ namespace Tbasic.Runtime
                 );
             }
 
-            if (mRet.Value == "(") {
+            if (mRet.Value.Equals("(")) {
 
                 nRet = GroupParser.IndexGroup(expr, mRet.Index) + 1;
 
