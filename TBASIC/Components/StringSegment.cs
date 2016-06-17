@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.Contracts;
 
 namespace Tbasic.Components
 {
@@ -153,10 +154,7 @@ namespace Tbasic.Components
 
         public bool Equals(StringSegment other)
         {
-            if (other == null) {
-                return false;
-            }
-            return this.SequenceEqual(other);
+            return Equals(this, other);
         }
 
         public bool Equals(string other)
@@ -180,37 +178,67 @@ namespace Tbasic.Components
             return base.Equals(obj);
         }
 
-        public override int GetHashCode()
+        public static bool Equals(StringSegment a, StringSegment b)
         {
-            return full.GetHashCode() ^ len ^ start; // TODO: Optimize this so there aren't many collisions 6/16/16
+            if (ReferenceEquals(a, b))
+                return true;
+
+            if ((object)a == null || (object)b == null)
+                return false;
+
+            if (a.Length != b.Length)
+                return false;
+
+            unsafe
+            {
+                fixed(char* afullptr = a.FullString) fixed (char* bfullptr = b.FullString)
+                {
+                    return EqualsHelper(afullptr + a.Offset, bfullptr + b.Offset, a.Length);
+                }
+            }
+        }
+
+        public static bool Equals(StringSegment a, string b)
+        {
+            if ((object)a == null || (object)b == null)
+                return false;
+
+            if (a.Length != b.Length)
+                return false;
+
+            unsafe
+            {
+                fixed (char* afullptr = a.FullString) fixed (char* bfullptr = b)
+                {
+                    return EqualsHelper(afullptr + a.Offset, bfullptr, a.Length);
+                }
+            }
+        }
+
+        private static unsafe bool EqualsHelper(char* aptr, char* bptr, int length)
+        {
+            for(int index = 0; index < length; ++index) {
+                if (aptr[index] != bptr[index]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static bool operator==(StringSegment first, StringSegment second)
         {
-            if (ReferenceEquals(first, second)) {
-                return true;
-            }
-            bool? val = first?.Equals(second);
-            if (val == null) {
-                return false;
-            }
-            else {
-                return val.Value;
-            }
+            return Equals(first, second);
         }
 
         public static bool operator !=(StringSegment first, StringSegment second)
         {
-            if (ReferenceEquals(first, second)) {
-                return false;
-            }
-            bool? val = first?.Equals(second);
-            if (val == null) {
-                return true;
-            }
-            else {
-                return !val.Value;
-            }
+            return !Equals(first, second);
+        }
+
+
+        public override int GetHashCode()
+        {
+            return full.GetHashCode() ^ len ^ start; // TODO: Optimize this so there aren't many collisions 6/16/16
         }
 
         public IEnumerator<char> GetEnumerator()
