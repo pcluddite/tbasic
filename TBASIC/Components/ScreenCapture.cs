@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+ * Copyright (c) 2004 James Crowley
+ * No license
+ * http://www.developerfusion.com/code/4630/capture-a-screen-shot/
+ **/
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Tbasic.Win32;
