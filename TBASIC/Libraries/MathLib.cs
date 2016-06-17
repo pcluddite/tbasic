@@ -161,7 +161,7 @@ namespace Tbasic.Libraries
         /// <returns></returns>
         public static double Rand(int lowerBound, int upperBound)
         {
-            return Rand(upperBound) + lowerBound;
+            return Rand(upperBound - lowerBound) + lowerBound;
         }
 
         private void Rand(TFunctionData stackFrame)
