@@ -18,9 +18,6 @@
  *  USA
  **/
 using System;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Tbasic.Runtime;
 using Tbasic.Errors;
 
@@ -30,7 +27,7 @@ namespace Tbasic.Libraries
     {
         public RuntimeLib(ObjectContext context)
         {
-            Add("Size", SizeOf);
+            Add("SizeOf", SizeOf);
             Add("Len", SizeOf);
             Add("IsStr", IsString);
             Add("IsInt", IsInt);

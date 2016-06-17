@@ -383,7 +383,7 @@ namespace Tbasic.Runtime
                 );
             }
 
-            if (mRet.Value.Equals("(")) {
+            if (StringSegment.Equals(mRet.Value, "(")) {
 
                 nRet = GroupParser.IndexGroup(expr, mRet.Index) + 1;
 
