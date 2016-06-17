@@ -163,6 +163,7 @@ namespace Tbasic.Runtime
                 if (m.Index > -1) {
                     m.Success = true;
                     m.Value = search;
+                    m.RealMatch = Match.Empty;
                 }
                 return m;
             }
