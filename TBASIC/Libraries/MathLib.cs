@@ -41,7 +41,7 @@ namespace Tbasic.Libraries
             Add("FPART", fPart);
             Add("ROUND", Round);
             Add("EVAL", Eval);
-            Add("RANDOM", Rand);
+            Add("RANDOM", Random);
             Add("ABS", Abs);
             Add("SIN", Sin);
             Add("ASIN", Asin);
@@ -138,7 +138,7 @@ namespace Tbasic.Libraries
         /// Returns a pseudo-random double between 0 and 1
         /// </summary>
         /// <returns>a pseudo-random double between 0 and 1</returns>
-        public static double Rand()
+        public static double Random()
         {
             return rand.NextDouble();
         }
@@ -148,9 +148,9 @@ namespace Tbasic.Libraries
         /// </summary>
         /// <param name="max">the exclusive upper bound</param>
         /// <returns></returns>
-        public static double Rand(int max)
+        public static double Random(int max)
         {
-            return Rand() * max;
+            return Random() * max;
         }
 
         /// <summary>
@@ -159,22 +159,22 @@ namespace Tbasic.Libraries
         /// <param name="lowerBound">the inclusive lower bound</param>
         /// <param name="upperBound">the exclusive upper bound</param>
         /// <returns></returns>
-        public static double Rand(int lowerBound, int upperBound)
+        public static double Random(int lowerBound, int upperBound)
         {
-            return Rand(upperBound - lowerBound) + lowerBound;
+            return Random(upperBound - lowerBound) + lowerBound;
         }
 
-        private void Rand(TFunctionData stackFrame)
+        private void Random(TFunctionData stackFrame)
         {
             stackFrame.AssertArgs(atLeast: 1, atMost: 3);
             if (stackFrame.Count == 1) {
-                stackFrame.Data = Rand();
+                stackFrame.Data = Random();
             }
             else if (stackFrame.Count == 2) {
-                stackFrame.Data = Rand(stackFrame.Get<int>(1));
+                stackFrame.Data = Random(stackFrame.Get<int>(1));
             }
             else {
-                stackFrame.Data = Rand(stackFrame.Get<int>(1), stackFrame.Get<int>(2));
+                stackFrame.Data = Random(stackFrame.Get<int>(1), stackFrame.Get<int>(2));
             }
         }
 
