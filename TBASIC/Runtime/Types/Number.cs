@@ -24,18 +24,18 @@ using System.Text;
 
 namespace Tbasic.Runtime
 {
-    internal struct Number : IConvertible, IComparable, IComparable<Number>, IComparable<decimal>, IEquatable<Number>, IEquatable<decimal>
+    internal struct Number : IConvertible, IComparable, IComparable<Number>, IComparable<double>, IEquatable<Number>, IEquatable<double>
     {
-        public decimal Value;
+        public double Value;
 
         public Number(decimal value)
         {
-            Value = value;
+            Value = (double)value;
         }
 
         public Number(double value)
         {
-            Value = (decimal)value;
+            Value = value;
         }
 
         public bool HasFraction()
@@ -67,7 +67,7 @@ namespace Tbasic.Runtime
             if (n != null)
                 return CompareTo(n.Value);
 
-            throw new ArgumentException(string.Format("can only compare types {0} or {1}", typeof(Number).Name, typeof(decimal).Name));
+            throw new ArgumentException(string.Format("can only compare types {0} or {1}", typeof(Number).Name, typeof(double).Name));
         }
 
         public int CompareTo(Number other)
@@ -75,7 +75,7 @@ namespace Tbasic.Runtime
             return Value.CompareTo(other.Value);
         }
 
-        public int CompareTo(decimal other)
+        public int CompareTo(double other)
         {
             return Value.CompareTo(other);
         }
@@ -89,7 +89,7 @@ namespace Tbasic.Runtime
             return Value == other.Value;
         }
 
-        public bool Equals(decimal other)
+        public bool Equals(double other)
         {
             return Value == other;
         }
@@ -100,7 +100,7 @@ namespace Tbasic.Runtime
             if (n != null)
                 return Equals(n.Value);
 
-            decimal? d = obj as decimal?;
+            double? d = obj as double?;
             if (d != null)
                 return Equals(d.Value);
 
