@@ -5,7 +5,7 @@
 ﻿using Microsoft.Win32;
 
 // RenameRegistryKey © Copyright 2006 Active Computing
-namespace Tbasic.Borrowed
+namespace Tbasic.Components
 {
     internal class RegistryUtilities
     {

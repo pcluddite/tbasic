@@ -20,7 +20,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using Tbasic.Borrowed;
+using Tbasic.Components;
 using Tbasic.Errors;
 using Tbasic.Runtime;
 

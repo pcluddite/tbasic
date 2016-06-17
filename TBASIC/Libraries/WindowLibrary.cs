@@ -21,7 +21,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using Tbasic.Borrowed;
+using Tbasic.Components;
 using Tbasic.Runtime;
 using Tbasic.Win32;
 using Tbasic.Errors;
