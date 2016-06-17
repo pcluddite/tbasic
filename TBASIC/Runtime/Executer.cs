@@ -214,7 +214,7 @@ namespace Tbasic.Runtime
                 if (string.IsNullOrEmpty(current.Text) || current.Text[0] == ';') {
                     continue;
                 }
-                if (current.Name.EndsWith("$") || current.Name.EndsWith("]")) {
+                if (current.Name[current.Name.Length - 1] == '$' || current.Name[current.Name.Length - 1] == ']') {
                     current.Text = "LET " + current.Text; // add the word LET if it's an equality, but use the original name as visible name
                 }
                 else if (current.Name.EqualsIgnoreCase("FUNCTION")) {
@@ -224,7 +224,7 @@ namespace Tbasic.Runtime
                     current.VisibleName = current.VisibleName.ToUpper();
                 }
 
-                while (current.Text.EndsWith("_")) { // line continuation
+                while (current.Text[current.Text.Length - 1] == '_') { // line continuation
                     lineNumber++;
                     if (lineNumber >= lines.Length) {
                         throw new EndOfCodeException("line continuation character '_' cannot end script");

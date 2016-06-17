@@ -73,10 +73,15 @@ namespace Tbasic.Components
         public char this[int index]
         {
             get {
-                if (index >= len)
+                if (index >= len || index < 0)
                     throw new IndexOutOfRangeException();
-                return full[start + index];
+                return GetCharAt(index);
             }
+        }
+
+        private char GetCharAt(int index)
+        {
+            return full[start + index];
         }
 
         public string Substring(int startIndex)
@@ -116,12 +121,14 @@ namespace Tbasic.Components
 
         public StringSegment Trim()
         {
-            int new_start = full.SkipWhiteSpace(start);
-            int new_end = len - (new_start - start) - 1;
+            int new_start = SkipWhiteSpace();
+            if (new_start == -1)
+                return Empty;
+            int new_end = len - 1;
             while (char.IsWhiteSpace(this[new_end])) {
                 --new_end;
             }
-            return new StringSegment(full, new_start, new_end + 1);
+            return Subsegment(new_start, new_end - new_start + 1);
         }
 
         public override string ToString()
@@ -229,7 +236,7 @@ namespace Tbasic.Components
             public char Current
             {
                 get {
-                    return segment[curr];
+                    return segment.GetCharAt(curr);
                 }
             }
 
