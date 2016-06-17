@@ -215,14 +215,7 @@ namespace Tbasic.Components
 
         public IEnumerator<char> GetEnumerator()
         {
-            unsafe
-            {
-                string full = FullString;
-                fixed(char* arr = full) // this may or may not provide an optimization, I just wanted to try some unsafe code 6/16/16
-                {
-                    return new StringSegEnumerator(arr + start, len);
-                }
-            }
+            return new StringSegEnumerator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -230,22 +223,20 @@ namespace Tbasic.Components
             return GetEnumerator();
         }
 
-        private unsafe class StringSegEnumerator : IEnumerator<char>
+        private class StringSegEnumerator : IEnumerator<char>
         {
-            private char* arr;
-            private int len;
+            private StringSegment seg;
             private int curr = -1;
 
-            public StringSegEnumerator(char* seg, int length)
+            public StringSegEnumerator(StringSegment segment)
             {
-                arr = seg;
-                len = length;
+                seg = segment;
             }
 
             public char Current
             {
                 get {
-                    return arr[curr];
+                    return seg.GetCharAt(curr);
                 }
             }
 
@@ -262,7 +253,7 @@ namespace Tbasic.Components
 
             public bool MoveNext()
             {
-                return ++curr < len;
+                return ++curr < seg.len;
             }
 
             public void Reset()
