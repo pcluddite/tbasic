@@ -38,7 +38,7 @@ namespace Tbasic.Win32
         {
             IntPtr exists = User32.GetWindow(hwnd, 0);
             WindowFlag state = WindowFlag.Existing;
-            if (exists.ToInt32() == 0) { return 0; }
+            if (exists == IntPtr.Zero) { return 0; }
             if (User32.IsWindowVisible(hwnd)) { state |= WindowFlag.Visible; }
             if (User32.IsWindowEnabled(hwnd)) { state |= WindowFlag.Enable; }
             if (User32.GetForegroundWindow() == hwnd) { state |= WindowFlag.Active; }
