@@ -25,7 +25,7 @@ namespace Tbasic.Libraries
 {
     internal class RuntimeLibrary : Library
     {
-        public RuntimeLib(ObjectContext context)
+        public RuntimeLibrary(ObjectContext context)
         {
             Add("SizeOf", SizeOf);
             Add("Len", SizeOf);
