@@ -41,6 +41,7 @@ namespace Tbasic.Libraries
             Add("WinSize", WinSize);
             Add("WinGetHandle", WinGetHandle);
             Add("WinGetTitle", WinGetTitle);
+            Add("WinGetState", WinGetState);
             Add("WinSetTitle", WinSetTitle);
             Add("WinSetTrans", WinSetTrans);
             Add("WinSetState", WinSetState);
@@ -159,14 +160,9 @@ namespace Tbasic.Libraries
             if (!User32.GetWindowRect(hwnd, out rect)) {
                 return false;
             }
-            if (User32.SetWindowPos(hwnd, HWND.NoTopMost,
+            return User32.SetWindowPos(hwnd, HWND.NoTopMost,
                 x, y,
-                (rect.Right - rect.Left), (rect.Bottom - rect.Top), SWP.NOACTIVATE)) {
-                return true;
-            }
-            else {
-                return false;
-            }
+                (rect.Right - rect.Left), (rect.Bottom - rect.Top), SWP.NOACTIVATE);
         }
 
         private void WinMove(TFunctionData parameters)
@@ -184,16 +180,8 @@ namespace Tbasic.Libraries
             if (!User32.GetWindowPlacement(hwnd, out place)) {
                 return false;
             }
-            if (User32.SetWindowPos(hwnd, HWND.NoTopMost,
-                place.rcNormalPosition.X, place.rcNormalPosition.Y,
-                width,
-                height,
-                SWP.NOACTIVATE)) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return User32.SetWindowPos(hwnd, HWND.NoTopMost,
+                place.rcNormalPosition.X, place.rcNormalPosition.Y, width, height, SWP.NOACTIVATE);
         }
 
         private void WinSize(TFunctionData parameters)
@@ -227,7 +215,7 @@ namespace Tbasic.Libraries
         private void WinClose(TFunctionData parameters)
         {
             parameters.AssertArgs(2);
-            parameters.Data = WinClose(new IntPtr(parameters.Get<long>(1))).ToInt32(); // hope this doesn't bite me in the ass on 64-bit machines 5/20/16
+            parameters.Data = Variable.ConvertToObject(WinClose(new IntPtr(parameters.Get<long>(1))));
         }
 
         public static bool WinSetTrans(IntPtr hwnd, byte trans)
