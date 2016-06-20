@@ -54,6 +54,9 @@
     <Compile Include="Libraries\ArrayLibrary.cs" />
     <Compile Include="Libraries\StringLibrary.cs" />
     <Compile Include="Libraries\SystemLibrary.cs" />
+    <Compile Include="Operators\BinaryOperator.cs" />
+    <Compile Include="Operators\BinOpNodePair.cs" />
+    <Compile Include="Operators\UnaryOperator.cs" />
     <Compile Include="Parsing\GroupParser.cs" />
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />
     <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
@@ -109,6 +112,7 @@
   <ItemGroup>
     <None Include="Resources\blank.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

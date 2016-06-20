@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Tbasic.Parsing;
 using Tbasic.Components;
+using Tbasic.Operators;
 
 namespace Tbasic.Runtime
 {
@@ -413,9 +414,9 @@ namespace Tbasic.Runtime
 
             LinkedListNode<object> x = list.First;
             for (; x != null; x = x.Next) {
-                UnaryOperator op = x.Value as UnaryOperator;
+                UnaryOperator? op = x.Value as UnaryOperator?;
                 if (op != null) {
-                    x.Value = PerformUnaryOp(op, x.Next.Value);
+                    x.Value = PerformUnaryOp(op.Value, x.Next.Value);
                     list.Remove(x.Next);
                 }
             }
@@ -426,7 +427,7 @@ namespace Tbasic.Runtime
             StringBuilder sb = new StringBuilder();
             x = list.First.Next; // second element
             for (; x != null; x = x.Next.Next) {
-                BinaryOperator op = x.Value as BinaryOperator;
+                BinaryOperator? op = x.Value as BinaryOperator?;
                 if (op == null) {
                     sb.AppendFormat(
                         "\n{0} [?] {1}",
@@ -447,8 +448,8 @@ namespace Tbasic.Runtime
                 throw new ArgumentException("Missing binary operator: " + sb);
             }
 
-            var nodePair = opqueue.Dequeue();
-            while (nodePair != null) {
+            BinOpNodePair nodePair;
+            while (opqueue.Dequeue(out nodePair)) {
                 nodePair.Node.Previous.Value = PerformBinaryOp(
                     nodePair.Operator,
                     nodePair.Node.Previous.Value,
@@ -456,7 +457,6 @@ namespace Tbasic.Runtime
                     );
                 list.Remove(nodePair.Node.Next);
                 list.Remove(nodePair.Node);
-                nodePair = opqueue.Dequeue();
             }
             IExpression expr = list.First.Value as IExpression;
             if (expr == null) {
