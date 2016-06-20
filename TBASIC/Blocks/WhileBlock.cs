@@ -40,7 +40,7 @@ namespace Tbasic
         {
             TFunctionData parameters = new TFunctionData(exec, Header.Text);
 
-            if (parameters.Count < 2) {
+            if (parameters.ParameterCount < 2) {
                 throw ThrowHelper.NoCondition();
             }
 

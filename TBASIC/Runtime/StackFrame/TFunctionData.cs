@@ -18,7 +18,6 @@
  *  USA
  **/
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Tbasic.Errors;
@@ -29,9 +28,19 @@ namespace Tbasic.Runtime
     /// <summary>
     /// Manages parameters and other data passed to a function or subroutine
     /// </summary>
-    public class TFunctionData : IList<object>, ICloneable
+    public class TFunctionData : ICloneable
     {
         private List<object> _params = new List<object>();
+
+        /// <summary>
+        /// Gets a list of the parameters passed to the function
+        /// </summary>
+        public IList<object> Parameters
+        {
+            get {
+                return _params;
+            }
+        }
 
         /// <summary>
         /// The executer that called the function
@@ -57,39 +66,24 @@ namespace Tbasic.Runtime
         public string Text { get; private set; }
 
         /// <summary>
-        /// Gets a parameter at a specified index
-        /// </summary>
-        /// <param name="index">the zero-based index of the parameter</param>
-        /// <returns></returns>
-        public object this[int index]
-        {
-            get {
-                return Get(index);
-            }
-            set {
-                Set(index, value);
-            }
-        }
-
-        /// <summary>
         /// The name of the function (the first parameter)
         /// </summary>
         public string Name
         {
             get {
-                if (_params != null && _params.Count > 0) {
+                if (_params.Count > 0) {
                     return _params[0].ToString();
                 }
                 else {
-                    return "";
+                    return string.Empty;
                 }
             }
             set {
-                if (_params == null || _params.Count == 0) {
-                    _params = new List<object>() { value };
+                if (_params.Count == 0) {
+                    _params.Add(value);
                 }
                 else {
-                    Insert(0, value);
+                    _params.Insert(0, value);
                 }
             }
         }
@@ -97,7 +91,7 @@ namespace Tbasic.Runtime
         /// <summary>
         /// Gets the number of parameters in this collection
         /// </summary>
-        public int Count
+        public int ParameterCount
         {
             get {
                 return _params.Count;
@@ -106,7 +100,7 @@ namespace Tbasic.Runtime
 
 
         /// <summary>
-        /// Gets or sets the status that the function returned
+        /// Gets or sets the status that the function returned. Default is ErrorSuccess.OK
         /// </summary>
         public int Status { get; set; } = ErrorSuccess.OK;
 
@@ -208,30 +202,11 @@ namespace Tbasic.Runtime
         }
 
         /// <summary>
-        /// Adds a parameter to this collection
-        /// </summary>
-        /// <param name="o">the new parameter to add</param>
-        /// <return></return>
-        public void Add(object o)
-        {
-            _params.Add(o);
-        }
-
-        /// <summary>
-        /// Adds a range of parameters to this collection
-        /// </summary>
-        /// <param name="col_params">the new parameters to add</param>
-        public void AddRange(ICollection<object> col_params)
-        {
-            _params.AddRange(col_params);
-        }
-
-        /// <summary>
         /// Assigns new data to a parameter
         /// </summary>
         /// <param name="index">The index of the argument</param>
         /// <param name="data">The new string data to assign</param>
-        public void Set(int index, object data)
+        public void SetParameter(int index, object data)
         {
             if (index < _params.Count) {
                 _params[index] = data;
@@ -243,7 +218,7 @@ namespace Tbasic.Runtime
         /// </summary>
         /// <param name="count">the number of parameters expected</param>
         /// <exception cref="ArgumentException">thrown if argument count is not the same as the parameter</exception>
-        public void AssertArgs(int count)
+        public void AssertParamCount(int count)
         {
             if (_params.Count != count) {
                 throw new ArgumentException(string.Format("{0} does not take {1} parameter{2}", Name.ToUpper(), _params.Count - 1,
@@ -257,7 +232,7 @@ namespace Tbasic.Runtime
         /// <param name="atLeast">the least number of arguments this function takes</param>
         /// <param name="atMost">the most number of arguments this function takes</param>
         /// <exception cref="ArgumentException">thrown if argument count is not the same as the parameter</exception>
-        public void AssertArgs(int atLeast, int atMost)
+        public void AssertParamCount(int atLeast, int atMost)
         {
             if (_params.Count < atLeast || _params.Count > atMost) {
                 throw new ArgumentException(string.Format("{0} does not take {1} parameter{2}", Name.ToUpper(), _params.Count - 1,
@@ -271,7 +246,7 @@ namespace Tbasic.Runtime
         /// <param name="index">The index of the argument</param>
         /// <exception cref="IndexOutOfRangeException">thrown if the argument is out of range</exception>
         /// <returns></returns>
-        public object Get(int index)
+        public object GetParameter(int index)
         {
             try {
                 return _params[index];
@@ -289,9 +264,9 @@ namespace Tbasic.Runtime
         /// <param name="upper">the inclusive upper bound</param>
         /// <exception cref="ArgumentOutOfRangeException">thrown if the paramater is out of range</exception>
         /// <returns></returns>
-        public int GetIntRange(int index, int lower, int upper)
+        public int GetFromIntRange(int index, int lower, int upper)
         {
-            int n = Get<int>(index);
+            int n = GetParameter<int>(index);
             if (n < lower || n > upper) {
                 throw new ArgumentOutOfRangeException(string.Format("Parameter {0} expected to be integer between {1} and {2}", index, lower, upper));
             }
@@ -305,10 +280,10 @@ namespace Tbasic.Runtime
         /// <param name="index">the zero-based index of the parameter</param>
         /// <exception cref="InvalidCastException">object was not able to be converted to given type</exception>
         /// <returns></returns>
-        public T Get<T>(int index)
+        public T GetParameter<T>(int index)
         {
             T ret;
-            if (Evaluator.TryParse(Get(index), out ret)) {
+            if (Evaluator.TryParse(GetParameter(index), out ret)) {
                 return ret;
             }
             throw new InvalidCastException(string.Format("Expected parameter {0} to be of type {1}", index, typeof(T).Name));
@@ -324,13 +299,22 @@ namespace Tbasic.Runtime
         /// <returns></returns>
         public string GetFromEnum(int index, string typeName, params string[] values)
         {
-            string arg = Get<string>(index);
+            string arg = GetParameter<string>(index);
             foreach (string val in values) {
                 if (val.EqualsIgnoreCase(arg)) {
                     return arg;
                 }
             }
             throw new ArgumentException("expected parameter " + index + " to be of type " + typeName);
+        }
+
+        /// <summary>
+        /// Adds a parameter to the end of this collection
+        /// </summary>
+        /// <param name="param"></param>
+        public void AddParameter(object param)
+        {
+            _params.Add(param);
         }
 
         /// <summary>
@@ -369,86 +353,6 @@ namespace Tbasic.Runtime
         object ICloneable.Clone()
         {
             return this.Clone();
-        }
-
-        /// <summary>
-        /// Removes all elements from the collection
-        /// </summary>
-        public void Clear()
-        {
-            _params.Clear();
-        }
-
-        /// <summary>
-        /// Determines whether an element exists in this collection
-        /// </summary>
-        /// <param name="value">the object to contains (value cannot be null)</param>
-        /// <returns></returns>
-        public bool Contains(object value)
-        {
-            return _params.Contains(value);
-        }
-
-        /// <summary>
-        /// Searches for the specified object and returns the index of the first occourence
-        /// </summary>
-        /// <param name="value">the object to locate (value cannot be null)</param>
-        /// <returns></returns>
-        public int IndexOf(object value)
-        {
-            return _params.IndexOf(value);
-        }
-
-        /// <summary>
-        /// Inserts an element at the specified index
-        /// </summary>
-        /// <param name="index">the zero-based index of the element to remove</param>
-        /// <param name="value">the object to insert (value cannot be null)</param>
-        public void Insert(int index, object value)
-        {
-            _params.Insert(index, value);
-        }
-
-        /// <summary>
-        /// Removes an element at the specified index
-        /// </summary>
-        /// <param name="value">the object to remove (value cannot be null)</param>
-        public bool Remove(object value)
-        {
-            return _params.Remove(value);
-        }
-
-        /// <summary>
-        /// Removes an element at the specified index
-        /// </summary>
-        /// <param name="index">the zero-based index of the element to remove</param>
-        public void RemoveAt(int index)
-        {
-            _params.RemoveAt(index);
-        }
-
-        bool ICollection<object>.IsReadOnly
-        {
-            get { return false; }
-        }
-        
-        void ICollection<object>.CopyTo(object[] array, int index)
-        {
-            _params.CopyTo(array, index);
-        }
-
-        /// <summary>
-        /// Returns this StackFrame enumerator
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator<object> GetEnumerator()
-        {
-            return _params.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

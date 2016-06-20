@@ -49,10 +49,10 @@ namespace Tbasic.Libraries
 
         private void ProcessExists(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
+            _sframe.AssertParamCount(2);
             _sframe.Data = false;
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.GetParameter<string>(1))) {
                     _sframe.Data = true;
                     break;
                 }
@@ -61,7 +61,7 @@ namespace Tbasic.Libraries
 
         private void ProcessList(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             Process[] procs = Process.GetProcesses();
             if (procs.Length > 0) {
                 object[][] _ret = new object[procs.Length][];
@@ -77,9 +77,9 @@ namespace Tbasic.Libraries
 
         private void ProcessKill(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
+            _sframe.AssertParamCount(2);
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.GetParameter<string>(1))) {
                     p.Kill();
                     return;
                 }
@@ -89,9 +89,9 @@ namespace Tbasic.Libraries
 
         private void ProcessClose(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
+            _sframe.AssertParamCount(2);
             foreach (Process p in Process.GetProcesses()) {
-                if (p.ProcessName.EqualsIgnoreCase(_sframe.Get<string>(1))) {
+                if (p.ProcessName.EqualsIgnoreCase(_sframe.GetParameter<string>(1))) {
                     p.Close();
                     return;
                 }
@@ -101,7 +101,7 @@ namespace Tbasic.Libraries
 
         private void BlockedList(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             var list = BlockedList(); // dicts currently are not supported 2/24/15
             if (list.Count == 0) {
                 _sframe.Status = ErrorSuccess.NoContent;
@@ -135,58 +135,58 @@ namespace Tbasic.Libraries
 
         private void ProcessBlock(TFunctionData _sframe)
         {
-            if (_sframe.Count == 2) {
-                _sframe.Add(16);
-                _sframe.Add("The application you requested has been blocked");
-                _sframe.Add("Blocked");
+            if (_sframe.ParameterCount == 2) {
+                _sframe.AddParameter(16);
+                _sframe.AddParameter("The application you requested has been blocked");
+                _sframe.AddParameter("Blocked");
             }
-            _sframe.AssertArgs(5);
-            string name = _sframe.Get<string>(1);
+            _sframe.AssertParamCount(5);
+            string name = _sframe.GetParameter<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
             }
             name = Path.GetFileName(name);
             using (RegistryKey key = Registry.LocalMachine.CreateSubKey(Path.Combine(REG_EXEC_PATH, name))) {
-                key.SetValue("Debugger", "\"" + Application.ExecutablePath + "\" -m \"" + _sframe.Get(2) + "\" \"" + _sframe.Get(3) + "\" \"" + _sframe.Get(4) + "\"");
+                key.SetValue("Debugger", "\"" + Application.ExecutablePath + "\" -m \"" + _sframe.GetParameter(2) + "\" \"" + _sframe.GetParameter(3) + "\" \"" + _sframe.GetParameter(4) + "\"");
             }
         }
 
         private void ProcessRedirect(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(3);
-            string name = _sframe.Get<string>(1);
+            _sframe.AssertParamCount(3);
+            string name = _sframe.GetParameter<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
             }
             name = Path.GetFileName(name);
-            if (!File.Exists(_sframe.Get<string>(2))) {
+            if (!File.Exists(_sframe.GetParameter<string>(2))) {
                 throw new FileNotFoundException();
             }
             using (RegistryKey key = Registry.LocalMachine.CreateSubKey(Path.Combine(REG_EXEC_PATH, name))) {
-                key.SetValue("Debugger", "\"" + Application.ExecutablePath + "\" -r \"" + _sframe.Get(2) + "\"");
+                key.SetValue("Debugger", "\"" + Application.ExecutablePath + "\" -r \"" + _sframe.GetParameter(2) + "\"");
             }
         }
 
         private void ProcessSetDebugger(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(3);
-            string name = _sframe.Get<string>(1);
+            _sframe.AssertParamCount(3);
+            string name = _sframe.GetParameter<string>(1);
             if (!Path.HasExtension(name)) {
                 name += ".exe";
             }
             name = Path.GetFileName(name);
-            if (!File.Exists(_sframe.Get<string>(2))) {
+            if (!File.Exists(_sframe.GetParameter<string>(2))) {
                 throw new FileNotFoundException();
             }
             using (RegistryKey key = Registry.LocalMachine.CreateSubKey(Path.Combine(REG_EXEC_PATH, name))) {
-                key.SetValue("Debugger", _sframe.Get<string>(2));
+                key.SetValue("Debugger", _sframe.GetParameter<string>(2));
             }
         }
 
         private void Unblock(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            string name = _sframe.Get<string>(1);
+            _sframe.AssertParamCount(2);
+            string name = _sframe.GetParameter<string>(1);
             if (!name.Contains(".")) {
                 name += ".exe";
             }
@@ -203,21 +203,21 @@ namespace Tbasic.Libraries
 
         private void Run(TFunctionData _sframe)
         {
-            if (_sframe.Count == 2) {
-                _sframe.Add("");
+            if (_sframe.ParameterCount == 2) {
+                _sframe.AddParameter("");
             }
-            if (_sframe.Count == 3) {
-                _sframe.Add(Environment.CurrentDirectory);
+            if (_sframe.ParameterCount == 3) {
+                _sframe.AddParameter(Environment.CurrentDirectory);
             }
-            if (_sframe.Count == 4) {
-                _sframe.Add(false);
+            if (_sframe.ParameterCount == 4) {
+                _sframe.AddParameter(false);
             }
-            _sframe.AssertArgs(5);
+            _sframe.AssertParamCount(5);
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = _sframe.Get<string>(1);
-            startInfo.Arguments = _sframe.Get<string>(2);
-            startInfo.WorkingDirectory = _sframe.Get<string>(3);
-            _sframe.Status = Run(startInfo, _sframe.Get<bool>(4));
+            startInfo.FileName = _sframe.GetParameter<string>(1);
+            startInfo.Arguments = _sframe.GetParameter<string>(2);
+            startInfo.WorkingDirectory = _sframe.GetParameter<string>(3);
+            _sframe.Status = Run(startInfo, _sframe.GetParameter<bool>(4));
         }
 
         private int Run(ProcessStartInfo info, bool wait)

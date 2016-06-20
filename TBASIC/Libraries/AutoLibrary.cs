@@ -82,19 +82,19 @@ namespace Tbasic.Libraries
 
         private void MouseClick(TFunctionData _sframe)
         {
-            if (_sframe.Count == 4) {
-                _sframe.Add(1);
-                _sframe.Add(1);
+            if (_sframe.ParameterCount == 4) {
+                _sframe.AddParameter(1);
+                _sframe.AddParameter(1);
             }
-            if (_sframe.Count == 5) {
-                _sframe.Add(5);
+            if (_sframe.ParameterCount == 5) {
+                _sframe.AddParameter(5);
             }
-            _sframe.AssertArgs(6);
+            _sframe.AssertParamCount(6);
 
-            int x = _sframe.Get<int>(2),
-                y = _sframe.Get<int>(3),
-                clicks = _sframe.Get<int>(4),
-                speed = _sframe.Get<int>(5);
+            int x = _sframe.GetParameter<int>(2),
+                y = _sframe.GetParameter<int>(3),
+                clicks = _sframe.GetParameter<int>(4),
+                speed = _sframe.GetParameter<int>(5);
 
             MouseButton button;
             if (_sframe.GetFromEnum(1, "button", "LEFT", "RIGHT").EqualsIgnoreCase("LEFT")) {
@@ -108,14 +108,14 @@ namespace Tbasic.Libraries
 
         private void MouseMove(TFunctionData _sframe)
         {
-            if (_sframe.Count == 3) {
-                _sframe.Add(1);
+            if (_sframe.ParameterCount == 3) {
+                _sframe.AddParameter(1);
             }
-            _sframe.AssertArgs(4);
+            _sframe.AssertParamCount(4);
 
-            MouseMove(_sframe.Get<int>(1),
-                      _sframe.Get<int>(2),
-                      _sframe.Get<int>(3));
+            MouseMove(_sframe.GetParameter<int>(1),
+                      _sframe.GetParameter<int>(2),
+                      _sframe.GetParameter<int>(3));
         }
 
         /// <summary>
@@ -170,9 +170,9 @@ namespace Tbasic.Libraries
 
         private void BlockInput(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            _sframe.SetAll(_sframe.Get(0), _sframe.Get(1).ToString().Replace("1", "true").Replace("0", "false"));
-            if (!BlockInput(_sframe.Get<bool>(1))) {
+            _sframe.AssertParamCount(2);
+            _sframe.SetAll(_sframe.GetParameter(0), _sframe.GetParameter(1).ToString().Replace("1", "true").Replace("0", "false"));
+            if (!BlockInput(_sframe.GetParameter<bool>(1))) {
                 _sframe.Status = ErrorClient.Forbidden;
             }
         }
@@ -188,8 +188,8 @@ namespace Tbasic.Libraries
 
         private void Send(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            Send(_sframe.Get<string>(1));
+            _sframe.AssertParamCount(2);
+            Send(_sframe.GetParameter<string>(1));
         }
 
         /// <summary>
@@ -205,11 +205,11 @@ namespace Tbasic.Libraries
 
         private void VolumeUp(TFunctionData _sframe)
         {
-            if (_sframe.Count == 1) {
-                _sframe.SetAll(_sframe.Get(0), "1");
+            if (_sframe.ParameterCount == 1) {
+                _sframe.SetAll(_sframe.GetParameter(0), "1");
             }
-            _sframe.AssertArgs(2);
-            VolumeUp(_sframe.Get<int>(1));
+            _sframe.AssertParamCount(2);
+            VolumeUp(_sframe.GetParameter<int>(1));
         }
 
         /// <summary>
@@ -225,11 +225,11 @@ namespace Tbasic.Libraries
 
         private void VolumeDown(TFunctionData _sframe)
         {
-            if (_sframe.Count == 1) {
-                _sframe.SetAll(_sframe.Get(0), "1");
+            if (_sframe.ParameterCount == 1) {
+                _sframe.SetAll(_sframe.GetParameter(0), "1");
             }
-            _sframe.AssertArgs(2);
-            VolumeDown(_sframe.Get<int>(1));
+            _sframe.AssertParamCount(2);
+            VolumeDown(_sframe.GetParameter<int>(1));
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Tbasic.Libraries
 
         private void VolumeMute(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             VolumeMute();
         }
     }

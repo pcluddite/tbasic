@@ -49,9 +49,9 @@ namespace Tbasic.Libraries
 
         private void ToChar(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<char>(1);
+                stackFrame.Data = stackFrame.GetParameter<char>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be char");
@@ -60,9 +60,9 @@ namespace Tbasic.Libraries
 
         private void ToString(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<string>(1);
+                stackFrame.Data = stackFrame.GetParameter<string>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be string");
@@ -71,9 +71,9 @@ namespace Tbasic.Libraries
 
         private void ToBool(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<bool>(1);
+                stackFrame.Data = stackFrame.GetParameter<bool>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be bool");
@@ -82,9 +82,9 @@ namespace Tbasic.Libraries
 
         private void ToDouble(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<double>(1);
+                stackFrame.Data = stackFrame.GetParameter<double>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be double");
@@ -93,9 +93,9 @@ namespace Tbasic.Libraries
 
         private void ToInt(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<int>(1);
+                stackFrame.Data = stackFrame.GetParameter<int>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be int");
@@ -104,9 +104,9 @@ namespace Tbasic.Libraries
 
         private void ToByte(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
+            stackFrame.AssertParamCount(2);
             try {
-                stackFrame.Data = stackFrame.Get<byte>(1);
+                stackFrame.Data = stackFrame.GetParameter<byte>(1);
             }
             catch (InvalidCastException) {
                 throw new TbasicException(ErrorClient.BadRequest, "Parameter cannot be byte");
@@ -115,8 +115,8 @@ namespace Tbasic.Libraries
 
         private void SizeOf(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            object obj = stackFrame.Get(1);
+            stackFrame.AssertParamCount(2);
+            object obj = stackFrame.GetParameter(1);
             int len = -1;
             if (obj == null) {
                 len = 0;
@@ -144,40 +144,40 @@ namespace Tbasic.Libraries
 
         private void IsInt(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = stackFrame.Get(1) is int;
+            stackFrame.AssertParamCount(2);
+            stackFrame.Data = stackFrame.GetParameter(1) is int;
         }
 
         private void IsString(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = stackFrame.Get(1) is string;
+            stackFrame.AssertParamCount(2);
+            stackFrame.Data = stackFrame.GetParameter(1) is string;
         }
 
         private void IsBool(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = stackFrame.Get(1) is bool;
+            stackFrame.AssertParamCount(2);
+            stackFrame.Data = stackFrame.GetParameter(1) is bool;
         }
 
         private void IsDouble(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = stackFrame.Get(1) is byte;
+            stackFrame.AssertParamCount(2);
+            stackFrame.Data = stackFrame.GetParameter(1) is byte;
         }
 
         private void IsDefined(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            string name = stackFrame.Get<string>(1);
+            stackFrame.AssertParamCount(2);
+            string name = stackFrame.GetParameter<string>(1);
             ObjectContext context = stackFrame.Context.FindContext(name);
             stackFrame.Data = context != null;
         }
 
         private void IsByte(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Data = stackFrame.Get(1) is byte;
+            stackFrame.AssertParamCount(2);
+            stackFrame.Data = stackFrame.GetParameter(1) is byte;
         }
     }
 }

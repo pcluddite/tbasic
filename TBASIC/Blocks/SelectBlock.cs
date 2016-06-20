@@ -40,7 +40,7 @@ namespace Tbasic
         public override void Execute(Executer exec)
         {
             TFunctionData parms = new TFunctionData(exec, Header.Text);
-            if (parms.Count < 2) {
+            if (parms.ParameterCount < 2) {
                 throw ThrowHelper.NoCondition();
             }
             object obj = Evaluator.Evaluate(Header.Text.Substring(Header.Name.Length), exec);
@@ -107,7 +107,7 @@ namespace Tbasic
                 if (parms.Name.EqualsIgnoreCase("DEFAULT")) {
                     Condition = "default";
                 }
-                else if (parms.Count < 2) {
+                else if (parms.ParameterCount < 2) {
                     throw ThrowHelper.NoCondition();
                 }
                 else {

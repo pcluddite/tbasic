@@ -51,37 +51,37 @@ namespace Tbasic.Libraries
 
         private void ConsoleWriteline(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            Console.WriteLine(_sframe.Get(1));
+            _sframe.AssertParamCount(2);
+            Console.WriteLine(_sframe.GetParameter(1));
         }
 
         private void ConsoleWrite(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            Console.Write(_sframe.Get(1));
+            _sframe.AssertParamCount(2);
+            Console.Write(_sframe.GetParameter(1));
         }
 
         private void ConsoleRead(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = Console.Read();
         }
 
         private void ConsoleReadLine(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = Console.ReadLine();
         }
 
         private void ConsoleReadKey(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = Console.ReadKey().KeyChar;
         }
 
         private void ConsolePause(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = Console.ReadKey(true).KeyChar;
         }
 
@@ -101,28 +101,28 @@ namespace Tbasic.Libraries
 
         private void Input(TFunctionData _sframe)
         {
-            if (_sframe.Count == 2) {
+            if (_sframe.ParameterCount == 2) {
                 _sframe.SetAll(
-                    _sframe.Get(0), _sframe.Get(1),
+                    _sframe.GetParameter(0), _sframe.GetParameter(1),
                     "Input", -1, -1
                     );
             }
-            if (_sframe.Count == 3) {
+            if (_sframe.ParameterCount == 3) {
                 _sframe.SetAll(
-                    _sframe.Get(0), _sframe.Get(1),
-                    _sframe.Get(2), -1, -1);
+                    _sframe.GetParameter(0), _sframe.GetParameter(1),
+                    _sframe.GetParameter(2), -1, -1);
             }
-            if (_sframe.Count == 4) {
+            if (_sframe.ParameterCount == 4) {
                 _sframe.SetAll(
-                    _sframe.Get(0), _sframe.Get(1),
-                    _sframe.Get(2), _sframe.Get(3), -1);
+                    _sframe.GetParameter(0), _sframe.GetParameter(1),
+                    _sframe.GetParameter(2), _sframe.GetParameter(3), -1);
             }
-            _sframe.AssertArgs(5);
+            _sframe.AssertParamCount(5);
 
-            int x = _sframe.Get<int>(3),
-                y = _sframe.Get<int>(4);
+            int x = _sframe.GetParameter<int>(3),
+                y = _sframe.GetParameter<int>(4);
 
-            string resp = InputBox(_sframe.Get<string>(1), _sframe.Get<string>(2), "", x, y);
+            string resp = InputBox(_sframe.GetParameter<string>(1), _sframe.GetParameter<string>(2), "", x, y);
 
             if (string.IsNullOrEmpty(resp)) { 
                 _sframe.Status = ErrorSuccess.NoContent; // -1 no input 2/24
@@ -147,20 +147,20 @@ namespace Tbasic.Libraries
 
         private void TrayTip(TFunctionData _sframe)
         {
-            if (_sframe.Count == 2) {
-                _sframe.Add(""); // title
-                _sframe.Add(0); // icon
-                _sframe.Add(5000); // timeout
+            if (_sframe.ParameterCount == 2) {
+                _sframe.AddParameter(""); // title
+                _sframe.AddParameter(0); // icon
+                _sframe.AddParameter(5000); // timeout
             }
-            else if (_sframe.Count == 3) {
-                _sframe.Add(0); // icon
-                _sframe.Add(5000); // timeout
+            else if (_sframe.ParameterCount == 3) {
+                _sframe.AddParameter(0); // icon
+                _sframe.AddParameter(5000); // timeout
             }
-            else if (_sframe.Count == 4) {
-                _sframe.Add(5000); // timeout
+            else if (_sframe.ParameterCount == 4) {
+                _sframe.AddParameter(5000); // timeout
             }
-            _sframe.AssertArgs(5);
-            TrayTip(text: _sframe.Get<string>(1), title: _sframe.Get<string>(2), icon: _sframe.Get<ToolTipIcon>(3), timeout: _sframe.Get<int>(4));
+            _sframe.AssertParamCount(5);
+            TrayTip(text: _sframe.GetParameter<string>(1), title: _sframe.GetParameter<string>(2), icon: _sframe.GetParameter<ToolTipIcon>(3), timeout: _sframe.GetParameter<int>(4));
         }
 
         private static void MakeTrayTip(object param)
@@ -201,14 +201,14 @@ namespace Tbasic.Libraries
 
         private void MsgBox(TFunctionData _sframe)
         {
-            if (_sframe.Count == 3) {
-                _sframe.Add("");
+            if (_sframe.ParameterCount == 3) {
+                _sframe.AddParameter("");
             }
-            _sframe.AssertArgs(4);
+            _sframe.AssertParamCount(4);
 
-            int flag = _sframe.Get<int>(1);
-            string text = _sframe.Get<string>(2),
-                   title = _sframe.Get<string>(3);
+            int flag = _sframe.GetParameter<int>(1);
+            string text = _sframe.GetParameter<string>(2),
+                   title = _sframe.GetParameter<string>(3);
 
             _sframe.Data = MsgBox(buttons: flag, prompt: text, title: title);
         }
@@ -225,8 +225,8 @@ namespace Tbasic.Libraries
 
         private void Say(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(2);
-            Say(_sframe.Get<string>(1));
+            _sframe.AssertParamCount(2);
+            Say(_sframe.GetParameter<string>(1));
         }
 
         private static void Say(object text)

@@ -43,8 +43,8 @@ namespace Tbasic.Libraries
 
         private void Include(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            string path = Path.GetFullPath(stackFrame.Get<string>(1));
+            stackFrame.AssertParamCount(2);
+            string path = Path.GetFullPath(stackFrame.GetParameter<string>(1));
             if (!File.Exists(path)) {
                 throw new FileNotFoundException();
             }
@@ -59,21 +59,21 @@ namespace Tbasic.Libraries
 
         private void Sleep(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            System.Threading.Thread.Sleep(stackFrame.Get<int>(1));
+            stackFrame.AssertParamCount(2);
+            System.Threading.Thread.Sleep(stackFrame.GetParameter<int>(1));
             NULL(stackFrame);
         }
 
         private void Break(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(1);
+            stackFrame.AssertParamCount(1);
             stackFrame.StackExecuter.RequestBreak();
             NULL(stackFrame);
         }
 
         internal void Exit(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(1);
+            stackFrame.AssertParamCount(1);
             stackFrame.StackExecuter.RequestExit();
             NULL(stackFrame);
         }
@@ -90,19 +90,19 @@ namespace Tbasic.Libraries
 
         internal void Const(TFunctionData stackFrame)
         {
-            if (stackFrame.Count < 4) {
-                stackFrame.AssertArgs(4);
+            if (stackFrame.ParameterCount < 4) {
+                stackFrame.AssertParamCount(4);
             }
-            if (!stackFrame.Get(2).Equals("=")) {
-                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.Get(2));
+            if (!stackFrame.GetParameter(2).Equals("=")) {
+                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.GetParameter(2));
             }
-            Variable var = new Variable(new StringSegment(stackFrame.Get<string>(1)), stackFrame.StackExecuter);
+            Variable var = new Variable(new StringSegment(stackFrame.GetParameter<string>(1)), stackFrame.StackExecuter);
             if (!var.IsValid) {
                 throw ThrowHelper.InvalidVariableName(var.Name.ToString());
             }
             if (var.Indices == null) {
                 Evaluator e = new Evaluator(new StringSegment(stackFrame.Text, stackFrame.Text.IndexOf('=') + 1), stackFrame.StackExecuter);
-                stackFrame.StackExecuter.Context.SetConstant(stackFrame.Get<string>(1), e.Evaluate());
+                stackFrame.StackExecuter.Context.SetConstant(stackFrame.GetParameter<string>(1), e.Evaluate());
 
                 NULL(stackFrame);
             }
@@ -113,14 +113,14 @@ namespace Tbasic.Libraries
 
         internal void DIM(TFunctionData stackFrame)
         {
-            if (stackFrame.Count < 4) {
-                stackFrame.AssertArgs(2);
+            if (stackFrame.ParameterCount < 4) {
+                stackFrame.AssertParamCount(2);
             }
-            if (stackFrame.Count > 2) {
+            if (stackFrame.ParameterCount > 2) {
                 LET(stackFrame);
             }
             else {
-                Variable v = new Variable(new StringSegment(stackFrame.Get<string>(1)), stackFrame.StackExecuter);
+                Variable v = new Variable(new StringSegment(stackFrame.GetParameter<string>(1)), stackFrame.StackExecuter);
                 string name = v.Name.ToString();
                 ObjectContext context = stackFrame.StackExecuter.Context.FindVariableContext(name);
                 if (context == null) {
@@ -174,11 +174,11 @@ namespace Tbasic.Libraries
 
         internal void LET(TFunctionData stackFrame)
         {
-            if (stackFrame.Count < 4) {
-                stackFrame.AssertArgs(4);
+            if (stackFrame.ParameterCount < 4) {
+                stackFrame.AssertParamCount(4);
             }
-            if (!stackFrame.Get(2).Equals("=")) {
-                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.Get(2));
+            if (!stackFrame.GetParameter(2).Equals("=")) {
+                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.GetParameter(2));
             }
 
             Evaluator e = new Evaluator(
@@ -188,7 +188,7 @@ namespace Tbasic.Libraries
             object data = e.Evaluate();
 
             stackFrame.StackExecuter.Context.SetVariable(
-                stackFrame.Get<string>(1),
+                stackFrame.GetParameter<string>(1),
                 data
                 );
 

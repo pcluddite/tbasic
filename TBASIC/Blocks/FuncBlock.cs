@@ -50,13 +50,13 @@ namespace Tbasic
 
         public void Execute(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(Template.Count);
+            stackFrame.AssertParamCount(Template.ParameterCount);
 
             Executer exec = stackFrame.StackExecuter;
             exec.Context = exec.Context.CreateSubContext();
 
-            for (int index = 1; index < Template.Count; index++) {
-                exec.Context.SetVariable(Template.Get<string>(index), stackFrame.Get(index));
+            for (int index = 1; index < Template.ParameterCount; index++) {
+                exec.Context.SetVariable(Template.GetParameter<string>(index), stackFrame.GetParameter(index));
             }
             exec.Context.SetCommand("return", Return);
             exec.Context.SetFunction("SetStatus", SetStatus);
@@ -68,8 +68,8 @@ namespace Tbasic
 
         private void Return(TFunctionData stackFrame)
         {
-            if (stackFrame.Count < 2) {
-                stackFrame.AssertArgs(2);
+            if (stackFrame.ParameterCount < 2) {
+                stackFrame.AssertParamCount(2);
             }
             Evaluator e = new Evaluator(
                 new StringSegment(stackFrame.Text, stackFrame.Name.Length),
@@ -80,8 +80,8 @@ namespace Tbasic
 
         private void SetStatus(TFunctionData stackFrame)
         {
-            stackFrame.AssertArgs(2);
-            stackFrame.Status = stackFrame.Get<int>(1);
+            stackFrame.AssertParamCount(2);
+            stackFrame.Status = stackFrame.GetParameter<int>(1);
         }
 
         public override void Execute(Executer exec)

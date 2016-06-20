@@ -41,16 +41,16 @@ namespace Tbasic
         {
             TFunctionData parameters = new TFunctionData(exec, Header.Text);
 
-            if (parameters.Count < 3) {
+            if (parameters.ParameterCount < 3) {
                 throw ThrowHelper.NoCondition();
             }
 
             StringSegment condition = new StringSegment(Header.Text, Header.Text.IndexOf(' ', 3));
 
-            if (parameters.Get<string>(1).EqualsIgnoreCase("UNTIL")) {
+            if (parameters.GetParameter<string>(1).EqualsIgnoreCase("UNTIL")) {
                 condition = new StringSegment(string.Format("NOT ({0})", condition)); // Until means inverted
             }
-            else if (parameters.Get<string>(1).EqualsIgnoreCase("WHILE")) {
+            else if (parameters.GetParameter<string>(1).EqualsIgnoreCase("WHILE")) {
                 // don't do anything, you're golden
             }
             else {

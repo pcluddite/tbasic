@@ -38,49 +38,49 @@ namespace Tbasic.Libraries
 
         private void GetMonth(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Month;
         }
 
         private void GetDay(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Day;
         }
 
         private void GetDayOfWeek(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = (int)DateTime.Now.DayOfWeek;
         }
 
         private void GetYear(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Year;
         }
 
         private void GetHour(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Hour;
         }
 
         private void GetMinute(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Minute;
         }
 
         private void GetSecond(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Second;
         }
 
         private void GetMillisecond(TFunctionData _sframe)
         {
-            _sframe.AssertArgs(1);
+            _sframe.AssertParamCount(1);
             _sframe.Data = DateTime.Now.Millisecond;
         }
     }
