@@ -40,9 +40,12 @@ namespace Tbasic.Parsing
         /// <returns>the index of the terminating quote in the full string</returns>
         public static int IndexString(string str_full, int index)
         {
-            char quote = str_full[index]; // The first character should be the quote
+            return IndexString(new StringSegment(str_full), index);
+        }
 
-            index++; // We used the first character
+        internal static int IndexString(StringSegment str_full, int index)
+        {
+            char quote = str_full[index++]; // The first character should be the quote
 
             for (; index < str_full.Length; index++) {
                 char cur = str_full[index];
@@ -94,9 +97,12 @@ namespace Tbasic.Parsing
         /// <returns>the index of the terminating quote  in the full string</returns>
         public static int ReadString(string str_full, int index, out string s_parsed)
         {
-            char quote = str_full[index]; // The first character should be the quote
+            return ReadString(new StringSegment(str_full), index, out s_parsed);
+        }
 
-            index++; // We used the first character
+        internal static int ReadString(StringSegment str_full, int index, out string s_parsed)
+        {
+            char quote = str_full[index++]; // The first character should be the quote
 
             StringBuilder sb = new StringBuilder();
             for (; index < str_full.Length; index++) {
@@ -153,6 +159,11 @@ namespace Tbasic.Parsing
         /// <returns>the index of the terminating grouping character in the full string</returns>
         public static int IndexGroup(string s_full, int firstIndex)
         {
+            return IndexGroup(new StringSegment(s_full), firstIndex);
+        }
+        
+        internal static int IndexGroup(StringSegment s_full, int firstIndex)
+        {
             char c_open = s_full[firstIndex]; // The first character should be the grouping character (i.e. '(' or '[')
             char c_close = c_open == '(' ? ')' : ']';
 
@@ -190,7 +201,7 @@ namespace Tbasic.Parsing
             throw ThrowHelper.UnterminatedGroup();
         }
 
-        internal static int ReadGroup(string s_full, int c_index, Executer _curExec, out IList<object> _oParams)
+        internal static int ReadGroup(StringSegment s_full, int c_index, Executer _curExec, out IList<object> _oParams)
         {
             List<object> result = new List<object>();
             char c_open = s_full[c_index];
@@ -226,7 +237,7 @@ namespace Tbasic.Parsing
 
                 if ((expected == 1 && cur == ',') // The commas in between other parentheses are not ours.
                     || expected == 0) {
-                    StringSegment _param = new StringSegment(s_full, last + 1, c_index - last - 1).Trim();
+                    StringSegment _param = s_full.Subsegment(last + 1, c_index - last - 1).Trim();
                     if (!_param.Equals("")) {
                         Evaluator expr = new Evaluator(_param, _curExec);
                         result.Add(expr.Evaluate());

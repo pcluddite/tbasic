@@ -21,14 +21,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tbasic.Components;
 
 namespace Tbasic.Operators
 {
     internal struct UnaryOperator
     {
-        public string OperatorString { get; private set; }
+        public StringSegment OperatorString { get; private set; }
 
-        public UnaryOperator(string strOp)
+        public UnaryOperator(StringSegment strOp)
         {
             OperatorString = strOp;
         }

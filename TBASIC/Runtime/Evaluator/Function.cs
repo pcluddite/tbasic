@@ -157,7 +157,7 @@ namespace Tbasic.Runtime
         public IList<object> GetParameters()
         {
             IList<object> result;
-            LastIndex = GroupParser.ReadGroup(_expression.ToString(),
+            LastIndex = GroupParser.ReadGroup(_expression,
                                             Name.Length, // Start at the end of the name
                                             CurrentExecution, out result);
             return result;

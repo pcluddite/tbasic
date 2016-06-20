@@ -281,7 +281,7 @@ namespace Tbasic.Runtime
             if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                 mRet = m;
                 string str_parsed;
-                GroupParser.ReadString(m.Value.ToString(), 0, out str_parsed);
+                GroupParser.ReadString(m.Value, 0, out str_parsed);
                 val = str_parsed;
             }
 
@@ -290,7 +290,7 @@ namespace Tbasic.Runtime
                 m = DefinedRegex.UnaryOp.Match(expr, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = new UnaryOperator(m.Value.ToString());
+                    val = new UnaryOperator(m.Value);
                 }
             }
 
@@ -386,7 +386,7 @@ namespace Tbasic.Runtime
 
             if (StringSegment.Equals(mRet.Value, "(")) {
 
-                nRet = GroupParser.IndexGroup(expr, mRet.Index) + 1;
+                nRet = GroupParser.IndexGroup(Expression, mRet.Index) + 1;
 
                 Evaluator eval = new Evaluator(
                     Expression.Subsegment(mRet.Index + 1, nRet - mRet.Index - 2),

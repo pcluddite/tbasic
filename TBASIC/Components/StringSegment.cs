@@ -132,6 +132,16 @@ namespace Tbasic.Components
             return Subsegment(new_start, new_end - new_start + 1);
         }
 
+        public string ToUpper()
+        {
+            return ToString().ToUpper();
+        }
+
+        public string ToLower()
+        {
+            return ToString().ToLower();
+        }
+
         public override string ToString()
         {
             return full.Substring(start, len);

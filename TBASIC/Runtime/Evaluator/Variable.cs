@@ -74,7 +74,7 @@ namespace Tbasic.Runtime
                     StringSegment indicesString = _expression.Subsegment(_expression.SkipWhiteSpace(Name.Length));
                     if (indicesString.Offset > -1 && indicesString[0] == '[') {
                         IList<object> indices;
-                        int last = GroupParser.ReadGroup(_expression.ToString(), _expression.IndexOf('['), CurrentExecution, out indices);
+                        int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
                         if (last < _expression.Length - 1) {
                             _expression = _expression.Remove(last + 1);
                         }
