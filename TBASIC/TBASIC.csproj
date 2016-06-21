@@ -59,6 +59,8 @@
     <Compile Include="Operators\BinOpDicationary.cs" />
     <Compile Include="Operators\BinOpDictionary.IDictionary.cs" />
     <Compile Include="Operators\BinOpNodePair.cs" />
+    <Compile Include="Operators\UnaryOpDictionary.cs" />
+    <Compile Include="Operators\UnaryOpDictionary.IDictionary.cs" />
     <Compile Include="Operators\UnaryOperator.cs" />
     <Compile Include="Parsing\GroupParser.cs" />
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />

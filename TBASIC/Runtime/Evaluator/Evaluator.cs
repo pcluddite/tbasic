@@ -287,10 +287,11 @@ namespace Tbasic.Runtime
 
             //Check Unary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.UnaryOp.Match(expr, nIdx);
+                UnaryOperator op;
+                m = CheckUnaryOp(expr, nIdx, out op);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = new UnaryOperator(m.Value);
+                    val = op;
                 }
             }
 
@@ -417,7 +418,7 @@ namespace Tbasic.Runtime
             for (; x != null; x = x.Next) {
                 UnaryOperator? op = x.Value as UnaryOperator?;
                 if (op != null) {
-                    x.Value = PerformUnaryOp(op.Value, x.Next.Value);
+                    x.Value = PerformUnaryOp(op.Value, x.Previous == null ? null : x.Previous.Value, x.Next.Value);
                     list.Remove(x.Next);
                 }
             }
@@ -484,22 +485,6 @@ namespace Tbasic.Runtime
             return expression.Evaluate();
         }
 
-        private static object PerformUnaryOp(UnaryOperator op, object v)
-        {
-            IExpression tempv = v as IExpression;
-            if (tempv != null) {
-                v = tempv.Evaluate();
-            }
-
-            switch (op.OperatorString.ToUpper()) {
-                case "+": return (Convert.ToDouble(v, CultureInfo.CurrentCulture));
-                case "-": return (-Convert.ToDouble(v, CultureInfo.CurrentCulture));
-                case "NOT ": return (!Convert.ToBoolean(v, CultureInfo.CurrentCulture));
-                case "~": return (~Convert.ToUInt64(v, CultureInfo.CurrentCulture));
-            }
-            throw new ArgumentException("Unary operator '" + op.OperatorString + "' not defined.");
-        }
-
         internal static bool TryParse<T>(object input, out T result)
         {
             try {
@@ -522,6 +507,22 @@ namespace Tbasic.Runtime
                         return false;
                     }
                 }
+            }
+        }
+
+        public static object PerformUnaryOp(UnaryOperator op, object left, object right)
+        {
+            object operand = op.Side == UnaryOperator.OperandSide.Left ? left : right;
+            IExpression tempv = operand as IExpression;
+            if (tempv != null) {
+                operand = tempv.Evaluate();
+            }
+
+            try {
+                return op.ExecuteOperator(operand);
+            }
+            catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is ArgumentException || ex is OverflowException) {
+                throw new ArgumentException("Unary operator '" + op.OperatorString + "' not defined.");
             }
         }
 
@@ -651,6 +652,28 @@ namespace Tbasic.Runtime
             string foundStr = null;
             foundOp = default(BinaryOperator);
             foreach (var op in CurrentContext._binaryOps) {
+                string opStr = op.Value.OperatorString;
+                int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
+                if (foundAt > -1 && foundAt < foundIndex) {
+                    foundOp = op.Value;
+                    foundIndex = foundAt;
+                    foundStr = opStr;
+                }
+            }
+            if (foundIndex == int.MaxValue) {
+                return null;
+            }
+            else {
+                return new MatchInfo(Match.Empty, foundIndex, new StringSegment(expr, foundIndex, foundStr.Length));
+            }
+        }
+
+        private MatchInfo CheckUnaryOp(string expr, int index, out UnaryOperator foundOp)
+        {
+            int foundIndex = int.MaxValue;
+            string foundStr = null;
+            foundOp = default(UnaryOperator);
+            foreach (var op in CurrentContext._unaryOps) {
                 string opStr = op.Value.OperatorString;
                 int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
                 if (foundAt > -1 && foundAt < foundIndex) {

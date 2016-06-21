@@ -38,6 +38,7 @@ namespace Tbasic.Runtime
         private Dictionary<string, object> _constants;
         private Dictionary<string, BlockCreator> _blocks;
         internal BinOpDictionary _binaryOps; // this is internal so it can be accessed by the evalutator
+        internal UnaryOpDictionary _unaryOps; // ^^^ dito
         private Library _functions;
         private Library _commands;
 
@@ -57,9 +58,11 @@ namespace Tbasic.Runtime
             _blocks = new Dictionary<string, BlockCreator>(StringComparer.OrdinalIgnoreCase);
             if (superContext == null) {
                 _binaryOps = new BinOpDictionary();
+                _unaryOps = new UnaryOpDictionary();
             }
             else {
                 _binaryOps = superContext._binaryOps; // binary operators are always global (for now)
+                _unaryOps = superContext._unaryOps; // ^^^ dito
             }
 #if SHOW_OBJECTS
             Console.WriteLine();
@@ -99,6 +102,7 @@ namespace Tbasic.Runtime
                 { "SELECT", (i,c) => new SelectBlock(i,c) }
             };
             _binaryOps.LoadStandardOperators();
+            _unaryOps.LoadStandardOperators();
         }
 
         /// <summary>
@@ -387,7 +391,24 @@ namespace Tbasic.Runtime
                 return op;
             }
             else {
-                throw new ArgumentException("operator '" + strOp + "' is undefined.");
+                throw ThrowHelper.OperatorUndefined(strOp);
+            }
+        }
+
+        /// <summary>
+        /// Gets a binary operator if it exists, throws an ArgumentException otherwise
+        /// </summary>
+        /// <param name="strOp">the operator as a string</param>
+        /// <exception cref="ArgumentException">thrown if the operator is undefined</exception>
+        /// <returns></returns>
+        public UnaryOperator GetUnaryOperator(string strOp)
+        {
+            UnaryOperator op;
+            if (_unaryOps.TryGetValue(strOp, out op)) {
+                return op;
+            }
+            else {
+                throw ThrowHelper.OperatorUndefined(strOp);
             }
         }
 
@@ -528,6 +549,23 @@ namespace Tbasic.Runtime
             }
         }
 
+        /// <summary>
+        /// Defines a binary operator
+        /// </summary>
+        /// <param name="op">the operator</param>
+        public void SetBinaryOperator(BinaryOperator op)
+        {
+            _binaryOps[op.OperatorString] = op;
+        }
+
+        /// <summary>
+        /// Defines a unary operator
+        /// </summary>
+        /// <param name="op">the operator</param>
+        public void SetUnaryOperator(UnaryOperator op)
+        {
+            _unaryOps[op.OperatorString] = op;
+        }
         #endregion
     }
 }

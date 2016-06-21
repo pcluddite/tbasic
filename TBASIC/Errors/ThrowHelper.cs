@@ -148,5 +148,10 @@ namespace Tbasic.Errors
         {
             return new FormatException("Expected space after command name");
         }
+
+        public static Exception OperatorUndefined(string opr)
+        {
+            return new ArgumentException("Operator '" + opr + "' is undefined");
+        }
     }
 }
