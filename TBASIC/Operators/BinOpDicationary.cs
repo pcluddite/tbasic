@@ -1,18 +1,36 @@
-﻿using System;
+﻿/**
+ *  TBASIC
+ *  Copyright (C) 2013-2016 Timothy Baxendale
+ *  
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *  
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *  USA
+ **/
+using System;
 using System.Collections.Generic;
-using Tbasic.Operators;
-using Tbasic.Components;
-using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Tbasic.Components;
+using Tbasic.Runtime;
 
-namespace Tbasic.Runtime
+namespace Tbasic.Operators
 {
-    internal partial class Evaluator
+    internal partial class BinOpDictionary
     {
-        private Dictionary<string, BinaryOperator> binaryOps = new Dictionary<string, BinaryOperator>(StringComparer.OrdinalIgnoreCase);
-        
+        private Dictionary<string, BinaryOperator> binaryOps = new Dictionary<string, BinaryOperator>(22 /* magic number of standard operators */, StringComparer.OrdinalIgnoreCase);
+
         public void LoadStandardOperators()
         {
             binaryOps.Add("*",   new BinaryOperator("*",   0, Multiply));
@@ -45,46 +63,8 @@ namespace Tbasic.Runtime
         /// <param name="strOp"></param>
         /// <returns></returns>
         public int OperatorPrecedence(string strOp)
-        {    
+        {
             return binaryOps[strOp].Precedence;
-        }
-
-        /// <summary>
-        /// Gets a binary operator if it exists, throws an ArgumentException otherwise
-        /// </summary>
-        /// <param name="strOp"></param>
-        /// <returns></returns>
-        public BinaryOperator GetBinaryOperator(string strOp)
-        {
-            BinaryOperator op;
-            if (binaryOps.TryGetValue(strOp, out op)) {
-                return op;
-            }
-            else {
-                throw new ArgumentException("operator '" + strOp + "' not defined.");
-            }
-        }
-
-        private MatchInfo CheckBinaryOp(string expr, int index, out BinaryOperator foundOp)
-        {
-            int foundIndex = int.MaxValue;
-            string foundStr = null;
-            foundOp = default(BinaryOperator);
-            foreach (var op in binaryOps) {
-                string opStr = op.Value.OperatorString;
-                int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
-                if (foundAt > -1 && foundAt < foundIndex) {
-                    foundOp = op.Value;
-                    foundIndex = foundAt;
-                    foundStr = opStr;
-                }
-            }
-            if (foundIndex == -1) {
-                return null;
-            }
-            else {
-                return new MatchInfo(Match.Empty, foundIndex, new StringSegment(expr, foundIndex, foundStr.Length));
-            }
         }
 
         private static object Multiply(object left, object right)
@@ -170,9 +150,9 @@ namespace Tbasic.Runtime
         private static void InitializeStrings(object left, object right, ref string str1, ref string str2)
         {
             if (str1 == null)
-                str1 = ConvertToString(left);
+                str1 = Evaluator.ConvertToString(left);
             if (str2 == null)
-                str2 = ConvertToString(right);
+                str2 = Evaluator.ConvertToString(right);
         }
 
         private static object NotEqualTo(object left, object right)
@@ -220,126 +200,6 @@ namespace Tbasic.Runtime
         private static object NotImplemented(object left, object right)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// This routine will actually execute an operation and return its value
-        /// </summary>
-        /// <param name="op">Operator Information</param>
-        /// <param name="left">left operand</param>
-        /// <param name="right">right operand</param>
-        /// <returns>v1 (op) v2</returns>
-        private static object PerformBinaryOp(BinaryOperator op, object left, object right)
-        {
-            IExpression tv = left as IExpression;
-            if (tv != null) {
-                left = tv.Evaluate();
-            }
-
-            try {
-                switch (op.OperatorString) { // short circuit evaluation 1/6/16
-                    case "AND":
-                        if (Convert.ToBoolean(left, CultureInfo.CurrentCulture)) {
-                            tv = right as IExpression;
-                            if (tv != null) {
-                                right = tv.Evaluate();
-                            }
-                            if (Convert.ToBoolean(right, CultureInfo.CurrentCulture)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    case "OR":
-                        if (Convert.ToBoolean(left, CultureInfo.CurrentCulture)) {
-                            return true;
-                        }
-                        else {
-                            tv = right as IExpression;
-                            if (tv != null) {
-                                right = tv.Evaluate();
-                            }
-                            if (Convert.ToBoolean(right, CultureInfo.CurrentCulture)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                }
-
-                tv = right as IExpression;
-                if (tv != null) {
-                    right = tv.Evaluate();
-                }
-                return op.ExecuteOperator(left, right);
-            }
-            catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is ArgumentException || ex is OverflowException) {
-                throw new FormatException(string.Format(
-                        "Operator '{0}' cannot be applied to objects of type '{1}' and '{2}'",
-                        op.OperatorString, GetTypeName(right), GetTypeName(left)
-                    ));
-            }
-        }
-
-        private static string GetTypeName(object value)
-        {
-            Type t = value.GetType();
-            if (t.IsArray) {
-                return "object array";
-            }
-            else {
-                return t.Name.ToLower();
-            }
-        }
-
-        private static string ConvertToString(object obj)
-        {
-            if (obj == null) {
-                return "";
-            }
-            string str_obj = obj as string;
-            if (str_obj != null) {
-                return FormatString(str_obj);
-            }
-            else if (obj.GetType().IsArray) {
-                StringBuilder sb = new StringBuilder("{ ");
-                object[] _aObj = (object[])obj;
-                if (_aObj.Length > 0) {
-                    for (int i = 0; i < _aObj.Length - 1; i++) {
-                        sb.AppendFormat("{0}, ", ConvertToString(_aObj[i]));
-                    }
-                    sb.AppendFormat("{0} ", ConvertToString(_aObj[_aObj.Length - 1]));
-                }
-                sb.Append("}");
-                return sb.ToString();
-            }
-            return obj.ToString();
-        }
-
-        private static string FormatString(string str)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int index = 0; index < str.Length; index++) {
-                char c = str[index];
-                switch (c) {
-                    case '\n': sb.Append("\\n"); break;
-                    case '\r': sb.Append("\\r"); break;
-                    case '\\': sb.Append("\\\\"); break;
-                    case '\b': sb.Append("\\b"); break;
-                    case '\t': sb.Append("\\t"); break;
-                    case '\f': sb.Append("\\f"); break;
-                    case '\"': sb.Append("\\\""); break;
-                    case '\'': sb.Append("\\'"); break;
-                    default:
-                        if (c < ' ') {
-                            sb.Append("\\u");
-                            sb.Append(Convert.ToString(c, 16).PadLeft(4, '0'));
-                        }
-                        else {
-                            sb.Append(c);
-                        }
-                        break;
-                }
-            }
-            return "\"" + sb + "\"";
         }
     }
 }

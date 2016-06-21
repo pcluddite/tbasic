@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using Tbasic.Libraries;
 using Tbasic.Errors;
+using Tbasic.Operators;
 
 namespace Tbasic.Runtime
 {
@@ -30,13 +31,13 @@ namespace Tbasic.Runtime
     /// </summary>
     public class ObjectContext
     {
-
         #region Private Fields
 
         private ObjectContext _super;
         private Dictionary<string, object> _variables;
         private Dictionary<string, object> _constants;
         private Dictionary<string, BlockCreator> _blocks;
+        internal BinOpDictionary _binaryOps; // this is internal so it can be accessed by the evalutator
         private Library _functions;
         private Library _commands;
 
@@ -54,6 +55,12 @@ namespace Tbasic.Runtime
             _variables = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _constants = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             _blocks = new Dictionary<string, BlockCreator>(StringComparer.OrdinalIgnoreCase);
+            if (superContext == null) {
+                _binaryOps = new BinOpDictionary();
+            }
+            else {
+                _binaryOps = superContext._binaryOps; // binary operators are always global (for now)
+            }
 #if SHOW_OBJECTS
             Console.WriteLine();
             Console.WriteLine("ObjectContext initialized.");
@@ -91,6 +98,7 @@ namespace Tbasic.Runtime
                 { "IF"    , (i,c) => new IfBlock(i,c) },
                 { "SELECT", (i,c) => new SelectBlock(i,c) }
             };
+            _binaryOps.LoadStandardOperators();
         }
 
         /// <summary>
@@ -294,8 +302,9 @@ namespace Tbasic.Runtime
         /// <returns>the code block</returns>
         public BlockCreator GetBlock(string name)
         {
-            if (_blocks.ContainsKey(name)) {
-                return _blocks[name];
+            BlockCreator block;
+            if (_blocks.TryGetValue(name, out block)) {
+                return block;
             }
             else if (_super == null) {
                 throw ThrowHelper.UndefinedObject(name);
@@ -312,11 +321,12 @@ namespace Tbasic.Runtime
         /// <returns>the variable data</returns>
         public object GetVariable(string name)
         {
-            if (_constants.ContainsKey(name)) {
-                return _constants[name];
+            object value;
+            if (_constants.TryGetValue(name, out value)) {
+                return value;
             }
-            else if (_variables.ContainsKey(name)) {
-                return _variables[name];
+            else if (_variables.TryGetValue(name, out value)) {
+                return value;
             }
             else if (_super == null) {
                 throw ThrowHelper.UndefinedObject(name);
@@ -333,8 +343,9 @@ namespace Tbasic.Runtime
         /// <returns>the function delegate</returns>
         public TBasicFunction GetFunction(string name)
         {
-            if (_functions.ContainsKey(name)) {
-                return _functions[name];
+            TBasicFunction func;
+            if (_functions.TryGetValue(name, out func)) {
+                return func;
             }
             else if (_super == null) {
                 throw ThrowHelper.UndefinedObject(name);
@@ -351,14 +362,32 @@ namespace Tbasic.Runtime
         /// <returns>the command delegate</returns>
         public TBasicFunction GetCommand(string name)
         {
-            if (_commands.ContainsKey(name)) {
-                return _commands[name];
+            TBasicFunction func;
+            if (_commands.TryGetValue(name, out func)) {
+                return func;
             }
             else if (_super == null) {
                 throw ThrowHelper.UndefinedObject(name);
             }
             else {
                 return _super.GetCommand(name);
+            }
+        }
+
+        /// <summary>
+        /// Gets a binary operator if it exists, throws an ArgumentException otherwise
+        /// </summary>
+        /// <param name="strOp">the operator as a string</param>
+        /// <exception cref="ArgumentException">thrown if the operator is undefined</exception>
+        /// <returns></returns>
+        public BinaryOperator GetBinaryOperator(string strOp)
+        {
+            BinaryOperator op;
+            if (_binaryOps.TryGetValue(strOp, out op)) {
+                return op;
+            }
+            else {
+                throw new ArgumentException("operator '" + strOp + "' is undefined.");
             }
         }
 

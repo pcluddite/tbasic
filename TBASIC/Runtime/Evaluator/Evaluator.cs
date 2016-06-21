@@ -50,7 +50,6 @@ namespace Tbasic.Runtime
         public Evaluator(Executer exec)
         {
             CurrentExecution = exec;
-            LoadStandardOperators();
         }
 
         /// <summary>
@@ -62,7 +61,6 @@ namespace Tbasic.Runtime
         {
             CurrentExecution = exec;
             Expression = expression;
-            LoadStandardOperators();
         }
 
         #endregion
@@ -373,7 +371,7 @@ namespace Tbasic.Runtime
             }
 
             if (mRet.RealMatch == null) {
-                if (CurrentExecution.Context.FindFunctionContext(expr) == null) {
+                if (CurrentContext.FindFunctionContext(expr) == null) {
                     throw new ArgumentException("Invalid expression '" + expr + "'");
                 }
                 else {
@@ -524,6 +522,148 @@ namespace Tbasic.Runtime
                         return false;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// This routine will actually execute an operation and return its value
+        /// </summary>
+        /// <param name="op">Operator Information</param>
+        /// <param name="left">left operand</param>
+        /// <param name="right">right operand</param>
+        /// <returns>v1 (op) v2</returns>
+        public static object PerformBinaryOp(BinaryOperator op, object left, object right)
+        {
+            IExpression tv = left as IExpression;
+            if (tv != null) {
+                left = tv.Evaluate();
+            }
+
+            try {
+                switch (op.OperatorString) { // short circuit evaluation 1/6/16
+                    case "AND":
+                        if (Convert.ToBoolean(left, CultureInfo.CurrentCulture)) {
+                            tv = right as IExpression;
+                            if (tv != null) {
+                                right = tv.Evaluate();
+                            }
+                            if (Convert.ToBoolean(right, CultureInfo.CurrentCulture)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    case "OR":
+                        if (Convert.ToBoolean(left, CultureInfo.CurrentCulture)) {
+                            return true;
+                        }
+                        else {
+                            tv = right as IExpression;
+                            if (tv != null) {
+                                right = tv.Evaluate();
+                            }
+                            if (Convert.ToBoolean(right, CultureInfo.CurrentCulture)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                }
+
+                tv = right as IExpression;
+                if (tv != null) {
+                    right = tv.Evaluate();
+                }
+                return op.ExecuteOperator(left, right);
+            }
+            catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is ArgumentException || ex is OverflowException) {
+                throw new FormatException(string.Format(
+                        "Operator '{0}' cannot be applied to objects of type '{1}' and '{2}'",
+                        op.OperatorString, GetTypeName(right), GetTypeName(left)
+                    ));
+            }
+        }
+
+        public static string GetTypeName(object value)
+        {
+            Type t = value.GetType();
+            if (t.IsArray) {
+                return "object array";
+            }
+            else {
+                return t.Name.ToLower();
+            }
+        }
+
+        public static string ConvertToString(object obj)
+        {
+            if (obj == null) {
+                return "";
+            }
+            string str_obj = obj as string;
+            if (str_obj != null) {
+                return FormatString(str_obj);
+            }
+            else if (obj.GetType().IsArray) {
+                StringBuilder sb = new StringBuilder("{ ");
+                object[] _aObj = (object[])obj;
+                if (_aObj.Length > 0) {
+                    for (int i = 0; i < _aObj.Length - 1; i++) {
+                        sb.AppendFormat("{0}, ", ConvertToString(_aObj[i]));
+                    }
+                    sb.AppendFormat("{0} ", ConvertToString(_aObj[_aObj.Length - 1]));
+                }
+                sb.Append("}");
+                return sb.ToString();
+            }
+            return obj.ToString();
+        }
+
+        private static string FormatString(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int index = 0; index < str.Length; index++) {
+                char c = str[index];
+                switch (c) {
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\\': sb.Append("\\\\"); break;
+                    case '\b': sb.Append("\\b"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    case '\f': sb.Append("\\f"); break;
+                    case '\"': sb.Append("\\\""); break;
+                    case '\'': sb.Append("\\'"); break;
+                    default:
+                        if (c < ' ') {
+                            sb.Append("\\u");
+                            sb.Append(Convert.ToString(c, 16).PadLeft(4, '0'));
+                        }
+                        else {
+                            sb.Append(c);
+                        }
+                        break;
+                }
+            }
+            return "\"" + sb + "\"";
+        }
+
+        private MatchInfo CheckBinaryOp(string expr, int index, out BinaryOperator foundOp)
+        {
+            int foundIndex = int.MaxValue;
+            string foundStr = null;
+            foundOp = default(BinaryOperator);
+            foreach (var op in CurrentContext._binaryOps) {
+                string opStr = op.Value.OperatorString;
+                int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
+                if (foundAt > -1 && foundAt < foundIndex) {
+                    foundOp = op.Value;
+                    foundIndex = foundAt;
+                    foundStr = opStr;
+                }
+            }
+            if (foundIndex == int.MaxValue) {
+                return null;
+            }
+            else {
+                return new MatchInfo(Match.Empty, foundIndex, new StringSegment(expr, foundIndex, foundStr.Length));
             }
         }
 
