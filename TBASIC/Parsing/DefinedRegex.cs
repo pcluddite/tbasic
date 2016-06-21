@@ -32,11 +32,6 @@ namespace Tbasic.Parsing
         private const string c_strFunction      = @"([a-zA-Z][a-zA-Z0-9]*)\s*\((.*)\)";
         private const string c_strVariable      = @"(([a-zA-Z_][a-zA-Z0-9_]*)\$|\@([a-zA-Z_][a-zA-Z0-9_]*))(\s*\[(.*)\])?";
         private const string c_strString        = @"\""((\\"")|[^""])*\""|\'((\\')|[^'])*\'";
-        private const string c_strNull          = @"null";
-
-        private const string c_strUnaryOp       = @"(?:\+|-|NOT |~)(?=\w|\()";
-        private const string c_strBinaryOp      = @"<<|>>|\+|-|\*|/|MOD|AND|OR|&|\||\^|==|!=|<>|>=|=>|<=|=<|=|<|>";
-        private const string c_strWhiteSpace    = @"\s+";
 
         internal static Regex Numeric = new Regex(
             c_strNumeric,
@@ -52,16 +47,7 @@ namespace Tbasic.Parsing
             c_strBool,
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
-
-        internal static Regex UnaryOp = new Regex(
-            @"(?<=(?:" + c_strBinaryOp + @")\s*|\A)(?:" + c_strUnaryOp + @")",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase
-        );
-
-        internal static Regex BinaryOp = new Regex(
-            @"(?<!(?:" + c_strBinaryOp + @")\s*|^\A)(?:" + c_strBinaryOp + @")",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase
-        );
+        
 
         internal static Regex Parenthesis = new Regex(
             @"\(",
@@ -82,18 +68,5 @@ namespace Tbasic.Parsing
             c_strString,
             RegexOptions.Compiled
         );
-
-        internal static Regex Null = new Regex(
-            c_strNull,
-            RegexOptions.Compiled | RegexOptions.IgnoreCase
-        );
-
-        internal static Regex WhiteSpace = new Regex(
-            c_strWhiteSpace,
-            RegexOptions.Compiled
-        );
-
-        static DefinedRegex() { }
-
     }
 }
