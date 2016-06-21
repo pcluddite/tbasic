@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Components\Extensions.cs" />
     <Compile Include="Components\StringSegment.cs" />
+    <Compile Include="Components\StructReference.cs" />
     <Compile Include="Components\Win32\GDI32.cs" />
     <Compile Include="Components\Win32\Impersonate.cs" />
     <Compile Include="Errors\ErrorCodes.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Operators\BinOpNodePair.cs" />
     <Compile Include="Operators\UnaryOperator.cs" />
     <Compile Include="Parsing\GroupParser.cs" />
+    <Compile Include="Runtime\Evaluator\Evaluator.BinaryOperators.cs" />
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />
     <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
     <Compile Include="Runtime\Evaluator\Function.cs" />

@@ -23,49 +23,19 @@ namespace Tbasic.Operators
 {
     internal struct BinaryOperator : IComparable<BinaryOperator>, IEquatable<BinaryOperator>
     {
-        /// <summary>
-        /// This method gets the precedence of a binary operator
-        /// </summary>
-        /// <param name="strOp"></param>
-        /// <returns></returns>
-        private static int OperatorPrecedence(string strOp)
-        {
-            switch (strOp) {
-                case "*":
-                case "/":
-                case "MOD": return 0;
-                case "+":
-                case "-": return 1;
-                case ">>":
-                case "<<": return 2;
-                case "<":
-                case "=<":
-                case "<=":
-                case ">":
-                case "=>":
-                case ">=": return 3;
-                case "==":
-                case "=":
-                case "<>":
-                case "!=": return 4;
-                case "&": return 5;
-                case "^": return 6;
-                case "|": return 7;
-                case "AND": return 8;
-                case "OR": return 9;
-            }
-            throw new ArgumentException("operator '" + strOp + "' not defined.");
-        }
+        public delegate object BinaryOpDelegate(object left, object right);
 
         public string OperatorString { get; private set; }
         public int Precedence { get; private set; }
+        public BinaryOpDelegate ExecuteOperator { get; private set; }
 
-        public BinaryOperator(string strOp)
+        public BinaryOperator(string strOp, int precedence, BinaryOpDelegate doOp)
         {
             OperatorString = strOp.ToUpper();
-            Precedence = OperatorPrecedence(OperatorString);
+            Precedence = precedence;
+            ExecuteOperator = doOp;
         }
-
+        
         public int CompareTo(BinaryOperator other)
         {
             return Precedence.CompareTo(other.Precedence);
@@ -96,7 +66,7 @@ namespace Tbasic.Operators
 
         public override int GetHashCode()
         {
-            return OperatorString.GetHashCode() ^ Precedence;
+            return OperatorString.GetHashCode() ^ Precedence ^ ExecuteOperator.GetHashCode();
         }
     }
 }

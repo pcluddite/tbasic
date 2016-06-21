@@ -115,6 +115,31 @@ namespace Tbasic.Components
             return full.IndexOf(value, start + startIndex, len) - start;
         }
 
+        public int IndexOf(string value)
+        {
+            return full.IndexOf(value, start, len) - start;
+        }
+
+        public int IndexOf(string value, int startIndex)
+        {
+            return full.IndexOf(value, start + startIndex, len) - start;
+        }
+
+        public bool StartsWith(string value)
+        {
+            unsafe
+            {
+                int len = value.Length;
+                fixed(char* aptr = full) fixed(char* bptr = value)
+                {
+                    char* a = aptr + start;
+                    char* b = bptr;
+                    int index = FirstIndexOfNotEqual(a, b, len);
+                    return index == -1 || index == len;
+                }
+            }
+        }
+
         public StringSegment Remove(int index)
         {
             return new StringSegment(full, start, index);
@@ -227,12 +252,17 @@ namespace Tbasic.Components
 
         private static unsafe bool EqualsHelper(char* aptr, char* bptr, int length)
         {
-            for(int index = 0; index < length; ++index) {
+            return FirstIndexOfNotEqual(aptr, bptr, length) == -1;
+        }
+
+        private static unsafe int FirstIndexOfNotEqual(char* aptr, char* bptr, int length)
+        {
+            for (int index = 0; index < length; ++index) {
                 if (aptr[index] != bptr[index]) {
-                    return false;
+                    return index;
                 }
             }
-            return true;
+            return -1;
         }
 
         public static bool operator==(StringSegment first, StringSegment second)

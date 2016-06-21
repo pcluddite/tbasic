@@ -31,7 +31,7 @@ namespace Tbasic.Runtime
     /// <summary>
     /// This class will evaluate boolean and mathmatical expressions
     /// </summary>
-    internal class Evaluator : IExpression
+    internal partial class Evaluator : IExpression
     {
 
         #region Private Members
@@ -50,6 +50,7 @@ namespace Tbasic.Runtime
         public Evaluator(Executer exec)
         {
             CurrentExecution = exec;
+            LoadStandardOperators();
         }
 
         /// <summary>
@@ -61,6 +62,7 @@ namespace Tbasic.Runtime
         {
             CurrentExecution = exec;
             Expression = expression;
+            LoadStandardOperators();
         }
 
         #endregion
@@ -362,10 +364,11 @@ namespace Tbasic.Runtime
 
             //Check Binary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.BinaryOp.Match(expr, nIdx);
+                BinaryOperator op;
+                m = CheckBinaryOp(expr, nIdx, out op);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
-                    val = new BinaryOperator(m.Value.ToString());
+                    val = op;
                 }
             }
 
@@ -481,218 +484,6 @@ namespace Tbasic.Runtime
         {
             Evaluator expression = new Evaluator(new StringSegment(expressionString), exec);
             return expression.Evaluate();
-        }
-
-        /// <summary>
-        /// This routine will actually execute an operation and return its value
-        /// </summary>
-        /// <param name="op">Operator Information</param>
-        /// <param name="v1">left operand</param>
-        /// <param name="v2">right operand</param>
-        /// <returns>v1 (op) v2</returns>
-        private static object PerformBinaryOp(BinaryOperator op, object v1, object v2)
-        {
-            IExpression tv = v1 as IExpression;
-            if (tv != null) {
-                v1 = tv.Evaluate();
-            }
-
-            switch (op.OperatorString) { // short circuit evaluation 1/6/16
-                case "AND":
-                    if (Convert.ToBoolean(v1, CultureInfo.CurrentCulture)) {
-                        tv = v2 as IExpression;
-                        if (tv != null) {
-                            v2 = tv.Evaluate();
-                        }
-                        if (Convert.ToBoolean(v2, CultureInfo.CurrentCulture)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                case "OR":
-                    if (Convert.ToBoolean(v1, CultureInfo.CurrentCulture)) {
-                        return true;
-                    }
-                    else {
-                        tv = v2 as IExpression;
-                        if (tv != null) {
-                            v2 = tv.Evaluate();
-                        }
-                        if (Convert.ToBoolean(v2, CultureInfo.CurrentCulture)) {
-                            return true;
-                        }
-                    }
-                    return false;
-            }
-
-            tv = v2 as IExpression;
-            if (tv != null) {
-                v2 = tv.Evaluate();
-            }
-
-            switch (op.OperatorString) {
-                case "*":
-                    return (Convert.ToDouble(v1, CultureInfo.CurrentCulture) *
-                            Convert.ToDouble(v2, CultureInfo.CurrentCulture));
-                case "/": {
-                        double d1 = Convert.ToDouble(v1, CultureInfo.CurrentCulture);
-                        double d2 = Convert.ToDouble(v2, CultureInfo.CurrentCulture);
-                        if (d2 == 0) {
-                            throw new DivideByZeroException();
-                        }
-                        return d1 / d2;
-                    }
-                case "MOD":
-                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) %
-                          Convert.ToInt64(v2, CultureInfo.CurrentCulture));
-                case "<<":
-                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) <<
-                            Convert.ToInt32(v2, CultureInfo.CurrentCulture));
-                case ">>":
-                    return (Convert.ToInt64(v1, CultureInfo.CurrentCulture) >>
-                            Convert.ToInt32(v2, CultureInfo.CurrentCulture));
-                case "+":
-                case "-":
-                case "<":
-                case "<=":
-                case "=<":
-                case ">":
-                case ">=":
-                case "=>":
-                case "==":
-                case "=":
-                case "<>":
-                case "!=": return DoSpecialOperator(op, v1, v2);
-                case "&":
-                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) &
-                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
-                case "^":
-                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) ^
-                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
-                case "|":
-                    return (Convert.ToUInt64(v1, CultureInfo.CurrentCulture) |
-                            Convert.ToUInt64(v2, CultureInfo.CurrentCulture));
-            }
-            throw new ArgumentException("Binary operator " + op.OperatorString + " not defined.");
-        }
-
-        private static object DoSpecialOperator(BinaryOperator op, object v1, object v2)
-        {
-            string str1 = v1 as string,
-                   str2 = v2 as string;
-            if (str1 == null && str2 == null) {
-                try {
-                    double f1 = Convert.ToDouble(v1, CultureInfo.CurrentCulture),
-                           f2 = Convert.ToDouble(v2, CultureInfo.CurrentCulture);
-                    switch (op.OperatorString) {
-                        case "+": return f1 + f2;
-                        case "-": return f1 - f2;
-                        case "<": return f1 < f2;
-                        case "=<":
-                        case "<=": return f1 <= f2;
-                        case ">": return f1 > f2;
-                        case "=>":
-                        case ">=": return f1 >= f2;
-                        case "==":
-                        case "=": return f1 == f2;
-                        case "<>":
-                        case "!=": return f1 != f2;
-                    }
-                }
-                catch (InvalidCastException) {
-                }
-            }
-            else {
-                if (str1 == null) {
-                    str1 = ConvertToString(v1).ToString();
-                }
-                if (str2 == null) {
-                    str2 = ConvertToString(v2).ToString();
-                }
-                switch (op.OperatorString) {
-                    case "+":
-                        return str1 + str2;
-                    case "==":
-                        return str1 == str2;
-                    case "=":
-                        return Extensions.EqualsIgnoreCase(str1, str2); // = is case insensitive 1/2/16
-                    case "<>":
-                    case "!=":
-                        return str1 != str2;
-                }
-            }
-            throw new FormatException(
-                string.Format(
-                "Operator '{0}' cannot be applied to objects of type '{1}' and '{2}'",
-                op.OperatorString, GetTypeName(v1.GetType()), GetTypeName(v2.GetType())
-                ));
-        }
-
-        private static object ConvertToString(object obj)
-        {
-            if (obj == null) {
-                return "";
-            }
-            else if (obj is string) {
-                return FormatString(obj);
-            }
-            else if (obj.GetType().IsArray) {
-                StringBuilder sb = new StringBuilder("{ ");
-                object[] _aObj = (object[])obj;
-                if (_aObj.Length > 0) {
-                    for (int i = 0; i < _aObj.Length - 1; i++) {
-                        sb.AppendFormat("{0}, ", ConvertToString(_aObj[i]));
-                    }
-                    sb.AppendFormat("{0} ", ConvertToString(_aObj[_aObj.Length - 1]));
-                }
-                sb.Append("}");
-                return sb.ToString();
-            }
-            return obj;
-        }
-
-        private static object FormatString(object o)
-        {
-            string str = o as string;
-            if (str == null) {
-                return o;
-            }
-            else {
-                StringBuilder sb = new StringBuilder();
-                for (int index = 0; index < str.Length; index++) {
-                    char c = str[index];
-                    switch (c) {
-                        case '\n': sb.Append("\\n"); break;
-                        case '\r': sb.Append("\\r"); break;
-                        case '\\': sb.Append("\\\\"); break;
-                        case '\b': sb.Append("\\b"); break;
-                        case '\t': sb.Append("\\t"); break;
-                        case '\f': sb.Append("\\f"); break;
-                        case '\"': sb.Append("\\\""); break;
-                        case '\'': sb.Append("\\'"); break;
-                        default:
-                            if (c < ' ') {
-                                sb.Append("\\u");
-                                sb.Append(Convert.ToString((int)c, 16).PadLeft(4, '0'));
-                            }
-                            else {
-                                sb.Append(c);
-                            }
-                            break;
-                    }
-                }
-                return "\"" + sb + "\"";
-            }
-        }
-
-        private static string GetTypeName(Type t)
-        {
-            if (t.IsArray) {
-                return "object array";
-            }
-            else {
-                return t.Name.ToLower();
-            }
         }
 
         private static object PerformUnaryOp(UnaryOperator op, object v)
