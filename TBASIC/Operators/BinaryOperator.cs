@@ -24,7 +24,7 @@ namespace Tbasic.Operators
     /// <summary>
     /// Represents an operator that takes two operands
     /// </summary>
-    public struct BinaryOperator : IComparable<BinaryOperator>, IEquatable<BinaryOperator>
+    public struct BinaryOperator : IOperator, IComparable<BinaryOperator>, IEquatable<BinaryOperator>
     {
         /// <summary>
         /// A delegate that represents the method which processes the operands
@@ -114,7 +114,7 @@ namespace Tbasic.Operators
             BinaryOperator? op = obj as BinaryOperator?;
             if (op != null)
                 return Equals(op.Value);
-            return base.Equals(obj);
+            return false;
         }
 
         /// <summary>

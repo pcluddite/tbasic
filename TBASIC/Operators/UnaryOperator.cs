@@ -18,17 +18,13 @@
  *  USA
  **/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tbasic.Components;
 
 namespace Tbasic.Operators
 {
     /// <summary>
     /// Represents an operator that takes one operand
     /// </summary>
-    public struct UnaryOperator
+    public struct UnaryOperator : IOperator, IEquatable<UnaryOperator>
     {
         /// <summary>
         /// Side that the operator uses as its operand
@@ -78,6 +74,60 @@ namespace Tbasic.Operators
             OperatorString = strOp;
             ExecuteOperator = doOp;
             Side = side;
+        }
+
+        /// <summary>
+        /// Determines if two UnaryOperators are equal
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(UnaryOperator other)
+        {
+            return OperatorString == other.OperatorString && ExecuteOperator == other.ExecuteOperator && Side == other.Side;
+        }
+
+        /// <summary>
+        /// Determines if this object is equal to another
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            UnaryOperator? op = obj as UnaryOperator?;
+            if (op != null)
+                return Equals(op.Value);
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if two operators are equal
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool operator ==(UnaryOperator first, UnaryOperator second)
+        {
+            return Equals(first, second);
+        }
+
+        /// <summary>
+        /// Determines if two operators are not equal
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool operator !=(UnaryOperator first, UnaryOperator second)
+        {
+            return !Equals(first, second);
+        }
+
+        /// <summary>
+        /// Gets the hash code for this object
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return OperatorString.GetHashCode() ^ ExecuteOperator.GetHashCode() ^ Side.GetHashCode();
         }
     }
 }

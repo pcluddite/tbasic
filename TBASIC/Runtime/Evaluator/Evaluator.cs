@@ -107,9 +107,9 @@ namespace Tbasic.Runtime
         #region Internal Structures and Classes
 
         /// <summary>
-        /// Value and index of a Regex Match.
+        /// Basically a cray hack that is a mutable version of the regex Match class
         /// </summary>
-        internal struct MatchInfo // This is a crazy hack that I hope to remove the day we don't use regex 6/15/16
+        internal struct MatchInfo // hope to remove the day we don't use regex 6/15/16
         {
             public int Index { get; private set; }
             public StringSegment Value { get; private set; }
@@ -288,7 +288,8 @@ namespace Tbasic.Runtime
             //Check Unary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 UnaryOperator op;
-                m = CheckUnaryOp(expr, nIdx, out op);
+                object last = _expressionlist.Last?.Value;
+                m = CheckUnaryOp(expr, nIdx, last, out op);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = op;
@@ -668,11 +669,16 @@ namespace Tbasic.Runtime
             }
         }
 
-        private MatchInfo CheckUnaryOp(string expr, int index, out UnaryOperator foundOp)
+        private MatchInfo CheckUnaryOp(string expr, int index, object last, out UnaryOperator foundOp)
         {
+            foundOp = default(UnaryOperator);
+
+            if (last != null && !(last is BinaryOperator)) {
+                return null;
+            }
+
             int foundIndex = int.MaxValue;
             string foundStr = null;
-            foundOp = default(UnaryOperator);
             foreach (var op in CurrentContext._unaryOps) {
                 string opStr = op.Value.OperatorString;
                 int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
