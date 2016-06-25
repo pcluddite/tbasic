@@ -21,6 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
+using System.Security;
+using System.Runtime.CompilerServices;
 
 namespace Tbasic.Runtime
 {
@@ -53,6 +56,19 @@ namespace Tbasic.Runtime
             if (HasFraction())
                 return Value;
             return ToInt();
+        }
+
+        public static bool TryParse(string s, out Number result)
+        {
+            double d;
+            if (double.TryParse(s, out d)) {
+                result = new Number(d);
+                return true;
+            }
+            else {
+                result = default(Number);
+                return false;
+            }
         }
 
         #region IComparable

@@ -66,6 +66,7 @@
     <Compile Include="Parsing\GroupParser.cs" />
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />
     <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
+    <Compile Include="Runtime\Evaluator\Evaluator.Matching.cs" />
     <Compile Include="Runtime\Evaluator\Function.cs" />
     <Compile Include="Runtime\Evaluator\IExpression.cs" />
     <Compile Include="Parsing\LineCollection.cs" />

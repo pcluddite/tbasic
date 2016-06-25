@@ -238,7 +238,7 @@ namespace Tbasic.Parsing
                 if ((expected == 1 && cur == ',') // The commas in between other parentheses are not ours.
                     || expected == 0) {
                     StringSegment _param = s_full.Subsegment(last + 1, c_index - last - 1).Trim();
-                    if (!_param.Equals("")) {
+                    if (!StringSegment.Equals(_param, "")) {
                         Evaluator expr = new Evaluator(_param, _curExec);
                         result.Add(expr.Evaluate());
                     }

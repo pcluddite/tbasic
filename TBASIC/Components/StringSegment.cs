@@ -122,7 +122,12 @@ namespace Tbasic.Components
 
         public int IndexOf(string value, int startIndex)
         {
-            return full.IndexOf(value, start + startIndex, len) - start;
+            return full.IndexOf(value, start + startIndex, len - startIndex) - start;
+        }
+
+        public int IndexOf(string value, int startIndex, StringComparison comparisonType)
+        {
+            return full.IndexOf(value, start + startIndex, len - startIndex, comparisonType) - start;
         }
 
         public bool StartsWith(string value)

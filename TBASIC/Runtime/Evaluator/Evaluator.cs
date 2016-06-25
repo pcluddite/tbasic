@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using Tbasic.Parsing;
 using Tbasic.Components;
 using Tbasic.Operators;
@@ -103,75 +102,7 @@ namespace Tbasic.Runtime
         }
 
         #endregion
-
-        #region Internal Structures and Classes
-
-        /// <summary>
-        /// Basically a cray hack that is a mutable version of the regex Match class
-        /// </summary>
-        internal struct MatchInfo // hope to remove the day we don't use regex 6/15/16
-        {
-            public int Index { get; private set; }
-            public StringSegment Value { get; private set; }
-            public bool Success { get; private set; }
-
-            public int Length
-            {
-                get {
-                    return Value.Length;
-                }
-            }
-
-            public Match RealMatch { get; private set; }
-
-            public MatchInfo(Match m, int idx, StringSegment val, bool success = true)
-            {
-                Index = idx;
-                Value = val;
-                Success = success;
-                RealMatch = m;
-            }
-
-            public MatchInfo(Match m)
-            {
-                RealMatch = m;
-                if (m == null) {
-                    Index = -1;
-                    Value = null;
-                    Success = false;
-                }
-                else {
-                    Index = m.Index;
-                    Value = new StringSegment(m.Value);
-                    Success = m.Success;
-                }
-            }
-
-            public Match NextMatch()
-            {
-                return RealMatch.NextMatch();
-            }
-
-            public static implicit operator MatchInfo(Match m)
-            {
-                return new MatchInfo(m);
-            }
-
-            public static MatchInfo FromIndexOf(string str, string search, int start)
-            {
-                MatchInfo m = new MatchInfo();
-                m.Index = str.IndexOfIgnoreCase(search, start);
-                if (m.Index > -1) {
-                    m.Success = true;
-                    m.Value = new StringSegment(search);
-                    m.RealMatch = Match.Empty;
-                }
-                return m;
-            }
-        }
-
-        #endregion
-
+        
         #region Methods
 
         #region Evaluate
@@ -262,7 +193,7 @@ namespace Tbasic.Runtime
             object val = null;
 
             //Check for preceeding white space from last token index
-            if (char.IsWhiteSpace(expr[nIdx])) {
+            if (char.IsWhiteSpace(_expression[nIdx])) {
                 do {
                     ++nIdx;
                 }
@@ -271,25 +202,23 @@ namespace Tbasic.Runtime
             }
 
             //Check Parenthesis
-            MatchInfo m = MatchInfo.FromIndexOf(expr, "(", nIdx);
+            MatchInfo m = MatchUnformattedString(_expression, "(", nIdx);
             if (m.Success) {
                 mRet = m;
             }
 
             //Check String
-            m = DefinedRegex.String.Match(expr, nIdx);
+            string str_parsed;
+            m = MatchFormattedString(_expression, nIdx, out str_parsed);
             if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                 mRet = m;
-                string str_parsed;
-                GroupParser.ReadString(m.Value, 0, out str_parsed);
                 val = str_parsed;
             }
 
             //Check Unary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 UnaryOperator op;
-                object last = _expressionlist.Last?.Value;
-                m = CheckUnaryOp(expr, nIdx, last, out op);
+                m = MatchUnaryOp(_expression, nIdx, _expressionlist.Last?.Value, out op);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = op;
@@ -313,7 +242,7 @@ namespace Tbasic.Runtime
 
             //Check null
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchInfo.FromIndexOf(expr, "null", nIdx);
+                m = MatchUnformattedString(_expression, "null", nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                 }
@@ -350,22 +279,17 @@ namespace Tbasic.Runtime
 
             //Check Numeric
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Numeric.Match(expr, nIdx);
+                m = MatchNumeric(_expression, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    while (m.Success && ("" + m.Value == "")) {
-                        m = m.NextMatch();
-                    }
-                    if (m.Success) {
-                        mRet = m;
-                        val = Variable.ConvertToObject(double.Parse(m.Value.ToString(), CultureInfo.CurrentCulture));
-                    }
+                    mRet = m;
+                    val = Variable.ConvertToObject(double.Parse(m.Value.ToString(), CultureInfo.CurrentCulture));
                 }
             }
 
             //Check Binary Operator
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
                 BinaryOperator op;
-                m = CheckBinaryOp(expr, nIdx, out op);
+                m = MatchBinaryOp(_expression, nIdx, out op);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = op;
@@ -522,6 +446,9 @@ namespace Tbasic.Runtime
             try {
                 return op.ExecuteOperator(operand);
             }
+            catch(InvalidCastException) when (operand is IOperator) {
+                throw new ArgumentException("Unary operand cannot be " + operand.GetType().Name);
+            }
             catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is ArgumentException || ex is OverflowException) {
                 throw new ArgumentException("Unary operator '" + op.OperatorString + "' not defined.");
             }
@@ -645,55 +572,6 @@ namespace Tbasic.Runtime
                 }
             }
             return "\"" + sb + "\"";
-        }
-
-        private MatchInfo CheckBinaryOp(string expr, int index, out BinaryOperator foundOp)
-        {
-            int foundIndex = int.MaxValue;
-            string foundStr = null;
-            foundOp = default(BinaryOperator);
-            foreach (var op in CurrentContext._binaryOps) {
-                string opStr = op.Value.OperatorString;
-                int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
-                if (foundAt > -1 && foundAt < foundIndex) {
-                    foundOp = op.Value;
-                    foundIndex = foundAt;
-                    foundStr = opStr;
-                }
-            }
-            if (foundIndex == int.MaxValue) {
-                return null;
-            }
-            else {
-                return new MatchInfo(Match.Empty, foundIndex, new StringSegment(expr, foundIndex, foundStr.Length));
-            }
-        }
-
-        private MatchInfo CheckUnaryOp(string expr, int index, object last, out UnaryOperator foundOp)
-        {
-            foundOp = default(UnaryOperator);
-
-            if (last != null && !(last is BinaryOperator)) {
-                return null;
-            }
-
-            int foundIndex = int.MaxValue;
-            string foundStr = null;
-            foreach (var op in CurrentContext._unaryOps) {
-                string opStr = op.Value.OperatorString;
-                int foundAt = expr.IndexOf(opStr, index, StringComparison.OrdinalIgnoreCase);
-                if (foundAt > -1 && foundAt < foundIndex) {
-                    foundOp = op.Value;
-                    foundIndex = foundAt;
-                    foundStr = opStr;
-                }
-            }
-            if (foundIndex == int.MaxValue) {
-                return null;
-            }
-            else {
-                return new MatchInfo(Match.Empty, foundIndex, new StringSegment(expr, foundIndex, foundStr.Length));
-            }
         }
 
         #endregion
