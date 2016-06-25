@@ -151,15 +151,52 @@ namespace Tbasic.Runtime
             }
         }
 
-        private static int FindConsecutiveDigits(StringSegment expr, int start)
+        private static MatchInfo MatchHexadecimal(StringSegment expr, int start)
         {
-            int index = start;
-            for (; index < expr.Length; ++index) {
-                if (!char.IsDigit(expr[index])) {
-                    return index;
+            int endIndex = start;
+            if (expr[endIndex++] != '0')
+                return null;
+            if (endIndex >= expr.Length || expr[endIndex++] != 'x')
+                return null;
+            endIndex = FindConsecutiveHex(expr, endIndex);
+            return new MatchInfo(Match.Empty, start, expr.Subsegment(start, endIndex - start));
+        }
+
+        private static unsafe int FindConsecutiveDigits(StringSegment expr, int start)
+        {
+            fixed (char* lpfullstr = expr.FullString)
+            {
+                char* lpseg = lpfullstr + expr.Offset;
+                int len = expr.Length;
+                int index = start;
+                for (; index < len; ++index) {
+                    if (!char.IsDigit(lpseg[index])) {
+                        return index;
+                    }
                 }
+                return index;
             }
-            return index;
+        }
+
+        private static unsafe int FindConsecutiveHex(StringSegment expr, int start)
+        {
+            fixed (char* lpfullstr = expr.FullString)
+            {
+                char* lpseg = lpfullstr + expr.Offset;
+                int len = expr.Length;
+                int index = start;
+                for (; index < len; ++index) {
+                    if (!IsHexDigit(lpseg[index])) {
+                        return index;
+                    }
+                }
+                return index;
+            }
+        }
+
+        private static bool IsHexDigit(char c)
+        {
+            return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
         }
 
         private MatchInfo MatchBinaryOp(StringSegment expr, int index, out BinaryOperator foundOp)

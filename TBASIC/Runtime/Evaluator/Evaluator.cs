@@ -261,7 +261,7 @@ namespace Tbasic.Runtime
 
             //Check Hexadecimal
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Hexadecimal.Match(expr, nIdx);
+                m = MatchHexadecimal(_expression, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = Convert.ToInt32(m.Value.ToString(), 16);
@@ -270,7 +270,7 @@ namespace Tbasic.Runtime
 
             //Check Boolean
             if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Boolean.Match(expr, nIdx);
+                m = MatchBoolean(_expression, nIdx);
                 if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
                     mRet = m;
                     val = bool.Parse(m.Value.ToString());
