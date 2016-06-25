@@ -144,7 +144,7 @@ namespace Tbasic.Runtime
             }
 
             if (endIndex < expr.Length) {
-                return new MatchInfo(Match.Empty, start, expr.Subsegment(start, endIndex));
+                return new MatchInfo(Match.Empty, start, expr.Subsegment(start, endIndex - start));
             }
             else {
                 return new MatchInfo(Match.Empty, start, expr.Subsegment(start));
