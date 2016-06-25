@@ -92,9 +92,8 @@ namespace Tbasic.Runtime
         /// <returns></returns>
         public static MatchInfo MatchUnformattedString(StringSegment expr, string search, int start)
         {
-            int index = expr.IndexOf(search, start, StringComparison.OrdinalIgnoreCase);
-            if (index > -1) {
-                return new MatchInfo(Match.Empty, index, expr.Subsegment(index, search.Length));
+            if (expr.Subsegment(start).StartsWith(search, ignoreCase: true)) {
+                return new MatchInfo(Match.Empty, start, expr.Subsegment(start, search.Length));
             }
             return default(MatchInfo);
         }
@@ -114,6 +113,17 @@ namespace Tbasic.Runtime
             }
             int end = GroupParser.ReadString(expr, start, out unformatted);
             return new MatchInfo(Match.Empty, start, expr.Subsegment(start, end - start + 1));
+        }
+
+        private static MatchInfo MatchBoolean(StringSegment expr, int start)
+        {
+            MatchInfo m = MatchUnformattedString(expr, "true", start);
+            if (m.Success) {
+                return m;
+            }
+            else {
+                return MatchUnformattedString(expr, "false", start);
+            }
         }
 
         private static MatchInfo MatchNumeric(StringSegment expr, int start)

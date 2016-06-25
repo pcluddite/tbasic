@@ -132,14 +132,25 @@ namespace Tbasic.Components
 
         public bool StartsWith(string value)
         {
+            return StartsWith(value, ignoreCase: false);
+        }
+
+        public bool StartsWith(string value, bool ignoreCase)
+        {
             unsafe
             {
                 int len = value.Length;
-                fixed(char* aptr = full) fixed(char* bptr = value)
+                fixed (char* aptr = full) fixed (char* bptr = value)
                 {
                     char* a = aptr + start;
                     char* b = bptr;
-                    int index = FirstIndexOfNotEqual(a, b, len);
+                    int index;
+                    if (!ignoreCase) {
+                        index = FirstIndexOfNotEqual(a, b, len);
+                    }
+                    else {
+                        index = FirstIndexOfNotEqualIgnoreCase(a, b, len);
+                    }
                     return index == -1 || index == len;
                 }
             }
@@ -264,6 +275,16 @@ namespace Tbasic.Components
         {
             for (int index = 0; index < length; ++index) {
                 if (aptr[index] != bptr[index]) {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
+        private static unsafe int FirstIndexOfNotEqualIgnoreCase(char* aptr, char* bptr, int length)
+        {
+            for (int index = 0; index < length; ++index) {
+                if (char.ToUpper(aptr[index]) != char.ToUpper(bptr[index])) {
                     return index;
                 }
             }
