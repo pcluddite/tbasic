@@ -28,13 +28,7 @@ namespace Tbasic.Runtime
 {
     internal class Variable : IEvaluator
     {
-
-        #region Private Members
-
         private StringSegment _expression = null;
-        private StringSegment _variable = null;
-
-        #endregion
 
         #region Properties
 
@@ -62,6 +56,7 @@ namespace Tbasic.Runtime
         }
 
         public Executer CurrentExecution { get; set; }
+        public StringSegment Name { get; private set; }
 
         public StringSegment Expression
         {
@@ -70,83 +65,17 @@ namespace Tbasic.Runtime
             }
             set {
                 _expression = value.Trim();
-                if (_expression.Length > Name.Length) {
-                    StringSegment indicesString = _expression.Subsegment(_expression.SkipWhiteSpace(Name.Length));
-                    if (indicesString.Offset > -1 && indicesString[0] == '[') {
-                        IList<object> indices;
-                        int last = GroupParser.ReadGroup(_expression, _expression.IndexOf('['), CurrentExecution, out indices);
-                        if (last < _expression.Length - 1) {
-                            _expression = _expression.Remove(last + 1);
-                        }
-                        if (indices.Count == 0) {
-                            throw ThrowHelper.NoIndexSpecified();
-                        }
-                        Indices = new int[indices.Count];
-                        for (int i = 0; i < Indices.Length; ++i) {
-                            int? index = indices[i] as int?;
-                            if (index == null) {
-                                throw ThrowHelper.InvalidTypeInExpression(indices[i].GetType().Name, typeof(int).Name);
-                            }
-                            else {
-                                Indices[i] = index.Value;
-                            }
-                        }
-                    }
-                    else {
-                        Indices = null;
-                    }
-                }
-                else {
-                    Indices = null;
-                }
-            }
-        }
-
-        public StringSegment Name
-        {
-            get {
-                if (_variable == null) {
-                    _variable = GetName(_expression);
-                }
-                return _variable;
             }
         }
 
         #endregion
 
-        public Variable(StringSegment full, Executer exec)
-        {
-            CurrentExecution = exec;
-            Expression = full;
-        }
-
         public Variable(StringSegment full, StringSegment name, int[] indices, Executer exec)
         {
             CurrentExecution = exec;
             _expression = full;
-            _variable = name;
+            Name = name;
             Indices = indices;
-        }
-
-        private StringSegment GetName(StringSegment str)
-        {
-            int bracket = str.IndexOf('[');
-            int space = str.IndexOf(' ');
-            if (bracket < 0 && space < 0) {
-                return str;
-            }
-            else if (bracket < 0 && space > 0) {
-                return str.Remove(space);
-            }
-            else if (space < 0 && bracket > 0) {
-                return str.Remove(bracket);
-            }
-            else if (space < bracket) {
-                return str.Remove(space);
-            }
-            else {
-                return str.Remove(bracket);
-            }
         }
 
         public override string ToString()

@@ -179,7 +179,13 @@ namespace Tbasic.Components
             while (char.IsWhiteSpace(GetCharAt(new_end))) {
                 --new_end;
             }
-            return Subsegment(new_start, new_end - new_start + 1);
+            int new_len = new_end - new_start + 1;
+            if (new_start == offset && new_len == len) {
+                return this; // there was no extra whitespace. do not create a new object.
+            }
+            else {
+                return Subsegment(new_start, new_len);
+            }
         }
 
         public string ToUpper()

@@ -275,7 +275,7 @@ namespace Tbasic.Parsing
             return false;
         }
 
-        private bool NextIndices(Executer exec, out int[] indices)
+        public bool NextIndices(Executer exec, out int[] indices)
         {
             indices = null;
             int originalPos = position;

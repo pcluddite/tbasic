@@ -90,28 +90,30 @@ namespace Tbasic.Libraries
 
         internal void DIM(TFunctionData stackFrame)
         {
-            if (stackFrame.ParameterCount < 4) {
+            if (stackFrame.ParameterCount < 2) {
                 stackFrame.AssertParamCount(2);
             }
-            if (stackFrame.ParameterCount > 2) {
-                Let(stackFrame);
+
+            StringSegment text = new StringSegment(stackFrame.Text);
+            Scanner scanner = new Scanner(text);
+            scanner.IntPosition += stackFrame.Name.Length;
+            scanner.SkipWhiteSpace();
+
+            Variable v;
+            if (!scanner.NextVariable(stackFrame.StackExecuter, out v))
+                throw ThrowHelper.InvalidVariableName();
+
+            string name = v.Name.ToString();
+            ObjectContext context = stackFrame.Context.FindVariableContext(name);
+            if (context == null) {
+                stackFrame.Context.SetVariable(name, array_alloc(v.Indices, 0));
             }
             else {
-                Variable v = new Variable(new StringSegment(stackFrame.GetParameter<string>(1)), stackFrame.StackExecuter);
-                string name = v.Name.ToString();
-                ObjectContext context = stackFrame.StackExecuter.Context.FindVariableContext(name);
-                if (context == null) {
-                    stackFrame.StackExecuter.Context.SetVariable(
-                        name,
-                        array_alloc(v.Indices, 0));
-                }
-                else {
-                    object obj = context.GetVariable(name);
-                    array_realloc(ref obj, v.Indices, 0);
-                    context.SetVariable(name, obj);
-                }
-                NULL(stackFrame);
+                object obj = context.GetVariable(name);
+                array_realloc(ref obj, v.Indices, 0);
+                context.SetVariable(name, obj);
             }
+            NULL(stackFrame);
         }
 
         private object array_alloc(int[] sizes, int index)

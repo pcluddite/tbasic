@@ -19,16 +19,14 @@
  **/
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+using Tbasic.Components;
 using Tbasic.Errors;
 using Tbasic.Parsing;
-using Tbasic.Components;
 
 namespace Tbasic.Runtime
 {
     /// <summary>
-    /// This class provides functionality for evaluating functions
+    /// Class for evaulation a function
     /// </summary>
     internal class Function : IEvaluator
     {
@@ -36,7 +34,7 @@ namespace Tbasic.Runtime
 
         private StringSegment _expression;
         private StringSegment _function;
-        private bool _bParsed;
+        private bool _parsed;
         private IList<object> _params;
 
         #endregion
@@ -53,7 +51,7 @@ namespace Tbasic.Runtime
             set {
                 _expression = value;
                 _function = StringSegment.Empty;
-                _bParsed = false;
+                _parsed = false;
                 _params = null;
             }
         }
@@ -81,20 +79,12 @@ namespace Tbasic.Runtime
         #endregion
 
         #region Construction
-
-        /// <summary>
-        /// Default Constructor
-        /// </summary>
+        
         public Function(Executer exec)
         {
             CurrentExecution = exec;
         }
-
-        /// <summary>
-        /// Initializes the Expression Property
-        /// </summary>
-        /// <param name="expression">Expression to evaluate</param>
-        /// <param name="exec">the current context</param>
+        
         public Function(StringSegment expression, Executer exec)
         {
             CurrentExecution = exec;
@@ -107,9 +97,9 @@ namespace Tbasic.Runtime
 
         public void Parse()
         {
-            if (!_bParsed) {
+            if (!_parsed) {
                 _params = GetParameters();
-                _bParsed = true;
+                _parsed = true;
                 if (LastIndex < _expression.Length - 1) {
                     _expression = _expression.Remove(LastIndex + 1);
                 }
@@ -119,16 +109,12 @@ namespace Tbasic.Runtime
         public void Parse(StringSegment expr, StringSegment name, IList<object> parameters)
         {
             _expression = expr;
-            _bParsed = true;
+            _parsed = true;
             _params = parameters;
             _function = name;
             
         }
-
-        /// <summary>
-        /// Evaluates the Expression
-        /// </summary>
-        /// <returns></returns>
+        
         public object Evaluate()
         {
             if (Executer.ExitRequest) {
@@ -137,13 +123,7 @@ namespace Tbasic.Runtime
             Parse();
             return ExecuteFunction(_function, _params);
         }
-
-        /// <summary>
-        /// Evaluates a string expression of a function
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="exec">the current execution</param>
-        /// <returns>evauluated value</returns>
+        
         public static object Evaluate(StringSegment expression, Executer exec)
         {
             if (Executer.ExitRequest) {
@@ -153,14 +133,13 @@ namespace Tbasic.Runtime
             return expr.Evaluate();
         }
         
-        /// <summary>
-        /// string override, return Expression property
-        /// </summary>
-        /// <returns>returns Expression property</returns>
-        public override string ToString() { return Expression.ToString(); }
+        public override string ToString()
+        {
+            return Expression.ToString();
+        }
 
         /// <summary>
-        /// returns the parameters of a function
+        /// returns the parameters of the function
         /// </summary>
         /// <returns></returns>
         public IList<object> GetParameters()
@@ -171,13 +150,7 @@ namespace Tbasic.Runtime
                                             CurrentExecution, out result);
             return result;
         }
-
-        /// <summary>
-        /// Executes the function based upon the name of the function
-        /// </summary>
-        /// <param name="_name">name of the function to execute</param>
-        /// <param name="l_params">parameter list</param>
-        /// <returns>returned value of executed function</returns>
+        
         private object ExecuteFunction(StringSegment _name, IList<object> l_params)
         {
             if (Executer.ExitRequest) {
@@ -188,10 +161,10 @@ namespace Tbasic.Runtime
             if (l_params != null) {
                 a_evaluated = new object[l_params.Count];
                 l_params.CopyTo(a_evaluated, 0);
-                for (int x = 0; x < a_evaluated.Length; x++) {
-                    IEvaluator expr = a_evaluated[x] as IEvaluator;
+                for (int i = 0; i < a_evaluated.Length; ++i) {
+                    IEvaluator expr = a_evaluated[i] as IEvaluator;
                     if (expr != null) {
-                        a_evaluated[x] = expr.Evaluate();
+                        a_evaluated[i] = expr.Evaluate();
                     }
                 }
             }
