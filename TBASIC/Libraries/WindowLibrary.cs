@@ -215,7 +215,7 @@ namespace Tbasic.Libraries
         private void WinClose(TFunctionData parameters)
         {
             parameters.AssertParamCount(2);
-            parameters.Data = Variable.ConvertToObject(WinClose(new IntPtr(parameters.GetParameter<long>(1))));
+            parameters.Data = WinClose(new IntPtr(parameters.GetParameter<long>(1)));
         }
 
         public static bool WinSetTrans(IntPtr hwnd, byte trans)
@@ -257,7 +257,7 @@ namespace Tbasic.Libraries
                 object[][] windows = new object[hwnds.Length][];
                 for (int index = 0; index < windows.Length; index++) {
                     windows[index] = new object[] {
-                        Variable.ConvertToObject(hwnds[index]),
+                        Evaluator.ConvertToObject(hwnds[index]),
                         WinGetTitle(hwnds[index])
                     };
                 }

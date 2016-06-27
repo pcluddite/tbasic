@@ -25,13 +25,13 @@ GetMiddle(GetString(amnt$), amnt$)
 Function GetNumChars()
     amnt$ = 0
     While 1
-        amnt$ = Input("How many characters do you want to take?", "SubString")
+        amnt$ = Input("How many characters do you want to take?", "Substring Test")
         If @err = 204 Then
             Exit
         End If
         amnt$ = Int(amnt$)
         If @err = 400 Then
-            MsgBox(16, "What you entered is not a valid integer!", "SubString")
+            MsgBox(16, "What you entered is not a valid integer!", "Substring Test")
         Else
             Break
         End If
@@ -42,14 +42,14 @@ End Function
 Function GetString(amnt$)
     str$ = ""
     While 1
-        str$ = Input("Enter some text that is at least " + amnt$ + " character(s) long:", "SubString")
+        str$ = Input("Enter some text that is at least " + amnt$ + " character(s) long:", "Substring Test")
 
         If @err = 204 Then
             Exit
         End If
 
-        If Size(str$) < amnt$ Then
-            MsgBox(16, "You need to enter a string that is at least " + amnt$ + " character(s) long!", "SubString")
+        If sizeof(str$) < amnt$ Then
+            MsgBox(16, "You need to enter a string that is at least " + amnt$ + " character(s) long!", "Substring Test")
         Else
             Break
         End If
@@ -58,9 +58,9 @@ Function GetString(amnt$)
 End Function
 
 Function GetMiddle(str$, amnt$)
-    middle$ = IPart((size(str$) - Int(amnt$)) / 2)
+    middle$ = iPart((sizeof(str$) - Int(amnt$)) / 2)
     MsgBox(64, "The middle character was determined to be at position " + (middle$ + 1) + ".\n" + _
-               "The resulting string is \"" + SubString(str$, middle$, amnt$) + "\".", _
-               "SubString")
+               "The resulting string is \"" + StrInStr(str$, middle$, amnt$) + "\".", _
+               "Substring")
 End Function
 	

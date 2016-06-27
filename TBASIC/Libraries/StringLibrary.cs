@@ -41,7 +41,7 @@ namespace Tbasic.Libraries
             Add("StrSplit", StringSplit);
             Add("StrToChars", ToCharArray);
             Add("CharsToStr", CharsToString);
-            Add("Substring", Substring);
+            Add("StrInStr", Substring);
         }
 
         private void CharsToString(TFunctionData stackFrame)

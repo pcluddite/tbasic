@@ -180,46 +180,5 @@ namespace Tbasic.Runtime
             }
             return sb.ToString();
         }
-
-        public static object ConvertToObject(object _oObj)
-        {
-            if (_oObj == null) {
-                return 0;
-            }
-            int? _iObj = _oObj as int?;
-            if (_iObj != null)
-                return _iObj.Value;
-            
-            double? _dObj = _oObj as double?;
-            if (_dObj != null) {
-                Number n = new Number(_dObj.Value);
-                if (!n.HasFraction())
-                    return n.ToInt();
-            }
-
-            decimal? _mObj = _oObj as decimal?;
-            if (_mObj != null) {
-                Number n = new Number(_dObj.Value);
-                if (!n.HasFraction())
-                    return n.ToInt();
-            }
-
-            IntPtr? _pObj = _oObj as IntPtr?;
-            if (_pObj != null) {
-                return ConvertToObject(_pObj.Value);
-            }
-
-            return _oObj;
-        }
-
-        public static object ConvertToObject(IntPtr ptr)
-        {
-            if (IntPtr.Size == sizeof(long)) { // 64-bit
-                return ptr.ToInt64();
-            }
-            else { // 32-bit
-                return ptr.ToInt32();
-            }
-        }
     }
 }
