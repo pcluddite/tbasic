@@ -26,7 +26,7 @@ using Tbasic.Parsing;
 namespace Tbasic.Runtime
 {
     /// <summary>
-    /// Class for evaulation a function
+    /// Class for evaluating a function
     /// </summary>
     internal class Function : IEvaluator
     {
@@ -34,7 +34,6 @@ namespace Tbasic.Runtime
 
         private StringSegment _expression;
         private StringSegment _function;
-        private bool _parsed;
         private IList<object> _params;
 
         #endregion
@@ -47,12 +46,11 @@ namespace Tbasic.Runtime
         /// <value></value>
         public StringSegment Expression
         {
-            get { return _expression; }
+            get {
+                return _expression;
+            }
             set {
-                _expression = value;
-                _function = StringSegment.Empty;
-                _parsed = false;
-                _params = null;
+                _expression = value.Trim();
             }
         }
 
@@ -80,82 +78,30 @@ namespace Tbasic.Runtime
 
         #region Construction
         
-        public Function(Executer exec)
+        public Function(StringSegment expr, StringSegment name, IList<object> parameters)
         {
-            CurrentExecution = exec;
-        }
-        
-        public Function(StringSegment expression, Executer exec)
-        {
-            CurrentExecution = exec;
-            Expression = expression;
+            _expression = expr;
+            _params = parameters;
+            _function = name;
         }
 
         #endregion
 
         #region Methods
-
-        public void Parse()
-        {
-            if (!_parsed) {
-                _params = GetParameters();
-                _parsed = true;
-                if (LastIndex < _expression.Length - 1) {
-                    _expression = _expression.Remove(LastIndex + 1);
-                }
-            }
-        }
-
-        public void Parse(StringSegment expr, StringSegment name, IList<object> parameters)
-        {
-            _expression = expr;
-            _parsed = true;
-            _params = parameters;
-            _function = name;
-            
-        }
+        
         
         public object Evaluate()
         {
-            if (Executer.ExitRequest) {
-                return null;
-            }
-            Parse();
             return ExecuteFunction(_function, _params);
-        }
-        
-        public static object Evaluate(StringSegment expression, Executer exec)
-        {
-            if (Executer.ExitRequest) {
-                return null;
-            }
-            Function expr = new Function(expression, exec);
-            return expr.Evaluate();
         }
         
         public override string ToString()
         {
             return Expression.ToString();
         }
-
-        /// <summary>
-        /// returns the parameters of the function
-        /// </summary>
-        /// <returns></returns>
-        public IList<object> GetParameters()
-        {
-            IList<object> result;
-            LastIndex = GroupParser.ReadGroup(_expression,
-                                            Name.Length, // Start at the end of the name
-                                            CurrentExecution, out result);
-            return result;
-        }
         
         private object ExecuteFunction(StringSegment _name, IList<object> l_params)
         {
-            if (Executer.ExitRequest) {
-                return null;
-            }
             string name = _name.Trim().ToString();
             object[] a_evaluated = null;
             if (l_params != null) {
