@@ -67,7 +67,7 @@
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />
     <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
     <Compile Include="Runtime\Evaluator\Function.cs" />
-    <Compile Include="Runtime\Evaluator\IExpression.cs" />
+    <Compile Include="Runtime\Evaluator\IEvaluator.cs" />
     <Compile Include="Runtime\Parsing\LineCollection.cs" />
     <Compile Include="Runtime\Parsing\Scanner.cs" />
     <Compile Include="Runtime\StackFrame\ObjectContext.cs" />

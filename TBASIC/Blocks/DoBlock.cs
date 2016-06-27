@@ -65,7 +65,7 @@ namespace Tbasic
                     exec.HonorBreak();
                     break;
                 }
-                eval.Reparse = true;
+                eval.ShouldParse = true;
             }
             while (eval.EvaluateBool());
         }

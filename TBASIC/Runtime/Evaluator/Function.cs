@@ -30,7 +30,7 @@ namespace Tbasic.Runtime
     /// <summary>
     /// This class provides functionality for evaluating functions
     /// </summary>
-    internal class Function : IExpression
+    internal class Function : IEvaluator
     {
         #region Private Members
 
@@ -189,7 +189,7 @@ namespace Tbasic.Runtime
                 a_evaluated = new object[l_params.Count];
                 l_params.CopyTo(a_evaluated, 0);
                 for (int x = 0; x < a_evaluated.Length; x++) {
-                    IExpression expr = a_evaluated[x] as IExpression;
+                    IEvaluator expr = a_evaluated[x] as IEvaluator;
                     if (expr != null) {
                         a_evaluated[x] = expr.Evaluate();
                     }

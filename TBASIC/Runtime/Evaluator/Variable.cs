@@ -26,7 +26,7 @@ using Tbasic.Components;
 
 namespace Tbasic.Runtime
 {
-    internal class Variable : IExpression
+    internal class Variable : IEvaluator
     {
 
         #region Private Members

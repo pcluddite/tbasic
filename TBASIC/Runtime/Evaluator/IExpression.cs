@@ -22,9 +22,9 @@ using Tbasic.Components;
 namespace Tbasic.Runtime
 {
     /// <summary>
-    /// This interface is the base for all of the expression evaluation objects.
+    /// An expression evaluator
     /// </summary>
-    internal interface IExpression
+    internal interface IEvaluator
     {
         StringSegment Expression { get; set; }
         object Evaluate();

@@ -141,7 +141,7 @@ namespace Tbasic.Errors
 
         public static Exception InvalidExpression(string expr)
         {
-            return new ScriptParsingException("Invalid expression: '" + expr + "'");
+            return new ScriptParsingException("Invalid expression [" + expr + "]");
         }
 
         public static Exception ExpectedSpaceAfterCommand()
@@ -151,7 +151,7 @@ namespace Tbasic.Errors
 
         public static Exception OperatorUndefined(string opr)
         {
-            return new ArgumentException("Operator '" + opr + "' is undefined");
+            return new ArgumentException("Operator [" + opr + "] is undefined");
         }
 
         public static Exception MacroRedefined()
@@ -161,7 +161,17 @@ namespace Tbasic.Errors
 
         public static Exception InvalidDefinitionOperator()
         {
-            return new ArgumentException("Expected '=' in definition");
+            return new ArgumentException("Expected [=] in definition");
+        }
+
+        public static Exception MissingBinaryOp(object left, object right)
+        {
+            return new ArgumentException(
+                string.Format("Missing binary operator - {0} [?] {1}",
+                    left is string ? "\"" + left + "\"" : left,
+                    right is string ? "\"" + right + "\"" : right
+                )
+            );
         }
     }
 }

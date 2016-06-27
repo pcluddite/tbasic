@@ -23,59 +23,40 @@ using System.Globalization;
 using System.Text;
 using Tbasic.Parsing;
 using Tbasic.Components;
+using Tbasic.Errors;
 using Tbasic.Operators;
 
 namespace Tbasic.Runtime
 {
     /// <summary>
-    /// This class will evaluate boolean and mathmatical expressions
+    /// General purpose evaluator for functions, variables, math, booleans, etc.
     /// </summary>
-    internal partial class Evaluator : IExpression
+    internal partial class Evaluator : IEvaluator
     {
-
-        #region Private Members
-
-        private LinkedList<object> _expressionlist = new LinkedList<object>();
+        private LinkedList<object> _tokens = new LinkedList<object>();
         private StringSegment _expression = StringSegment.Empty;
-        private bool _bParsed;
-
-        #endregion
-
-        #region Construction
-
-        /// <summary>
-        /// Default Constructor
-        /// </summary>
+        private bool _parsed;
+        
         public Evaluator(Executer exec)
         {
             CurrentExecution = exec;
         }
-
-        /// <summary>
-        /// Constructor with string
-        /// </summary>
-        /// <param name="expression">string of the Expression to evaluate</param>
-        /// <param name="exec">the current context</param>
+        
         public Evaluator(StringSegment expression, Executer exec)
         {
             CurrentExecution = exec;
             Expression = expression;
         }
 
-        #endregion
-
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the expression to be evaluated. This value is trimmed.
-        /// </summary>
+        
         public StringSegment Expression
         {
             get { return _expression; }
             set {
                 _expression = value.Trim();
-                _bParsed = false;
-                _expressionlist.Clear();
+                _parsed = false;
+                _tokens.Clear();
             }
         }
 
@@ -88,169 +69,130 @@ namespace Tbasic.Runtime
 
         public Executer CurrentExecution { get; set; }
 
-        public bool Reparse
+        public bool ShouldParse
         {
-            private get {
-                return _bParsed;
+            get {
+                return !_parsed;
             }
             set {
-                if (_bParsed && value) {
-                    _expressionlist.Clear();
-                    _bParsed = !value;
+                if (_parsed && value) {
+                    _tokens.Clear();
+                    _parsed = !value;
                 }
             }
         }
 
         #endregion
         
-        #region Methods
-
         #region Evaluate
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>object of the expression return value</returns>
+
         public object Evaluate()
         {
-            if (StringSegment.IsNullOrEmpty(Expression)) {
+            if (StringSegment.IsNullOrEmpty(Expression)) 
                 return 0;
-            }
-
-            return Variable.ConvertToObject(ExecuteEvaluation());
-        }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>bool value of the evaluated expression</returns>
-        public bool EvaluateBool()
-        {
-            return Convert.ToBoolean(Evaluate(), CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>integer value of the evaluated expression</returns>
-        public int EvaluateInt()
-        { return Convert.ToInt32(Evaluate(), CultureInfo.CurrentCulture); }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>double value of the evaluated expression</returns>
-        public double EvaluateDouble()
-        { return Convert.ToDouble(Evaluate(), CultureInfo.CurrentCulture); }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>decimal value of the evaluated expression</returns>
-        public decimal EvaluateDecimal() { return Convert.ToDecimal(Evaluate(), CultureInfo.CurrentCulture); }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <returns>long value of the evaluated expression</returns>
-        public long EvaluateLong()
-        { return Convert.ToInt64(Evaluate(), CultureInfo.CurrentCulture); }
-
-        #endregion
-
-        /// <summary>
-        /// gets a string representation of this expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() { return Expression.ToString(); }
-
-        /// <summary>
-        /// Sorts the mathmatical operations to be executed
-        /// </summary>
-        private object ExecuteEvaluation()
-        {
-            //Break Expression Apart into List
-            if (!_bParsed) {
+            
+            if (!_parsed) {
                 Scanner scanner = new Scanner(_expression);
                 while (!scanner.EndOfStream)
                     NextToken(scanner);
+                _parsed = true;
             }
-            _bParsed = true;
 
-            //Perform Operations
-            return EvaluateList();
+            return Variable.ConvertToObject(EvaluateList());
+        }
+        
+        public bool EvaluateBool()
+        {
+            return Convert.ToBoolean(Evaluate());
+        }
+        
+        public int EvaluateInt()
+        {
+            return Convert.ToInt32(Evaluate());
         }
 
-        /// <summary>
-        /// This will search the expression for the next token (operand, operator, etc)
-        /// </summary>
-        /// <param name="scanner"></param>
-        /// <returns>First character index after token.</returns>
+        public double EvaluateDouble()
+        {
+            return Convert.ToDouble(Evaluate());
+        }
+        
+        public decimal EvaluateDecimal()
+        {
+            return Convert.ToDecimal(Evaluate());
+        }
+        
+        public long EvaluateLong()
+        {
+            return Convert.ToInt64(Evaluate());
+        }
+
+        #endregion
+        
         private int NextToken(Scanner scanner)
         {
-            //Check for preceeding white space from last token index
             scanner.SkipWhiteSpace();
 
             int startIndex = scanner.IntPosition;
 
-            //Check Parenthesis
+            // check group
             if (scanner.Next("(")) {
                 return AddObjectToExprList("(", startIndex, scanner);
             }
 
-            //Check String
+            // check string
             string str_parsed;
             if (scanner.NextString(out str_parsed)) {
                 return AddObjectToExprList(str_parsed, startIndex, scanner);
             }
 
-            //Check Unary Operator
+            // check unary op
             UnaryOperator unaryOp;
-            if (scanner.NextUnaryOp(CurrentContext._unaryOps, _expressionlist.Last?.Value, out unaryOp)) {
+            if (scanner.NextUnaryOp(CurrentContext._unaryOps, _tokens.Last?.Value, out unaryOp)) {
                 return AddObjectToExprList(unaryOp, startIndex, scanner);
             }
 
-            //Check Function
+            // check function
             Function func;
             if (scanner.NextFunction(CurrentExecution, out func)) {
                 return AddObjectToExprList(func, startIndex, scanner);
             }
 
-            //Check null
+            // check null
             if (scanner.Next("null")) {
                 return AddObjectToExprList("null", startIndex, scanner);
             }
 
-            //Check Variable
+            // check variable
             Variable variable;
             if (scanner.NextVariable(CurrentExecution, out variable)) {
                 return AddObjectToExprList(variable, startIndex, scanner);
             }
 
-            //Check Hexadecimal
+            // check hexadecimal
             int hex;
             if (scanner.NextHexadecimal(out hex)) {
                 return AddObjectToExprList(hex, startIndex, scanner);
             }
 
-            //Check Boolean
+            // check boolean
             bool b;
             if (scanner.NextBool(out b)) {
                 return AddObjectToExprList(b, startIndex, scanner);
             }
 
-            //Check Numeric
+            // check numeric
             Number num;
             if (scanner.NextPositiveNumber(out num)) {
                 return AddObjectToExprList(num.ToObject(), startIndex, scanner);
             }
 
-            //Check Binary Operator
+            // check binary operator
             BinaryOperator binOp;
             if (scanner.NextBinaryOp(CurrentContext._binaryOps, out binOp)) {
                 return AddObjectToExprList(binOp, startIndex, scanner);
             }
 
-            // Couldn't be parsed
+            // couldn't be parsed
 
             if (CurrentContext.FindFunctionContext(_expression.ToString()) == null) {
                 throw new ArgumentException("Invalid expression '" + _expression + "'");
@@ -276,59 +218,45 @@ namespace Tbasic.Runtime
                     _expression.Subsegment(startIndex + 1, scanner.IntPosition - startIndex - 2),
                     CurrentExecution // share the wealth
                 );
-                _expressionlist.AddLast(eval);
+                _tokens.AddLast(eval);
             }
             else {
-                _expressionlist.AddLast(val);
+                _tokens.AddLast(val);
             }
 
             return scanner.IntPosition;
         }
-
-        /// <summary>
-        /// Traverses the list to perform operations on items according to operator precedence
-        /// </summary>
-        /// <returns>final evaluated expression of Expression string</returns>
+        
         private object EvaluateList()
         {
-            LinkedList<object> list = new LinkedList<object>(_expressionlist);
+            LinkedList<object> list = new LinkedList<object>(_tokens);
 
-            //Do the unary operators first
+            // evaluate unary operators
 
             LinkedListNode<object> x = list.First;
-            for (; x != null; x = x.Next) {
+            while (x != null) {
                 UnaryOperator? op = x.Value as UnaryOperator?;
                 if (op != null) {
                     x.Value = PerformUnaryOp(op.Value, x.Previous?.Value, x.Next.Value);
                     list.Remove(x.Next);
                 }
+                x = x.Next;
             }
 
-            //Get the queued binary operations
+            // queue and evaluate binary operators
             BinaryOpQueue opqueue = new BinaryOpQueue(list);
-
-            StringBuilder sb = new StringBuilder();
-            x = list.First.Next; // second element
-            for (; x != null; x = x.Next.Next) {
+            
+            x = list.First.Next; // skip the first operand
+            while (x != null) {
                 BinaryOperator? op = x.Value as BinaryOperator?;
                 if (op == null) {
-                    sb.AppendFormat(
-                        "\n{0} [?] {1}",
-                        (x.Previous.Value is string) ? "\"" + x.Previous.Value + "\"" : x.Previous.Value,
-                        (x.Value is string) ? "\"" + x.Value + "\"" : x.Value
-                    );
-                    x = x.Previous;
+                    throw ThrowHelper.MissingBinaryOp(x.Previous.Value, x.Value);
                 }
                 else {
-                    if (x.Next == null) {
-                        throw new ArgumentException(
-                            "Expression cannot end in a binary operation: [" + x.Value + "]"
-                        );
-                    }
+                    if (x.Next == null)
+                        throw new ArgumentException("Expression cannot end in a binary operation [" + x.Value + "]");
                 }
-            }
-            if (sb.Length > 0) {
-                throw new ArgumentException("Missing binary operator: " + sb);
+                x = x.Next.Next; // skip the operand
             }
 
             BinOpNodePair nodePair;
@@ -341,7 +269,8 @@ namespace Tbasic.Runtime
                 list.Remove(nodePair.Node.Next);
                 list.Remove(nodePair.Node);
             }
-            IExpression expr = list.First.Value as IExpression;
+
+            IEvaluator expr = list.First.Value as IEvaluator;
             if (expr == null) {
                 return list.First.Value;
             }
@@ -349,9 +278,7 @@ namespace Tbasic.Runtime
                 return expr.Evaluate();
             }
         }
-
-        #endregion
-
+        
         #region static methods
 
         /// <summary>
@@ -394,7 +321,7 @@ namespace Tbasic.Runtime
         public static object PerformUnaryOp(UnaryOperator op, object left, object right)
         {
             object operand = op.Side == UnaryOperator.OperandSide.Left ? left : right;
-            IExpression tempv = operand as IExpression;
+            IEvaluator tempv = operand as IEvaluator;
             if (tempv != null) {
                 operand = tempv.Evaluate();
             }
@@ -419,7 +346,7 @@ namespace Tbasic.Runtime
         /// <returns>v1 (op) v2</returns>
         public static object PerformBinaryOp(BinaryOperator op, object left, object right)
         {
-            IExpression tv = left as IExpression;
+            IEvaluator tv = left as IEvaluator;
             if (tv != null) {
                 left = tv.Evaluate();
             }
@@ -428,7 +355,7 @@ namespace Tbasic.Runtime
                 switch (op.OperatorString) { // short circuit evaluation 1/6/16
                     case "AND":
                         if (Convert.ToBoolean(left, CultureInfo.CurrentCulture)) {
-                            tv = right as IExpression;
+                            tv = right as IEvaluator;
                             if (tv != null) {
                                 right = tv.Evaluate();
                             }
@@ -442,7 +369,7 @@ namespace Tbasic.Runtime
                             return true;
                         }
                         else {
-                            tv = right as IExpression;
+                            tv = right as IEvaluator;
                             if (tv != null) {
                                 right = tv.Evaluate();
                             }
@@ -453,7 +380,7 @@ namespace Tbasic.Runtime
                         return false;
                 }
 
-                tv = right as IExpression;
+                tv = right as IEvaluator;
                 if (tv != null) {
                     right = tv.Evaluate();
                 }
@@ -531,5 +458,10 @@ namespace Tbasic.Runtime
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return Expression.ToString();
+        }
     }
 }
