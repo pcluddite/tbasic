@@ -120,6 +120,14 @@ namespace Tbasic.Runtime
             Expression = full;
         }
 
+        public Variable(StringSegment full, StringSegment name, int[] indices, Executer exec)
+        {
+            CurrentExecution = exec;
+            _expression = full;
+            _variable = name;
+            Indices = indices;
+        }
+
         private StringSegment GetName(StringSegment str)
         {
             int bracket = str.IndexOf('[');
@@ -150,34 +158,25 @@ namespace Tbasic.Runtime
         {
             object obj = CurrentContext.GetVariable(Name.ToString());
             if (Indices != null) {
-                for (int n = 0; n < Indices.Length; n++) {
-                    if (obj.GetType().IsArray) {
-                        object[] _aObj = (object[])obj;
-                        if (Indices[n] < _aObj.Length) {
-                            obj = _aObj[Indices[n]];
-                        }
-                        else {
-                            throw ThrowHelper.IndexOutOfRange(BuildName(n - 1), Indices[n]);
-                        }
-                    }
-                    else {
-                        throw ThrowHelper.IndexUnavailable(BuildName(n));
-                    }
-                }
+                obj = CurrentContext.GetArrayAt(Name.ToString(), Indices);
             }
-            return ConvertToObject(obj);
+            return obj;
         }
 
-        private string BuildName(int n)
+        public string GetFullName()
         {
-            StringBuilder sb = new StringBuilder(Name.ToString());
-            if (n > 0) {
+            return GetFullName(Name.ToString(), Indices);
+        }
+
+        public static string GetFullName(string name, int[] indices)
+        {
+            StringBuilder sb = new StringBuilder(name);
+            if (indices != null && indices.Length > 0) {
                 sb.Append("[");
-                while (n > 0) {
-                    sb.AppendFormat("{0},", Indices[n]);
-                    n--;
+                for (int i = 0; i < indices.Length; ++i) {
+                    sb.AppendFormat("{0},", indices[i]);
                 }
-                sb.AppendFormat("{0}]", Indices[0]);
+                sb.AppendFormat("{0}]", indices[0]);
             }
             return sb.ToString();
         }

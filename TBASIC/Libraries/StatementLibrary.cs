@@ -31,7 +31,7 @@ namespace Tbasic.Libraries
         public StatementLibrary()
         {
             Add("#include", Include);
-            Add("LET", LET);
+            Add("LET", Let);
             Add("EXIT", Exit);
             Add("BREAK", Break);
             Add("DIM", DIM);
@@ -88,36 +88,13 @@ namespace Tbasic.Libraries
             throw ThrowHelper.NoOpeningStatement(stackFrame.Text);
         }
 
-        internal void Const(TFunctionData stackFrame)
-        {
-            if (stackFrame.ParameterCount < 4) {
-                stackFrame.AssertParamCount(4);
-            }
-            if (!stackFrame.GetParameter(2).Equals("=")) {
-                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.GetParameter(2));
-            }
-            Variable var = new Variable(new StringSegment(stackFrame.GetParameter<string>(1)), stackFrame.StackExecuter);
-            if (!var.IsValid) {
-                throw ThrowHelper.InvalidVariableName(var.Name.ToString());
-            }
-            if (var.Indices == null) {
-                Evaluator e = new Evaluator(new StringSegment(stackFrame.Text, stackFrame.Text.IndexOf('=') + 1), stackFrame.StackExecuter);
-                stackFrame.StackExecuter.Context.SetConstant(stackFrame.GetParameter<string>(1), e.Evaluate());
-
-                NULL(stackFrame);
-            }
-            else {
-                throw ThrowHelper.ArraysCannotBeConstant();
-            }
-        }
-
         internal void DIM(TFunctionData stackFrame)
         {
             if (stackFrame.ParameterCount < 4) {
                 stackFrame.AssertParamCount(2);
             }
             if (stackFrame.ParameterCount > 2) {
-                LET(stackFrame);
+                Let(stackFrame);
             }
             else {
                 Variable v = new Variable(new StringSegment(stackFrame.GetParameter<string>(1)), stackFrame.StackExecuter);
@@ -172,25 +149,60 @@ namespace Tbasic.Libraries
             }
         }
 
-        internal void LET(TFunctionData stackFrame)
+        private void Let(TFunctionData stackFrame)
+        {
+            SetVariable(stackFrame, constant: false);
+        }
+
+        internal void Const(TFunctionData stackFrame)
+        {
+            SetVariable(stackFrame, constant: true);
+        }
+
+        private void SetVariable(TFunctionData stackFrame, bool constant)
         {
             if (stackFrame.ParameterCount < 4) {
                 stackFrame.AssertParamCount(4);
             }
-            if (!stackFrame.GetParameter(2).Equals("=")) {
-                throw ThrowHelper.InvalidOperatorDeclaration(stackFrame.GetParameter(2));
-            }
 
-            Evaluator e = new Evaluator(
-                new StringSegment(stackFrame.Text, stackFrame.Text.IndexOf('=') + 1),
-                stackFrame.StackExecuter);
+            StringSegment text = new StringSegment(stackFrame.Text);
 
+            Scanner scanner = new Scanner(text);
+            scanner.IntPosition += stackFrame.Name.Length;
+            scanner.SkipWhiteSpace();
+
+            Variable v;
+            if (!scanner.NextVariable(stackFrame.StackExecuter, out v))
+                throw ThrowHelper.InvalidVariableName();
+
+            if (v.IsMacro)
+                throw ThrowHelper.MacroRedefined();
+
+            scanner.SkipWhiteSpace();
+
+            if (!scanner.Next("="))
+                throw ThrowHelper.InvalidDefinitionOperator();
+
+            Evaluator e = new Evaluator(text.Subsegment(scanner.IntPosition), stackFrame.StackExecuter);
             object data = e.Evaluate();
 
-            stackFrame.StackExecuter.Context.SetVariable(
-                stackFrame.GetParameter<string>(1),
-                data
-                );
+            if (v.Indices == null) {
+                if (!constant) {
+                    stackFrame.Context.SetVariable(v.Name.ToString(), data);
+                }
+                else {
+                    stackFrame.Context.SetConstant(v.Name.ToString(), data);
+                }
+            }
+            else {
+                if (constant)
+                    throw ThrowHelper.ArraysCannotBeConstant();
+                
+                ObjectContext context = stackFrame.Context.FindVariableContext(v.Name.ToString());
+                if (context == null)
+                    throw new ArgumentException("Array has not been defined and cannot be indexed");
+                context.SetArrayAt(v.Name.ToString(), data, v.Indices);
+            }
 
             NULL(stackFrame);
         }

@@ -22,6 +22,7 @@ using Tbasic.Runtime;
 using System.Collections.Generic;
 using Tbasic.Errors;
 using Tbasic.Parsing;
+using Tbasic.Components;
 
 namespace Tbasic
 {
@@ -43,7 +44,7 @@ namespace Tbasic
             if (parms.ParameterCount < 2) {
                 throw ThrowHelper.NoCondition();
             }
-            object obj = Evaluator.Evaluate(Header.Text.Substring(Header.Name.Length), exec);
+            object obj = Evaluator.Evaluate(new StringSegment(Header.Text, Header.Name.Length), exec);
             CodeBlock _default;
             var dict = ToDictionary(exec, out _default);
             if (obj != null && dict.ContainsKey(obj)) {
@@ -98,20 +99,20 @@ namespace Tbasic
                 }
             }
 
-            public string Condition { get; private set; }
+            public StringSegment Condition { get; private set; }
 
             private CaseBlock(LineCollection body)
             {
                 Header = body[0];
                 TFunctionData parms = new TFunctionData(null, Header.Text);
                 if (parms.Name.EqualsIgnoreCase("DEFAULT")) {
-                    Condition = "default";
+                    Condition = new StringSegment("default");
                 }
                 else if (parms.ParameterCount < 2) {
                     throw ThrowHelper.NoCondition();
                 }
                 else {
-                    Condition = Header.Text.Substring(Header.Text.IndexOf(' ') + 1);
+                    Condition = new StringSegment(Header.Text, Header.Name.Length);
                 }
                 body.RemoveAt(0);
                 Body = body;

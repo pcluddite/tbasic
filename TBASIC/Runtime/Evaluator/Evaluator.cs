@@ -116,7 +116,7 @@ namespace Tbasic.Runtime
                 return 0;
             }
 
-            return ExecuteEvaluation();
+            return Variable.ConvertToObject(ExecuteEvaluation());
         }
 
         /// <summary>
@@ -170,8 +170,9 @@ namespace Tbasic.Runtime
         {
             //Break Expression Apart into List
             if (!_bParsed) {
-                string expr = Expression.ToString(); // convert it to a string
-                for (int x = 0; x < Expression.Length; x = NextToken(x, expr)) ;
+                Scanner scanner = new Scanner(_expression);
+                while (!scanner.EndOfStream)
+                    NextToken(scanner);
             }
             _bParsed = true;
 
@@ -182,151 +183,106 @@ namespace Tbasic.Runtime
         /// <summary>
         /// This will search the expression for the next token (operand, operator, etc)
         /// </summary>
-        /// <param name="nIdx">Start Position of Search</param>
-        /// <param name="expr">the expression as a string</param>
+        /// <param name="scanner"></param>
         /// <returns>First character index after token.</returns>
-        //[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private int NextToken(int nIdx, string expr)
+        private int NextToken(Scanner scanner)
         {
-            MatchInfo mRet = null;
-            int nRet = nIdx;
-            object val = null;
-
             //Check for preceeding white space from last token index
-            if (char.IsWhiteSpace(_expression[nIdx])) {
-                do {
-                    ++nIdx;
-                }
-                while (char.IsWhiteSpace(expr[nIdx]));
-                return nIdx;
-            }
+            scanner.SkipWhiteSpace();
+
+            int startIndex = scanner.IntPosition;
 
             //Check Parenthesis
-            MatchInfo m = MatchUnformattedString(_expression, "(", nIdx);
-            if (m.Success) {
-                mRet = m;
+            if (scanner.Next("(")) {
+                return AddObjectToExprList("(", startIndex, scanner);
             }
 
             //Check String
             string str_parsed;
-            m = MatchFormattedString(_expression, nIdx, out str_parsed);
-            if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                mRet = m;
-                val = str_parsed;
+            if (scanner.NextString(out str_parsed)) {
+                return AddObjectToExprList(str_parsed, startIndex, scanner);
             }
 
             //Check Unary Operator
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                UnaryOperator op;
-                m = MatchUnaryOp(_expression, nIdx, _expressionlist.Last?.Value, out op);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = op;
-                }
+            UnaryOperator unaryOp;
+            if (scanner.NextUnaryOp(CurrentContext._unaryOps, _expressionlist.Last?.Value, out unaryOp)) {
+                return AddObjectToExprList(unaryOp, startIndex, scanner);
             }
 
             //Check Function
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Function.Match(expr, nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    Function func = new Function(
-                        Expression.Subsegment(mRet.Index, mRet.Length),
-                        CurrentExecution // share the wealth
-                    );
-                    func.Parse();
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, func.Expression);
-                    val = func;
-                }
+            Function func;
+            if (scanner.NextFunction(CurrentExecution, out func)) {
+                return AddObjectToExprList(func, startIndex, scanner);
             }
 
             //Check null
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchUnformattedString(_expression, "null", nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                }
+            if (scanner.Next("null")) {
+                return AddObjectToExprList("null", startIndex, scanner);
             }
 
             //Check Variable
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = DefinedRegex.Variable.Match(expr, nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    Variable v = new Variable(Expression.Subsegment(mRet.Index, mRet.Length), CurrentExecution);
-                    mRet = new MatchInfo(mRet.RealMatch, mRet.Index, v.Expression);
-                    val = v;
-                }
+            Variable variable;
+            if (scanner.NextVariable(CurrentExecution, out variable)) {
+                return AddObjectToExprList(variable, startIndex, scanner);
             }
 
             //Check Hexadecimal
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchHexadecimal(_expression, nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = Convert.ToInt32(m.Value.ToString(), 16);
-                }
+            int hex;
+            if (scanner.NextHexadecimal(out hex)) {
+                return AddObjectToExprList(hex, startIndex, scanner);
             }
 
             //Check Boolean
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchBoolean(_expression, nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = bool.Parse(m.Value.ToString());
-                }
+            bool b;
+            if (scanner.NextBool(out b)) {
+                return AddObjectToExprList(b, startIndex, scanner);
             }
 
             //Check Numeric
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                m = MatchNumeric(_expression, nIdx);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = Variable.ConvertToObject(double.Parse(m.Value.ToString(), CultureInfo.CurrentCulture));
-                }
+            Number num;
+            if (scanner.NextPositiveNumber(out num)) {
+                return AddObjectToExprList(num.ToObject(), startIndex, scanner);
             }
 
             //Check Binary Operator
-            if (mRet.RealMatch == null || mRet.Index > nIdx) {
-                BinaryOperator op;
-                m = MatchBinaryOp(_expression, nIdx, out op);
-                if (m.Success && (mRet.RealMatch == null || m.Index < mRet.Index)) {
-                    mRet = m;
-                    val = op;
-                }
+            BinaryOperator binOp;
+            if (scanner.NextBinaryOp(CurrentContext._binaryOps, out binOp)) {
+                return AddObjectToExprList(binOp, startIndex, scanner);
             }
 
-            if (mRet.RealMatch == null) {
-                if (CurrentContext.FindFunctionContext(expr) == null) {
-                    throw new ArgumentException("Invalid expression '" + expr + "'");
-                }
-                else {
-                    throw new FormatException("Poorly formed function call");
-                }
+            // Couldn't be parsed
+
+            if (CurrentContext.FindFunctionContext(_expression.ToString()) == null) {
+                throw new ArgumentException("Invalid expression '" + _expression + "'");
+            }
+            else {
+                throw new FormatException("Poorly formed function call");
             }
 
-            if (mRet.Index != nIdx) {
+            /*if (mRet.Index != nIdx) {
                 throw new ArgumentException(
                     "Invalid token in expression '" + expr.Substring(nIdx, mRet.Index - nIdx).Trim() + "'"
                 );
-            }
+            }*/
+        }
 
-            if (StringSegment.Equals(mRet.Value, "(")) {
+        private int AddObjectToExprList(object val, int startIndex, Scanner scanner)
+        {
+            if (Equals(val, "(")) {
 
-                nRet = GroupParser.IndexGroup(Expression, mRet.Index) + 1;
+                scanner.IntPosition = GroupParser.IndexGroup(_expression, startIndex) + 1;
 
                 Evaluator eval = new Evaluator(
-                    Expression.Subsegment(mRet.Index + 1, nRet - mRet.Index - 2),
+                    _expression.Subsegment(startIndex + 1, scanner.IntPosition - startIndex - 2),
                     CurrentExecution // share the wealth
                 );
                 _expressionlist.AddLast(eval);
             }
             else {
-                nRet = mRet.Index + mRet.Length;
                 _expressionlist.AddLast(val);
             }
 
-            return nRet;
+            return scanner.IntPosition;
         }
 
         /// <summary>
@@ -343,7 +299,7 @@ namespace Tbasic.Runtime
             for (; x != null; x = x.Next) {
                 UnaryOperator? op = x.Value as UnaryOperator?;
                 if (op != null) {
-                    x.Value = PerformUnaryOp(op.Value, x.Previous == null ? null : x.Previous.Value, x.Next.Value);
+                    x.Value = PerformUnaryOp(op.Value, x.Previous?.Value, x.Next.Value);
                     list.Remove(x.Next);
                 }
             }
@@ -404,9 +360,9 @@ namespace Tbasic.Runtime
         /// <param name="expressionString">expression to be evaluated</param>
         /// <param name="exec">the current execution</param>
         /// <returns></returns>
-        public static object Evaluate(string expressionString, Executer exec)
+        public static object Evaluate(StringSegment expressionString, Executer exec)
         {
-            Evaluator expression = new Evaluator(new StringSegment(expressionString), exec);
+            Evaluator expression = new Evaluator(expressionString, exec);
             return expression.Evaluate();
         }
 

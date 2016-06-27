@@ -71,6 +71,21 @@ namespace Tbasic.Runtime
             }
         }
 
+        public static Number Parse(string s)
+        {
+            return double.Parse(s);
+        }
+
+        public static implicit operator Number(double d)
+        {
+            return new Number(d);
+        }
+
+        public static implicit operator double(Number n)
+        {
+            return n.Value;
+        }
+
         #region IComparable
 
         public int CompareTo(object obj)

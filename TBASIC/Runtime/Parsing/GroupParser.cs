@@ -239,8 +239,7 @@ namespace Tbasic.Parsing
                     || expected == 0) {
                     StringSegment _param = s_full.Subsegment(last + 1, c_index - last - 1).Trim();
                     if (!StringSegment.Equals(_param, "")) {
-                        Evaluator expr = new Evaluator(_param, _curExec);
-                        result.Add(expr.Evaluate());
+                        result.Add(Evaluator.Evaluate(_param, _curExec));
                     }
                     last = c_index;
                     if (expected == 0) { // fin

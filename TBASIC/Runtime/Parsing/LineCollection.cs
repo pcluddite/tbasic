@@ -19,26 +19,23 @@
  **/
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections;
-using System.Collections.Specialized;
+using Tbasic.Errors;
 
-namespace Tbasic
+namespace Tbasic.Parsing
 {
     /// <summary>
     /// A collection of Tbasic.Line objects sorted by line number
     /// </summary>
     public class LineCollection : IList<Line>, ICollection<Line>, ICloneable
     {
-        private SortedList<int, Line> allLines;
+        private SortedList<uint, Line> allLines = new SortedList<uint, Line>();
 
         /// <summary>
         /// Initializes a new Tbasic.LineCollection
         /// </summary>
         public LineCollection()
         {
-            allLines = new SortedList<int, Line>();
         }
 
         /// <summary>
@@ -79,7 +76,7 @@ namespace Tbasic
                 }
             }
 
-            throw ScriptException.UnterminatedBlock(this[this.Count - 1].LineNumber, blockLines[0].VisibleName);
+            throw ThrowHelper.UnterminatedBlock(blockLines[0].VisibleName);
         }
 
         /// <summary>
@@ -185,7 +182,7 @@ namespace Tbasic
         /// </summary>
         /// <param name="lineNumber"></param>
         /// <returns></returns>
-        public int IndexOf(int lineNumber)
+        public int IndexOf(uint lineNumber)
         {
             return allLines.IndexOfKey(lineNumber);
         }
@@ -214,7 +211,7 @@ namespace Tbasic
         /// </summary>
         /// <param name="lineNumber"></param>
         /// <returns></returns>
-        public Line LineAt(int lineNumber)
+        public Line LineAt(uint lineNumber)
         {
             return allLines[lineNumber];
         }

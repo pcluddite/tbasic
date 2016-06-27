@@ -18,9 +18,9 @@
  *  USA
  **/
 using System;
-using System.Globalization;
-using Tbasic.Runtime;
+using Tbasic.Components;
 using Tbasic.Errors;
+using Tbasic.Runtime;
 
 namespace Tbasic.Libraries
 {
@@ -241,7 +241,7 @@ namespace Tbasic.Libraries
             Executer e = new Executer(); // local execution
             e.Global.AddLibrary(new MathLibrary(e.Global)); // only allow math libs
             e.Global.SetFunction("eval", null); // that's a no-no
-            return Evaluator.Evaluate(expr, e);
+            return Evaluator.Evaluate(new StringSegment(expr), e);
         }
 
         private void Eval(TFunctionData stackFrame)

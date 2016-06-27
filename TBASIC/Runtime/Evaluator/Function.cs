@@ -116,6 +116,15 @@ namespace Tbasic.Runtime
             }
         }
 
+        public void Parse(StringSegment expr, StringSegment name, IList<object> parameters)
+        {
+            _expression = expr;
+            _bParsed = true;
+            _params = parameters;
+            _function = name;
+            
+        }
+
         /// <summary>
         /// Evaluates the Expression
         /// </summary>

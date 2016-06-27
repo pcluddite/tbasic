@@ -63,14 +63,13 @@
     <Compile Include="Operators\UnaryOpDictionary.cs" />
     <Compile Include="Operators\UnaryOpDictionary.IDictionary.cs" />
     <Compile Include="Operators\UnaryOperator.cs" />
-    <Compile Include="Parsing\GroupParser.cs" />
+    <Compile Include="Runtime\Parsing\GroupParser.cs" />
     <Compile Include="Runtime\Evaluator\Evaluator.cs" />
     <Compile Include="Runtime\Evaluator\BinaryOpQueue.cs" />
-    <Compile Include="Runtime\Evaluator\Evaluator.Matching.cs" />
     <Compile Include="Runtime\Evaluator\Function.cs" />
     <Compile Include="Runtime\Evaluator\IExpression.cs" />
-    <Compile Include="Parsing\LineCollection.cs" />
-    <Compile Include="Parsing\DefinedRegex.cs" />
+    <Compile Include="Runtime\Parsing\LineCollection.cs" />
+    <Compile Include="Runtime\Parsing\Scanner.cs" />
     <Compile Include="Runtime\StackFrame\ObjectContext.cs" />
     <Compile Include="Runtime\Evaluator\Variable.cs" />
     <Compile Include="Runtime\Executer.cs" />
@@ -91,7 +90,7 @@
     <Compile Include="Blocks\WhileBlock.cs" />
     <Compile Include="Blocks\IfBlock.cs" />
     <Compile Include="Blocks\CodeBlock.cs" />
-    <Compile Include="Parsing\Line.cs" />
+    <Compile Include="Runtime\Parsing\Line.cs" />
     <Compile Include="Components\ImageCompression.cs" />
     <Compile Include="Components\RegistryUtilities.cs" />
     <Compile Include="Components\ScreenCapture.cs" />

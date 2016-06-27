@@ -20,8 +20,9 @@
 
 using System;
 using System.Collections.Generic;
-using Tbasic.Libraries;
+using System.Text;
 using Tbasic.Errors;
+using Tbasic.Libraries;
 using Tbasic.Operators;
 
 namespace Tbasic.Runtime
@@ -341,6 +342,34 @@ namespace Tbasic.Runtime
         }
 
         /// <summary>
+        /// Gets the value of an array variable at a given index
+        /// </summary>
+        /// <param name="name">the variable name</param>
+        /// <param name="indices">the index (or indices of a multidimensional array)</param>
+        /// <returns>the value of the variable</returns>
+        public object GetArrayAt(string name, params int[] indices)
+        {
+            object obj = GetVariable(name);
+            if (indices != null && indices.Length > 0) {
+                for (int n = 0; n < indices.Length; n++) {
+                    object[] _aObj = obj as object[];
+                    if (_aObj != null) {
+                        if (indices[n] < _aObj.Length) {
+                            obj = _aObj[indices[n]];
+                        }
+                        else {
+                            throw ThrowHelper.IndexOutOfRange(Variable.GetFullName(name, indices), indices[n]);
+                        }
+                    }
+                    else {
+                        throw ThrowHelper.IndexUnavailable(Variable.GetFullName(name, indices));
+                    }
+                }
+            }
+            return obj;
+        }
+        
+        /// <summary>
         /// Gets a function that has been declared in this context
         /// </summary>
         /// <param name="name">function name</param>
@@ -501,6 +530,34 @@ namespace Tbasic.Runtime
                 Console.WriteLine("{1} = {2} set in {0}", c.GetHashCode(), name, obj);
 #endif
             }
+        }
+        
+        /// <summary>
+        /// Sets the value of an array variable at a given index
+        /// </summary>
+        /// <param name="name">the variable name</param>
+        /// <param name="value">the new value of the array at that index</param>
+        /// <param name="indices">the index (or indices of a multidimensional array)</param>
+        /// <returns>the value of the variable</returns>
+        public void SetArrayAt(string name, object value, params int[] indices)
+        {
+            object[] array = GetVariable(name) as object[];
+            if (indices != null && indices.Length > 0) {
+                for (int n = 0; n < indices.Length - 1; ++n) {
+                    if (array != null) {
+                        if (indices[n] < array.Length) {
+                            array = array[indices[n]] as object[];
+                        }
+                        else {
+                            throw ThrowHelper.IndexOutOfRange(Variable.GetFullName(name, indices), indices[n]);
+                        }
+                    }
+                    else {
+                        throw ThrowHelper.IndexUnavailable(Variable.GetFullName(name, indices));
+                    }
+                }
+            }
+            array[indices[indices.Length - 1]] = value;
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace Tbasic.Components
         public static readonly StringSegment Empty = new StringSegment(string.Empty);
 
         private string full;
-        private int start;
+        private int offset;
         private int len;
 
         public int Length
@@ -43,7 +43,7 @@ namespace Tbasic.Components
         public int Offset
         {
             get {
-                return start;
+                return offset;
             }
         }
 
@@ -66,8 +66,10 @@ namespace Tbasic.Components
 
         public StringSegment(string fullStr, int offset, int count)
         {
+            if (count > fullStr.Length - offset)
+                throw new ArgumentOutOfRangeException(nameof(count));
             full = fullStr;
-            start = offset;
+            this.offset = offset;
             len = count;
         }
 
@@ -82,52 +84,54 @@ namespace Tbasic.Components
 
         private char GetCharAt(int index)
         {
-            return full[start + index];
+            return full[offset + index];
         }
 
         public string Substring(int startIndex)
         {
-            return full.Substring(startIndex + start);
+            return Substring(startIndex, len - startIndex);
         }
 
         public string Substring(int startIndex, int length)
         {
-            return full.Substring(startIndex + start, length);
+            if (length > len - startIndex)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            return full.Substring(startIndex + offset, length);
         }
 
         public StringSegment Subsegment(int startIndex)
         {
-            return new StringSegment(full, start + startIndex);
+            return new StringSegment(full, offset + startIndex);
         }
 
         public StringSegment Subsegment(int startIndex, int length)
         {
-            return new StringSegment(full, start + startIndex, length);
+            return new StringSegment(full, offset + startIndex, length);
         }
 
         public int IndexOf(char value)
         {
-            return full.IndexOf(value, start, len) - start;
+            return full.IndexOf(value, offset, len) - offset;
         }
 
-        public int IndexOf(char value, int startIndex)
+        public int IndexOf(char value, int start)
         {
-            return full.IndexOf(value, start + startIndex, len) - start;
+            return full.IndexOf(value, offset + start, len) - offset;
         }
 
         public int IndexOf(string value)
         {
-            return full.IndexOf(value, start, len) - start;
+            return full.IndexOf(value, offset, len) - offset;
         }
 
-        public int IndexOf(string value, int startIndex)
+        public int IndexOf(string value, int start)
         {
-            return full.IndexOf(value, start + startIndex, len - startIndex) - start;
+            return full.IndexOf(value, offset + start, len - start) - offset;
         }
 
-        public int IndexOf(string value, int startIndex, StringComparison comparisonType)
+        public int IndexOf(string value, int start, StringComparison comparisonType)
         {
-            return full.IndexOf(value, start + startIndex, len - startIndex, comparisonType) - start;
+            return full.IndexOf(value, offset + start, len - start, comparisonType) - offset;
         }
 
         public bool StartsWith(string value)
@@ -137,12 +141,17 @@ namespace Tbasic.Components
 
         public bool StartsWith(string value, bool ignoreCase)
         {
+            return StartsWith(value, 0, ignoreCase);
+        }
+
+        public bool StartsWith(string value, int startIndex, bool ignoreCase)
+        {
             unsafe
             {
                 int len = value.Length;
                 fixed (char* aptr = full) fixed (char* bptr = value)
                 {
-                    char* a = aptr + start;
+                    char* a = aptr + offset + startIndex;
                     char* b = bptr;
                     int index;
                     if (!ignoreCase) {
@@ -158,7 +167,7 @@ namespace Tbasic.Components
 
         public StringSegment Remove(int index)
         {
-            return new StringSegment(full, start, index);
+            return new StringSegment(full, offset, index);
         }
 
         public StringSegment Trim()
@@ -185,7 +194,7 @@ namespace Tbasic.Components
 
         public override string ToString()
         {
-            return full.Substring(start, len);
+            return full.Substring(offset, len);
         }
 
         public static bool IsNullOrEmpty(StringSegment segment)
@@ -193,9 +202,9 @@ namespace Tbasic.Components
             return segment == null || segment.FullString == null || segment.Length == 0;
         }
 
-        public int SkipWhiteSpace(int startIndex = 0)
+        public int SkipWhiteSpace(int start = 0)
         {
-            for (int index = startIndex; index < Length; ++index) {
+            for (int index = start; index < Length; ++index) {
                 if (!char.IsWhiteSpace(this[index])) {
                     return index;
                 }
@@ -304,7 +313,7 @@ namespace Tbasic.Components
 
         public override int GetHashCode()
         {
-            return full.GetHashCode() ^ len ^ start; // TODO: Optimize this so there aren't many collisions 6/16/16
+            return full.GetHashCode() ^ len ^ offset; // TODO: Optimize this so there aren't many collisions 6/16/16
         }
 
         public IEnumerator<char> GetEnumerator()

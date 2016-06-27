@@ -86,12 +86,12 @@ namespace Tbasic.Errors
 
         public static Exception InvalidVariableName(string name)
         {
-            return new ScriptParsingException(string.Format("Cannot define variable with name '{0}'", name));
+            return new ScriptParsingException(string.Format("The variable name '{0}' contains invalid characters", name));
         }
 
-        public static Exception InvalidOperatorDeclaration(object opr)
+        public static Exception InvalidVariableName()
         {
-            return new InvalidOperatorException(string.Format("Invalid operator in declaration '{0}', expected '='", opr), prependGeneric: false);
+            return new ScriptParsingException("The variable name contains invalid characters");
         }
 
         public static Exception ArraysCannotBeConstant()
@@ -152,6 +152,16 @@ namespace Tbasic.Errors
         public static Exception OperatorUndefined(string opr)
         {
             return new ArgumentException("Operator '" + opr + "' is undefined");
+        }
+
+        public static Exception MacroRedefined()
+        {
+            return new ArgumentException("Cannot redefine a macro");
+        }
+
+        public static Exception InvalidDefinitionOperator()
+        {
+            return new ArgumentException("Expected '=' in definition");
         }
     }
 }
